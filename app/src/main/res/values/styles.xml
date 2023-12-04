@@ -1,0 +1,11 @@
+<resources>
+
+
+    <style name="CustomImageCardViewStyle" parent="Widget.Leanback.ImageCardViewStyle">
+        <item name="lbImageCardViewType">Title</item>
+    </style>
+
+    <style name="CustomImageCardTheme" parent="Theme.Leanback">
+        <item name="imageCardViewStyle">@style/CustomImageCardViewStyle</item>
+    </style>
+</resources>
