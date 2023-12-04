@@ -4,9 +4,11 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -19,9 +21,6 @@ class MainActivity : FragmentActivity() {
     private val playbackFragment = PlaybackFragment()
     private val mainFragment = MainFragment()
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var hideTask: Runnable? = null
-
     private var doubleBackToExitPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +32,6 @@ class MainActivity : FragmentActivity() {
                 .add(R.id.main_browse_fragment, playbackFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .commit()
-
-            hideTask = Runnable {
-                Log.i(TAG, "hideTask")
-                hideMainFragment()
-            }
         }
     }
 
@@ -46,12 +40,10 @@ class MainActivity : FragmentActivity() {
     }
 
     fun prev() {
-        Log.i(TAG, "prev")
         mainFragment.prev()
     }
 
     fun next() {
-        Log.i(TAG, "next")
         mainFragment.next()
     }
 
@@ -84,19 +76,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    fun startHideTask(delayMillis: Long) {
-        hideTask?.let { handler.postDelayed(it, delayMillis) }
-    }
-
-    fun cancelHideTask() {
-        hideTask?.let { handler.removeCallbacks(it) }
-    }
-
-    override fun onDestroy() {
-        cancelHideTask()
-        super.onDestroy()
-    }
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_BACK -> {
@@ -120,10 +99,23 @@ class MainActivity : FragmentActivity() {
                 val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
                 imageView.setImageDrawable(drawable)
 
+                val parent = imageView.parent as? ViewGroup
+                parent?.removeView(imageView)
+
+                val linearLayout = LinearLayout(this)
+                linearLayout.addView(imageView)
+
+                val layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams.gravity = Gravity.BOTTOM
+                imageView.layoutParams = layoutParams
+
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder
-                    .setMessage("地址: https://github.com/lizongying/my-tv/")
-                    .setView(imageView)
+                    .setTitle("https://github.com/lizongying/my-tv/")
+                    .setView(linearLayout)
 
                 val dialog: AlertDialog = builder.create()
                 dialog.show()

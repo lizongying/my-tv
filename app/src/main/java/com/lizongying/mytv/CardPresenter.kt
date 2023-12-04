@@ -5,7 +5,6 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -13,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.properties.Delegates
 
 
 /**
@@ -28,7 +26,7 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
         val cardView = object :
             ImageCardView(ContextThemeWrapper(parent.context, R.style.CustomImageCardTheme)) {
             override fun setSelected(selected: Boolean) {
-//                updateCardBackgroundColor(this)
+                updateCardBackgroundColor(this)
                 super.setSelected(selected)
             }
         }
