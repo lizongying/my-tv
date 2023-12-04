@@ -1,0 +1,61 @@
+name: build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      contents: read
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Sign artifact
+        id: signArtifact
+        uses: r0adkll/sign-android-release@v1.0.1
+        with:
+          releaseDirectory: app/build/outputs/apk/ourbuildtype/release
+          alias: ${{ secrets.KEYALIAS }}
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/build/outputs/apk/ourbuildtype/release/app-artifact-*.apk
+          asset_name: my_tv.apk
+          asset_content_type: application/vnd.android.package-archive

@@ -114,7 +114,7 @@ class MainActivity : FragmentActivity() {
 
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder
-                    .setTitle("https://github.com/lizongying/my-tv/")
+                    .setTitle("https://github.com/lizongying/my-tv/releases")
                     .setView(linearLayout)
 
                 val dialog: AlertDialog = builder.create()
