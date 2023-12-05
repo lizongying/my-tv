@@ -150,7 +150,6 @@ class MainFragment : BrowseSupportFragment() {
         ) {
             if (item is TV) {
                 Log.i(TAG, "Item: ${item.id}")
-
             }
             if (itemViewHolder == null) {
                 view?.post {

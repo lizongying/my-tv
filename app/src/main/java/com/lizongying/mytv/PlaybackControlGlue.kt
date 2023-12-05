@@ -20,30 +20,31 @@ class PlaybackControlGlue(
                 }
 
                 KeyEvent.KEYCODE_DPAD_UP -> {
-                    if ((context as? MainActivity)?.fragmentIsHidden() == true) {
+                    if ((context as? MainActivity)?.mainFragmentIsHidden() == true) {
                         (context as? MainActivity)?.prev()
                     }
                 }
 
                 KeyEvent.KEYCODE_DPAD_DOWN -> {
-                    if ((context as? MainActivity)?.fragmentIsHidden() == true) {
+                    if ((context as? MainActivity)?.mainFragmentIsHidden() == true) {
                         (context as? MainActivity)?.next()
                     }
                 }
 
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
-                    if ((context as? MainActivity)?.fragmentIsHidden() == true) {
+                    if ((context as? MainActivity)?.mainFragmentIsHidden() == true) {
                         (context as? MainActivity)?.prev()
                     }
                 }
 
                 KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                    if ((context as? MainActivity)?.fragmentIsHidden() == true) {
+                    if ((context as? MainActivity)?.mainFragmentIsHidden() == true) {
                         (context as? MainActivity)?.next()
                     }
                 }
             }
         }
+
         return super.onKey(v, keyCode, event)
     }
 

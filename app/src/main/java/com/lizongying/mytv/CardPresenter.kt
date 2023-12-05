@@ -21,8 +21,6 @@ import kotlinx.coroutines.withContext
 class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        Log.d(TAG, "onCreateViewHolder")
-
         val cardView = object :
             ImageCardView(ContextThemeWrapper(parent.context, R.style.CustomImageCardTheme)) {
             override fun setSelected(selected: Boolean) {
@@ -40,7 +38,6 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
         val tv = item as TV
         val cardView = viewHolder.view as ImageCardView
 
-        Log.d(TAG, "onBindViewHolder")
         if (tv.videoUrl != null) {
             cardView.titleText = tv.title
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
@@ -57,7 +54,6 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
-        Log.d(TAG, "onUnbindViewHolder")
         val cardView = viewHolder.view as ImageCardView
         // Remove references to images so that the garbage collector can free up memory
         cardView.badgeImage = null

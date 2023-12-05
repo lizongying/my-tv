@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
+
 /**
  * Loads [MainFragment].
  */
@@ -64,7 +65,7 @@ class MainActivity : FragmentActivity() {
         mainFragment.focus()
     }
 
-    fun fragmentIsHidden(): Boolean {
+    fun mainFragmentIsHidden(): Boolean {
         return mainFragment.isHidden
     }
 
@@ -79,12 +80,16 @@ class MainActivity : FragmentActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_BACK -> {
+                if (!mainFragmentIsHidden()) {
+                    hideMainFragment()
+                    return true
+                }
+
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed()
                     return true
                 }
 
-                hideMainFragment()
                 this.doubleBackToExitPressedOnce = true
                 Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show()
 
@@ -112,9 +117,14 @@ class MainActivity : FragmentActivity() {
                 layoutParams.gravity = Gravity.BOTTOM
                 imageView.layoutParams = layoutParams
 
+
+                val packageInfo = packageManager.getPackageInfo(packageName, 0)
+
+                val versionName = packageInfo.versionName
+
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder
-                    .setTitle("https://github.com/lizongying/my-tv/releases")
+                    .setTitle("当前版本: $versionName, 获取最新: https://github.com/lizongying/my-tv/releases/")
                     .setView(linearLayout)
 
                 val dialog: AlertDialog = builder.create()

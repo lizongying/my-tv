@@ -54,7 +54,6 @@ class PlaybackFragment : VideoSupportFragment() {
         try {
             playerAdapter?.setDataSource(Uri.parse(tv.videoUrl))
         } catch (e: IOException) {
-            // Handle the exception
             return
         }
         hideControlsOverlay(false)

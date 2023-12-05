@@ -13,6 +13,8 @@ android {
         targetSdk 33
         versionCode 11
         versionName "1.1"
+        versionCode getVersionCode()
+        versionName getVersionName()
     }
 
     buildTypes {
@@ -29,6 +31,26 @@ android {
 
     kotlinOptions {
         jvmTarget=17
+    }
+}
+
+static def getVersionCode() {
+    try {
+        def process = 'git rev-list --count HEAD'.execute()
+        process.waitFor()
+        return process.text.toInteger()
+    } catch (ignored) {
+        return 0
+    }
+}
+
+static def getVersionName() {
+    try {
+        def process = 'git describe --tags --always'.execute()
+        process.waitFor()
+        return process.text.trim()
+    } catch (ignored) {
+        return "1.0.0"
     }
 }
 
