@@ -19,10 +19,14 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-#      - uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: current
-#          arguments: assembleRelease
+      - name: set up gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: current
+          arguments: assembleRelease
+
+      - name: Run build with Gradle wrapper
+        run: ./gradlew build --scan
 
       - name: Sign app APK
         id: sign_app
