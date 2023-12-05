@@ -11,8 +11,6 @@ android {
         applicationId "com.lizongying.mytv"
         minSdk 23
         targetSdk 33
-        versionCode 11
-        versionName "1.1"
         versionCode getVersionCode()
         versionName getVersionName()
     }
