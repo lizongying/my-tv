@@ -7,16 +7,6 @@ on:
 
 jobs:
   build:
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      contents: read
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,15 +19,20 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Sign artifact
-        id: signArtifact
-        uses: r0adkll/sign-android-release@v1.0.1
+#      - uses: gradle/gradle-build-action@v2
+#        with:
+#          gradle-version: current
+#          arguments: assembleRelease
+
+      - name: Sign app APK
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: app/build/outputs/apk/ourbuildtype/release
-          alias: ${{ secrets.KEYALIAS }}
+          releaseDirectory: app/build/outputs/apk/release
+          alias: ${{ secrets.ALIAS }}
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          keyPassword: ${{ secrets.ALIAS_PASSWORD }}
 
       - name: Create Release
         id: create_release
@@ -56,6 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/build/outputs/apk/ourbuildtype/release/app-artifact-*.apk
+          asset_path: ${{ steps.sign_app.outputs.signedReleaseFile }}
           asset_name: my_tv.apk
           asset_content_type: application/vnd.android.package-archive
