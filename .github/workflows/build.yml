@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,13 +20,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
-
-#      - name: set up gradle
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: current
-#          arguments: assembleRelease
 
       - name: Run build with Gradle wrapper
         run: ./gradlew assembleRelease
