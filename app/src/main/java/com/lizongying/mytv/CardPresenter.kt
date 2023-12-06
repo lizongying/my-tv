@@ -2,7 +2,6 @@ package com.lizongying.mytv
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
@@ -13,11 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-/**
- * A CardPresenter is used to generate Views and bind Objects to them on demand.
- * It contains an ImageCardView.
- */
 class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -91,9 +85,7 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
 
     companion object {
         private const val TAG = "CardPresenter"
-
         private const val CARD_WIDTH = 313
-
         private const val CARD_HEIGHT = 176
     }
 }

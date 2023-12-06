@@ -13,10 +13,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
-
-/**
- * Loads [MainFragment].
- */
 class MainActivity : FragmentActivity() {
 
     private val playbackFragment = PlaybackFragment()

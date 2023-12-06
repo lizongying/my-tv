@@ -18,9 +18,6 @@ import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
 
-/**
- * Loads a grid of cards with movies to browse.
- */
 class MainFragment : BrowseSupportFragment() {
 
     var itemPosition: Int = 0

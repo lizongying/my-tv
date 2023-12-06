@@ -10,7 +10,6 @@ import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.PlaybackControlsRow
 import java.io.IOException
 
-/** Handles video playback with media controls. */
 class PlaybackFragment : VideoSupportFragment() {
 
     private lateinit var mTransportControlGlue: PlaybackTransportControlGlue<MediaPlayerAdapter>
@@ -28,7 +27,6 @@ class PlaybackFragment : VideoSupportFragment() {
     }
 
     override fun showControlsOverlay(runAnimation: Boolean) {
-        // We will do nothing here, and thus controls will never be shown
     }
 
     fun play(tv: TV) {
