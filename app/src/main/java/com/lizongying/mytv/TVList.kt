@@ -107,6 +107,9 @@ object TVList {
         val map: MutableMap<String, MutableMap<String, LinkedHashSet<String>>> = mutableMapOf()
 
         for (i in tvs.split("\n")) {
+            if (!i.contains(",")) {
+                continue
+            }
             val (channel, title, url) = i.split(",")
             val titleMap = map[channel] ?: mutableMapOf()
 
