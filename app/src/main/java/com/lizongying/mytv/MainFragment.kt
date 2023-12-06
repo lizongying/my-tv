@@ -2,9 +2,7 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -29,23 +27,16 @@ class MainFragment : BrowseSupportFragment() {
         super.onActivityCreated(savedInstanceState)
 
         setupUIElements()
-
         loadRows()
-
         setupEventListeners()
     }
 
-    fun show() {
-        if (!view?.isVisible!!) {
-            view?.visibility = View.VISIBLE
-        }
-    }
-
     private fun setupUIElements() {
-        // set fastLane (or headers) background color
         brandColor = ContextCompat.getColor(context!!, R.color.fastlane_background)
 //        headersState = HEADERS_DISABLED
     }
+
+    private var count: Int = 0
 
     private fun loadRows() {
         val list = TVList.list
@@ -55,9 +46,20 @@ class MainFragment : BrowseSupportFragment() {
         var idx: Long = 0
         for ((k, v) in list) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-            for ((idx2, v1) in v.withIndex()) {
+            var idx2 = 0
+            for ((k1, v1) in v) {
                 listRowAdapter.add(v1)
-                list2.add(Info(idx.toInt(), idx2, v1))
+                list2.add(
+                    Info(
+                        idx.toInt(), idx2, TV(
+                            count,
+                            k1,
+                            v1.toList()
+                        )
+                    )
+                )
+                count++
+                idx2++
             }
             val header = HeaderItem(idx, k)
             rowsAdapter.add(ListRow(header, listRowAdapter))
@@ -66,7 +68,7 @@ class MainFragment : BrowseSupportFragment() {
 
         adapter = rowsAdapter
 
-        (activity as? MainActivity)?.play(list.values.first()[0])
+        (activity as? MainActivity)?.play(list2.first().item as TV)
         (activity as? MainActivity)?.switchMainFragment()
     }
 
@@ -91,7 +93,7 @@ class MainFragment : BrowseSupportFragment() {
             )
 //            Toast.makeText(
 //                activity,
-//                "${l.title} $selectedPosition $itemPosition",
+//                "${l.title} ${tv.videoIndex}",
 //                Toast.LENGTH_SHORT
 //            ).show()
         }
@@ -112,7 +114,45 @@ class MainFragment : BrowseSupportFragment() {
             )
 //            Toast.makeText(
 //                activity,
-//                "${l.title} $selectedPosition $itemPosition",
+//                "${l.title} ${tv.videoIndex}",
+//                Toast.LENGTH_SHORT
+//            ).show()
+        }
+    }
+
+    fun prevSource() {
+        view?.post {
+            val item = list2[itemPosition]
+            val tv = item.item as TV
+
+            tv.videoIndex--
+            if (tv.videoIndex == -1) {
+                tv.videoIndex = tv.videoUrl.size - 1
+            }
+
+            (activity as? MainActivity)?.play(tv)
+//            Toast.makeText(
+//                activity,
+//                "${l.title} ${tv.videoIndex}",
+//                Toast.LENGTH_SHORT
+//            ).show()
+        }
+    }
+
+    fun nextSource() {
+        view?.post {
+            val item = list2[itemPosition]
+            val tv = item.item as TV
+
+            tv.videoIndex++
+            if (tv.videoIndex == tv.videoUrl.size) {
+                tv.videoIndex = 0
+            }
+
+            (activity as? MainActivity)?.play(tv)
+//            Toast.makeText(
+//                activity,
+//                "${l.title} ${tv.videoIndex}",
 //                Toast.LENGTH_SHORT
 //            ).show()
         }

@@ -33,13 +33,13 @@ class PlaybackControlGlue(
 
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
                     if ((context as? MainActivity)?.mainFragmentIsHidden() == true) {
-                        (context as? MainActivity)?.prev()
+                        (context as? MainActivity)?.prevSource()
                     }
                 }
 
                 KeyEvent.KEYCODE_DPAD_RIGHT -> {
                     if ((context as? MainActivity)?.mainFragmentIsHidden() == true) {
-                        (context as? MainActivity)?.next()
+                        (context as? MainActivity)?.nextSource()
                     }
                 }
             }

@@ -32,10 +32,9 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
         val tv = item as TV
         val cardView = viewHolder.view as ImageCardView
 
-        if (tv.videoUrl != null) {
-            cardView.titleText = tv.title
-            cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
-            cardView.tag = tv.videoUrl
+        cardView.titleText = tv.title
+        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+        cardView.tag = tv.videoUrl
 
 //            lifecycleScope.launch(Dispatchers.IO) {
 //                val videoThumbnail = tv.videoUrl?.let { getVideoThumbnail(it) }
@@ -44,7 +43,6 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
 //                    cardView.mainImageView.setImageBitmap(videoThumbnail)
 //                }
 //            }
-        }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {

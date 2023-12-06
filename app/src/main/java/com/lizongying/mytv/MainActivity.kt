@@ -44,6 +44,14 @@ class MainActivity : FragmentActivity() {
         mainFragment.next()
     }
 
+    fun prevSource() {
+        mainFragment.prevSource()
+    }
+
+    fun nextSource() {
+        mainFragment.nextSource()
+    }
+
     fun switchMainFragment() {
         val transaction = supportFragmentManager.beginTransaction()
 
@@ -57,7 +65,7 @@ class MainActivity : FragmentActivity() {
         transaction.commit()
     }
 
-    fun focusMainFragment() {
+    private fun focusMainFragment() {
         mainFragment.focus()
     }
 
@@ -65,7 +73,7 @@ class MainActivity : FragmentActivity() {
         return mainFragment.isHidden
     }
 
-    fun hideMainFragment() {
+    private fun hideMainFragment() {
         if (!mainFragment.isHidden) {
             supportFragmentManager.beginTransaction()
                 .hide(mainFragment)
@@ -146,13 +154,13 @@ class MainActivity : FragmentActivity() {
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
                 if (mainFragment.isHidden) {
-                    prev()
+                    prevSource()
                 }
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
                 if (mainFragment.isHidden) {
-                    next()
+                    nextSource()
                 }
             }
         }

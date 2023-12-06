@@ -30,17 +30,14 @@ class PlaybackFragment : VideoSupportFragment() {
     }
 
     fun play(tv: TV) {
-        if (tv.videoUrl.isNullOrBlank()) {
-            Log.e(TAG, "videoUrl is empty")
-            return
-        }
+        val videoUrl = tv.videoUrl[tv.videoIndex]
 
-        if (tv.videoUrl.equals(lastVideoUrl)) {
+        if (videoUrl == lastVideoUrl) {
             Log.e(TAG, "videoUrl is duplication")
             return
         }
 
-        lastVideoUrl = tv.videoUrl!!
+        lastVideoUrl = videoUrl
 
         playerAdapter?.reset()
 
@@ -50,7 +47,7 @@ class PlaybackFragment : VideoSupportFragment() {
         mTransportControlGlue.playWhenPrepared()
 
         try {
-            playerAdapter?.setDataSource(Uri.parse(tv.videoUrl))
+            playerAdapter?.setDataSource(Uri.parse(videoUrl))
         } catch (e: IOException) {
             return
         }

@@ -4,8 +4,9 @@ import java.io.Serializable
 
 data class TV(
     var id: Int = 0,
-    var title: String? = null,
-    var videoUrl: String? = null,
+    var title: String,
+    var videoUrl: List<String>,
+    var videoIndex: Int = 0,
 ) : Serializable {
 
     override fun toString(): String {
@@ -13,6 +14,7 @@ data class TV(
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
+                ", videoIndex='" + videoIndex + '\'' +
                 '}'
     }
 
