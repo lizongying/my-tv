@@ -2,6 +2,7 @@ package com.lizongying.mytv
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView

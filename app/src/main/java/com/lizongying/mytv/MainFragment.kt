@@ -48,16 +48,17 @@ class MainFragment : BrowseSupportFragment() {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
             var idx2 = 0
             for ((k1, v1) in v) {
-                listRowAdapter.add(v1)
+                val tv = TV(
+                    count,
+                    k1,
+                    v1.toList()
+                )
                 list2.add(
                     Info(
-                        idx.toInt(), idx2, TV(
-                            count,
-                            k1,
-                            v1.toList()
-                        )
+                        idx.toInt(), idx2, tv
                     )
                 )
+                listRowAdapter.add(tv)
                 count++
                 idx2++
             }
