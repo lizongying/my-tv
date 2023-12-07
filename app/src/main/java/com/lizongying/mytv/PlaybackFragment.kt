@@ -32,6 +32,11 @@ class PlaybackFragment : VideoSupportFragment() {
     fun play(tv: TV) {
         val videoUrl = tv.videoUrl[tv.videoIndex]
 
+        if (videoUrl == "") {
+            Log.e(TAG, "videoUrl is empty")
+            return
+        }
+
         if (videoUrl == lastVideoUrl) {
             Log.e(TAG, "videoUrl is duplication")
             return

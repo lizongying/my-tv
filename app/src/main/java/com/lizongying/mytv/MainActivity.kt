@@ -4,11 +4,10 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
 import android.view.KeyEvent
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -104,31 +103,32 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_MENU -> {
+                val packageInfo = packageManager.getPackageInfo(packageName, 0)
+
+                val versionName = packageInfo.versionName
+
+                val textView = TextView(this)
+                textView.text =
+                    "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+
                 val imageView = ImageView(this)
                 val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
                 imageView.setImageDrawable(drawable)
 
-                val parent = imageView.parent as? ViewGroup
-                parent?.removeView(imageView)
-
                 val linearLayout = LinearLayout(this)
+                linearLayout.orientation = LinearLayout.VERTICAL
+                linearLayout.addView(textView)
                 linearLayout.addView(imageView)
 
                 val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                layoutParams.gravity = Gravity.BOTTOM
                 imageView.layoutParams = layoutParams
-
-
-                val packageInfo = packageManager.getPackageInfo(packageName, 0)
-
-                val versionName = packageInfo.versionName
+                textView.layoutParams = layoutParams
 
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder
-                    .setTitle("当前版本: $versionName, 获取最新: https://github.com/lizongying/my-tv/releases/")
                     .setView(linearLayout)
 
                 val dialog: AlertDialog = builder.create()
