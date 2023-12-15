@@ -7,12 +7,38 @@ android {
     namespace 'com.lizongying.mytv'
     compileSdk 33
 
+    viewBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "com.lizongying.mytv"
-        minSdk 23
+        minSdk 21
         targetSdk 33
         versionCode VersionCode()
         versionName VersionName()
+
+        // This block is different from the one you use to link Gradle
+        // to your CMake or ndk-build script.
+        externalNativeBuild {
+
+            // For ndk-build, instead use the ndkBuild block.
+            cmake {
+//                arguments "-DIS_SO_BUILD=${project.hasProperty('IS_SO_BUILD') ? project.IS_SO_BUILD : false}"
+                arguments "-DIS_SO_BUILD=${false}"
+
+                abiFilters "armeabi-v7a", "arm64-v8a"
+            }
+        }
+
+        // Similar to other properties in the defaultConfig block,
+        // you can configure the ndk block for each product flavor
+        // in your build configuration.
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your app.
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
     }
 
     buildTypes {
@@ -29,6 +55,17 @@ android {
 
     kotlinOptions {
         jvmTarget=17
+    }
+
+    // Encapsulates your external native build configurations.
+    externalNativeBuild {
+
+        // Encapsulates your CMake build configurations.
+        cmake {
+
+            // Provides a relative path to your CMake build script.
+            path = file("CMakeLists.txt")
+        }
     }
 }
 
@@ -53,6 +90,11 @@ static def VersionName() {
 }
 
 dependencies {
+    implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-protobuf:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
     implementation 'androidx.core:core-ktx:1.11.0-beta02'
     implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'

@@ -7,6 +7,9 @@ data class TV(
     var title: String,
     var videoUrl: List<String>,
     var videoIndex: Int = 0,
+    var logo: String = "",
+    var pid: String = "",
+    var sid: String = "",
 ) : Serializable {
 
     override fun toString(): String {
@@ -15,6 +18,9 @@ data class TV(
                 ", title='" + title + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
                 ", videoIndex='" + videoIndex + '\'' +
+                ", logo='" + logo + '\'' +
+                ", pid='" + pid + '\'' +
+                ", sid='" + sid + '\'' +
                 '}'
     }
 

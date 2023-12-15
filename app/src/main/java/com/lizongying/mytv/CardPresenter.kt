@@ -1,5 +1,6 @@
 package com.lizongying.mytv
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.util.Log
@@ -8,12 +9,30 @@ import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
+import com.bumptech.glide.Glide
+import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Presenter() {
+class CardPresenter(
+    private val lifecycleScope: LifecycleCoroutineScope,
+//    private val owner: LifecycleOwner
+) : Presenter() {
+
+    private var tvViewModel: TVViewModel? = null
+    fun bindData(viewModel: TVViewModel, fragment: Context?, viewHolder: ViewHolder) {
+    }
+
+    fun setViewModel(model: TVViewModel) {
+        tvViewModel = model
+    }
+
+    fun unbind() {
+//        viewModel?.backgroundImage?.removeObservers(fragment)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val cardView = object :
@@ -36,6 +55,7 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
         cardView.titleText = tv.title
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.tag = tv.videoUrl
+        Log.i(TAG, "bind ${tv.videoUrl}")
 
 //            lifecycleScope.launch(Dispatchers.IO) {
 //                val videoThumbnail = tv.videoUrl?.let { getVideoThumbnail(it) }
@@ -44,11 +64,20 @@ class CardPresenter(private val lifecycleScope: LifecycleCoroutineScope) : Prese
 //                    cardView.mainImageView.setImageBitmap(videoThumbnail)
 //                }
 //            }
+
+//        tvViewModel?.update(tv)
+//        tvViewModel?.backgroundImage?.observe(owner) { imageUrl ->
+//            if (imageUrl != "") {
+//                Glide.with(viewHolder.view.context)
+//                    .load(imageUrl)
+//                    .centerCrop()
+//                    .into(cardView.mainImageView)
+//            }
+//        }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
         val cardView = viewHolder.view as ImageCardView
-        // Remove references to images so that the garbage collector can free up memory
         cardView.badgeImage = null
         cardView.mainImage = null
     }

@@ -1,7 +1,10 @@
 package com.lizongying.mytv
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -15,6 +18,9 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
+import com.lizongying.mytv.models.TVListViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainFragment : BrowseSupportFragment() {
 
@@ -22,13 +28,40 @@ class MainFragment : BrowseSupportFragment() {
 
     private val list2: MutableList<Info> = mutableListOf()
 
+    private var request: Request? = null
+
+    private var rowsAdapter: ArrayObjectAdapter? = null
+
+    private var tvListViewModel = TVListViewModel()
+
+    private var sharedPref: SharedPreferences? = null
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        Log.i(TAG, "onCreate")
         super.onActivityCreated(savedInstanceState)
 
+        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
         setupUIElements()
+        request = activity?.let { Request(it) }
         loadRows()
         setupEventListeners()
+
+        view?.post {
+            request?.fetchPage()
+        }
+
+        tvListViewModel.getListLiveData().value?.forEach { tvViewModel ->
+            tvViewModel.videoUrl.observe(viewLifecycleOwner) { _ ->
+                Log.i(TAG, "tv ${tvViewModel.getTV()}")
+                if (tvViewModel.updateByYSP()) {
+                    val tv = tvViewModel.getTV()
+                    if (tv.id == itemPosition) {
+                        (activity as? MainActivity)?.play(tv)
+//                        (activity as? MainActivity)?.switchInfoFragment(tv)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupUIElements() {
@@ -36,40 +69,61 @@ class MainFragment : BrowseSupportFragment() {
 //        headersState = HEADERS_DISABLED
     }
 
-    private var count: Int = 0
+    private fun updateRows(tv: TV) {
+// 获取适配器中的数据
+        val dataList = rowsAdapter?.replace(tv.id, tv)
+//
+//// 修改数据
+//// 这里假设 dataList 是一个可变的列表
+//        dataList[position] = updatedData
+//
+//// 刷新适配器
+//        rowsAdapter.notifyItemChanged(position)
+//        rowsAdapter.notifyItemRangeChanged()
+    }
 
     private fun loadRows() {
         val list = TVList.list
-        val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+
+        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+
+//        val cardPresenter = CardPresenter(lifecycleScope, viewLifecycleOwner)
         val cardPresenter = CardPresenter(lifecycleScope)
 
         var idx: Long = 0
         for ((k, v) in list) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
             var idx2 = 0
-            for ((k1, v1) in v) {
-                val tv = TV(
-                    count,
-                    k1,
-                    v1.toList()
-                )
+            for ((_, v1) in v) {
                 list2.add(
                     Info(
-                        idx.toInt(), idx2, tv
+                        idx.toInt(), idx2, v1
                     )
                 )
-                listRowAdapter.add(tv)
-                count++
+                listRowAdapter.add(v1)
                 idx2++
+
+                tvListViewModel.addTV(v1)
             }
             val header = HeaderItem(idx, k)
-            rowsAdapter.add(ListRow(header, listRowAdapter))
+            rowsAdapter!!.add(ListRow(header, listRowAdapter))
             idx++
         }
 
         adapter = rowsAdapter
 
-        (activity as? MainActivity)?.play(list2.first().item as TV)
+        itemPosition = sharedPref?.getInt("position", 0)!!
+
+        val tvModel = tvListViewModel.getTVModel(itemPosition)
+        if (tvModel?.ysp() != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                tvModel.let { request?.fetchData(it) }
+            }
+        } else {
+            (activity as? MainActivity)?.play(list2[itemPosition].item)
+//            (activity as? MainActivity)?.switchInfoFragment(list2[itemPosition].item)
+        }
+
         (activity as? MainActivity)?.switchMainFragment()
     }
 
@@ -79,24 +133,41 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
+    fun savePosition(position: Int) {
+        with(sharedPref!!.edit()) {
+            putInt("position", position)
+            apply()
+        }
+    }
+
     fun prev() {
         view?.post {
             itemPosition--
             if (itemPosition == -1) {
                 itemPosition = list2.size - 1
             }
+            savePosition(itemPosition)
 
             val l = list2[itemPosition]
-            l.item?.let { (activity as? MainActivity)?.play(it) }
+
+            val tvModel = tvListViewModel.getTVModel(itemPosition)
+            if (tvModel?.ysp() != null) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    tvModel.let { request?.fetchData(it) }
+                }
+            } else {
+                l.item.let { (activity as? MainActivity)?.play(it) }
+            }
+
             setSelectedPosition(
                 l.rowPosition, false,
                 SelectItemViewHolderTask(l.itemPosition)
             )
-//            Toast.makeText(
-//                activity,
-//                "${l.title} ${tv.videoIndex}",
-//                Toast.LENGTH_SHORT
-//            ).show()
+            Toast.makeText(
+                activity,
+                l.item.title,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -106,56 +177,59 @@ class MainFragment : BrowseSupportFragment() {
             if (itemPosition == list2.size) {
                 itemPosition = 0
             }
+            savePosition(itemPosition)
 
             val l = list2[itemPosition]
-            l.item?.let { (activity as? MainActivity)?.play(it) }
+
+            val tvModel = tvListViewModel.getTVModel(itemPosition)
+            if (tvModel?.ysp() != null) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    tvModel.let { request?.fetchData(it) }
+                }
+            } else {
+                l.item.let { (activity as? MainActivity)?.play(it) }
+            }
+
             setSelectedPosition(
                 l.rowPosition, false,
                 SelectItemViewHolderTask(l.itemPosition)
             )
-//            Toast.makeText(
-//                activity,
-//                "${l.title} ${tv.videoIndex}",
-//                Toast.LENGTH_SHORT
-//            ).show()
+            Toast.makeText(
+                activity,
+                l.item.title,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     fun prevSource() {
         view?.post {
-            val item = list2[itemPosition]
-            val tv = item.item as TV
+            val tv = list2[itemPosition].item
+            if (tv.videoUrl.size > 1) {
+                tv.videoIndex--
+                if (tv.videoIndex == -1) {
+                    tv.videoIndex = tv.videoUrl.size - 1
+                }
 
-            tv.videoIndex--
-            if (tv.videoIndex == -1) {
-                tv.videoIndex = tv.videoUrl.size - 1
+                (activity as? MainActivity)?.play(tv)
+//                (activity as? MainActivity)?.switchInfoFragment(tv)
             }
-
-            (activity as? MainActivity)?.play(tv)
-//            Toast.makeText(
-//                activity,
-//                "${l.title} ${tv.videoIndex}",
-//                Toast.LENGTH_SHORT
-//            ).show()
         }
     }
 
     fun nextSource() {
         view?.post {
-            val item = list2[itemPosition]
-            val tv = item.item as TV
+            val tv = list2[itemPosition].item
 
-            tv.videoIndex++
-            if (tv.videoIndex == tv.videoUrl.size) {
-                tv.videoIndex = 0
+            if (tv.videoUrl.size > 1) {
+                tv.videoIndex++
+                if (tv.videoIndex == tv.videoUrl.size) {
+                    tv.videoIndex = 0
+                }
+
+                (activity as? MainActivity)?.play(tv)
+//                (activity as? MainActivity)?.switchInfoFragment(tv)
             }
-
-            (activity as? MainActivity)?.play(tv)
-//            Toast.makeText(
-//                activity,
-//                "${l.title} ${tv.videoIndex}",
-//                Toast.LENGTH_SHORT
-//            ).show()
         }
     }
 
@@ -171,12 +245,21 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-            Log.d(TAG, "onItemClicked")
             if (item is TV) {
-                Log.d(TAG, "Item: $item")
-                (activity as? MainActivity)?.play(item)
-                (activity as? MainActivity)?.switchMainFragment()
                 itemPosition = item.id
+                savePosition(itemPosition)
+
+                val tvModel = tvListViewModel.getTVModel(itemPosition)
+                if (tvModel?.ysp() != null) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        tvModel.let { request?.fetchData(it) }
+                    }
+                } else {
+                    (activity as? MainActivity)?.play(item)
+//                    (activity as? MainActivity)?.switchInfoFragment(item)
+                }
+
+                (activity as? MainActivity)?.switchMainFragment()
             }
         }
     }
@@ -186,16 +269,12 @@ class MainFragment : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
-            if (item is TV) {
-                Log.i(TAG, "Item: ${item.id}")
-            }
             if (itemViewHolder == null) {
                 view?.post {
-                    val l = list2[itemPosition]
-                    Log.i(TAG, "$l")
+                    val it = list2[itemPosition]
                     setSelectedPosition(
-                        l.rowPosition, false,
-                        SelectItemViewHolderTask(l.itemPosition)
+                        it.rowPosition, false,
+                        SelectItemViewHolderTask(it.itemPosition)
                     )
                 }
             }

@@ -1,9 +1,15 @@
 package com.lizongying.mytv
 
 import android.app.AlertDialog
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.Signature
+import android.content.pm.SigningInfo
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -11,11 +17,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import java.security.MessageDigest
+
 
 class MainActivity : FragmentActivity() {
 
     private val playbackFragment = PlaybackFragment()
     private val mainFragment = MainFragment()
+    private val infoFragment = InfoFragment()
 
     private var doubleBackToExitPressedOnce = false
 
@@ -27,11 +36,35 @@ class MainActivity : FragmentActivity() {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playbackFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
+                .add(R.id.main_browse_fragment, infoFragment)
+                .hide(infoFragment)
                 .commit()
         }
     }
 
+    fun switchInfoFragment(tv: TV) {
+        infoFragment.setInfo(tv)
+
+        if (infoFragment.isHidden) {
+            supportFragmentManager.beginTransaction().show(infoFragment).commit()
+        }
+    }
+
+    fun showInfoFragment(tv: TV) {
+        infoFragment.setInfo(tv)
+        supportFragmentManager.beginTransaction()
+            .show(infoFragment)
+            .commit()
+    }
+
+    fun hideInfoFragment() {
+        supportFragmentManager.beginTransaction()
+            .hide(infoFragment)
+            .commit()
+    }
+
     fun play(tv: TV) {
+        Log.i(TAG, "play: $tv")
         playbackFragment.play(tv)
     }
 
@@ -103,9 +136,7 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_MENU -> {
-                val packageInfo = packageManager.getPackageInfo(packageName, 0)
-
-                val versionName = packageInfo.versionName
+                val versionName = getPackageInfo().versionName
 
                 val textView = TextView(this)
                 textView.text =
@@ -166,6 +197,57 @@ class MainActivity : FragmentActivity() {
         }
 
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun getPackageInfo(): PackageInfo {
+        val flag = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            PackageManager.GET_SIGNATURES
+        } else {
+            PackageManager.GET_SIGNING_CERTIFICATES
+        }
+
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getPackageInfo(packageName, flag)
+        } else {
+            packageManager.getPackageInfo(
+                packageName,
+                PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong())
+            )
+        }
+    }
+
+    private fun getAppSignature(): String {
+        val packageInfo = getPackageInfo()
+
+        var sign: Signature? = null
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            val signatures: Array<out Signature>? = packageInfo.signatures
+            if (signatures != null) {
+                sign = signatures[0]
+            }
+        } else {
+            val signingInfo: SigningInfo? = packageInfo.signingInfo
+            if (signingInfo != null) {
+                sign = signingInfo.apkContentsSigners[0]
+            }
+        }
+        if (sign == null) {
+            return ""
+        }
+
+        return hashSignature(sign)
+    }
+
+    private fun hashSignature(signature: Signature): String {
+        return try {
+            val md = MessageDigest.getInstance("SHA-256")
+            md.update(signature.toByteArray())
+            val digest = md.digest()
+            digest.let { it -> it.joinToString("") { "%02x".format(it) } }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error hashing signature", e)
+            ""
+        }
     }
 
     companion object {

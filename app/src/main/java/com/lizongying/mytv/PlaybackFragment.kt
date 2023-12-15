@@ -33,6 +33,7 @@ class PlaybackFragment : VideoSupportFragment() {
         val videoUrl = tv.videoUrl[tv.videoIndex]
 
         if (videoUrl == "") {
+            Log.e(TAG, "tv $tv")
             Log.e(TAG, "videoUrl is empty")
             return
         }

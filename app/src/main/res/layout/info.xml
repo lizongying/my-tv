@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/info_fragment"
+    android:layout_width="320dp"
+    android:layout_height="80dp"
+    android:layout_gravity="center_horizontal|bottom"
+    android:layout_marginBottom="20dp"
+    android:background="@color/fastlane_background"
+    >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="10dp"
+        android:textSize="40sp"
+        />
+</FrameLayout>

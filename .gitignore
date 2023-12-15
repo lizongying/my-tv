@@ -14,3 +14,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+/path/
