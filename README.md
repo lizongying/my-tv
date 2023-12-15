@@ -6,6 +6,8 @@
 
 下载安装[releases](https://github.com/lizongying/my-tv/releases)
 
+[my-tv](https://lyrics.run/my-tv.html)
+
 ![image](./screenshots/img.png)
 ![image](./screenshots/img_1.png)
 

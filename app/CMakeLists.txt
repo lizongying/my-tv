@@ -90,11 +90,12 @@ if (IS_SO_BUILD)
             native-lib
             libssl
             libcrypto
-
-            # Links the log library to the target library.
             ${log-lib})
 else ()
     target_link_libraries( # Specifies the target library.
             nothing
-            native-lib)
+            libssl
+            libcrypto
+            native-lib
+            ${log-lib})
 endif ()
