@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.api.LiveInfo
@@ -14,6 +15,9 @@ import com.lizongying.mytv.proto.Ysp.cn.yangshipin.oms.common.proto.pageModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 
 class Request(var context: Context) {
@@ -86,7 +90,27 @@ class Request(var context: Context) {
                     if (response.isSuccessful) {
                         val liveInfo = response.body()
                         if (liveInfo?.data?.playurl != null) {
-                            tvModel.updateVideoUrlByYSP(liveInfo.data.playurl)
+                            val chanll = liveInfo.data.chanll
+                            val decodedBytes = Base64.decode(
+                                chanll.substring(9, chanll.length - 3),
+                                Base64.DEFAULT
+                            )
+                            val decodedString = String(decodedBytes)
+                            val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
+                            val matchResult = regex.find(decodedString)
+                            var keyBytes = byteArrayOf()
+                            var ivBytes = byteArrayOf()
+                            if (matchResult != null) {
+                                val (key, iv) = matchResult.destructured
+                                keyBytes = Base64.decode(key, Base64.DEFAULT)
+                                ivBytes = Base64.decode(iv, Base64.DEFAULT)
+                            }
+                            tvModel.updateVideoUrlByYSP(
+                                liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
+                                    keyBytes,
+                                    ivBytes
+                                )
+                            )
                         }
                     }
                 }
@@ -150,6 +174,22 @@ class Request(var context: Context) {
             override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
             }
         })
+    }
+
+    private fun encryptTripleDES(key: ByteArray, iv: ByteArray): String {
+        val plaintext =
+            """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,AppleM1Pro,OpenGL4.1)"}"""
+        return try {
+            val keySpec = SecretKeySpec(key, "DESede")
+            val ivSpec = IvParameterSpec(iv)
+            val cipher = Cipher.getInstance("DESede/CBC/PKCS7Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec)
+            val encryptedBytes = cipher.doFinal(plaintext.toByteArray())
+            encryptedBytes.let { it -> it.joinToString("") { "%02x".format(it) } }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 
     companion object {

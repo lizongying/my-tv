@@ -13,7 +13,8 @@ data class LiveInfo(
 )
 
 data class LiveInfoData(
-    val playurl: String
+    val chanll: String,
+    val playurl: String,
 )
 
 data class LiveInfoRequest(

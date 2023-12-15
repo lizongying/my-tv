@@ -17,13 +17,13 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import java.io.IOException
 
 
-open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
+open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
 
     val mPlayer = mContext?.let { ExoPlayer.Builder(it).build() }
     var mSurfaceHolderGlueHost: SurfaceHolderGlueHost? = null
     val mRunnable: Runnable = object : Runnable {
         override fun run() {
-            callback.onCurrentPositionChanged(this@Custom2MediaPlayerAdapter)
+            callback.onCurrentPositionChanged(this@ExoPlayerAdapter)
             mHandler.postDelayed(this, getProgressUpdatingInterval().toLong())
         }
     };
@@ -38,7 +38,7 @@ open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAda
 
     open fun notifyBufferingStartEnd() {
         callback.onBufferingStateChanged(
-            this@Custom2MediaPlayerAdapter,
+            this@ExoPlayerAdapter,
             mBufferingStart || !mInitialized
         )
     }
@@ -65,7 +65,7 @@ open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAda
             mInitialized = false
             notifyBufferingStartEnd()
             if (mHasDisplay) {
-                callback.onPreparedStateChanged(this@Custom2MediaPlayerAdapter)
+                callback.onPreparedStateChanged(this@ExoPlayerAdapter)
             }
         }
     }
@@ -100,11 +100,11 @@ open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAda
         mPlayer?.setVideoSurfaceHolder(surfaceHolder)
         if (mHasDisplay) {
             if (mInitialized) {
-                callback.onPreparedStateChanged(this@Custom2MediaPlayerAdapter)
+                callback.onPreparedStateChanged(this@ExoPlayerAdapter)
             }
         } else {
             if (mInitialized) {
-                callback.onPreparedStateChanged(this@Custom2MediaPlayerAdapter)
+                callback.onPreparedStateChanged(this@ExoPlayerAdapter)
             }
         }
     }
@@ -154,14 +154,14 @@ open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAda
             return
         }
         mPlayer?.play()
-        callback.onPlayStateChanged(this@Custom2MediaPlayerAdapter)
-        callback.onCurrentPositionChanged(this@Custom2MediaPlayerAdapter)
+        callback.onPlayStateChanged(this@ExoPlayerAdapter)
+        callback.onCurrentPositionChanged(this@ExoPlayerAdapter)
     }
 
     override fun pause() {
         if (isPlaying) {
             mPlayer?.pause()
-            callback.onPlayStateChanged(this@Custom2MediaPlayerAdapter)
+            callback.onPlayStateChanged(this@ExoPlayerAdapter)
         }
     }
 
@@ -222,7 +222,7 @@ open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAda
         }
         mPlayer?.prepare()
         mPlayer?.playWhenReady = true
-        callback.onPlayStateChanged(this@Custom2MediaPlayerAdapter)
+        callback.onPlayStateChanged(this@ExoPlayerAdapter)
     }
 
     /**
@@ -234,7 +234,7 @@ open class Custom2MediaPlayerAdapter(private var mContext: Context?) : PlayerAda
     }
 }
 
-internal class VideoPlayerSurfaceHolderCallback(private val playerAdapter: Custom2MediaPlayerAdapter) :
+internal class VideoPlayerSurfaceHolderCallback(private val playerAdapter: ExoPlayerAdapter) :
     SurfaceHolder.Callback {
 
     override fun surfaceCreated(surfaceHolder: SurfaceHolder) {

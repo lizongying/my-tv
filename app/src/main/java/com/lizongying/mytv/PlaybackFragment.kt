@@ -13,13 +13,13 @@ import java.io.IOException
 class PlaybackFragment : VideoSupportFragment() {
 
     private lateinit var mTransportControlGlue: PlaybackTransportControlGlue<PlayerAdapter>
-    private var playerAdapter: Custom2MediaPlayerAdapter? = null
+    private var playerAdapter: ExoPlayerAdapter? = null
     private var lastVideoUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        playerAdapter = Custom2MediaPlayerAdapter(context)
+        playerAdapter = ExoPlayerAdapter(context)
         playerAdapter?.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE)
 
         view?.isFocusable = false

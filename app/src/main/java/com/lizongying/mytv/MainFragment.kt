@@ -47,12 +47,12 @@ class MainFragment : BrowseSupportFragment() {
         setupEventListeners()
 
         view?.post {
-            request?.fetchPage()
+//            request?.fetchPage()
         }
 
         tvListViewModel.getListLiveData().value?.forEach { tvViewModel ->
             tvViewModel.videoUrl.observe(viewLifecycleOwner) { _ ->
-                Log.i(TAG, "tv ${tvViewModel.getTV()}")
+//                Log.i(TAG, "tv ${tvViewModel.getTV()}")
                 if (tvViewModel.updateByYSP()) {
                     val tv = tvViewModel.getTV()
                     if (tv.id == itemPosition) {
@@ -87,7 +87,6 @@ class MainFragment : BrowseSupportFragment() {
 
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-//        val cardPresenter = CardPresenter(lifecycleScope, viewLifecycleOwner)
         val cardPresenter = CardPresenter(lifecycleScope)
 
         var idx: Long = 0
