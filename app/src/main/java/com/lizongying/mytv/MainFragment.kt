@@ -102,7 +102,6 @@ class MainFragment : BrowseSupportFragment() {
                 )
                 listRowAdapter.add(v1)
                 idx2++
-
                 tvListViewModel.addTV(v1)
             }
             val header = HeaderItem(idx, k)

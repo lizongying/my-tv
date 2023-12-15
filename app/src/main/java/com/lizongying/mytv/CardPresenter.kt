@@ -55,7 +55,6 @@ class CardPresenter(
         cardView.titleText = tv.title
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.tag = tv.videoUrl
-        Log.i(TAG, "bind ${tv.videoUrl}")
 
 //            lifecycleScope.launch(Dispatchers.IO) {
 //                val videoThumbnail = tv.videoUrl?.let { getVideoThumbnail(it) }

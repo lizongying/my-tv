@@ -71,12 +71,15 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val backgroundImage: LiveData<String>
         get() = _backgroundImage
 
-    // 方法用于更新背景图信息
+    fun getBackgroundImage(): String {
+        return tv.logo ?: ""
+    }
+
     fun updateBackgroundImage(url: String) {
         _backgroundImage.value = url
     }
 
-    fun updateVideoUrl(url: String) {
+    private fun updateVideoUrl(url: String) {
         tv.videoUrl = listOf(url)
         tv.videoIndex = 0
         _videoUrl.value = listOf(url)
@@ -106,10 +109,9 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     }
 
     fun ysp(): String? {
+        if (tv.pid == "") {
+            return null
+        }
         return mapping[tv.title]
-    }
-
-    fun getBackgroundImage(): String {
-        return tv.logo ?: ""
     }
 }
