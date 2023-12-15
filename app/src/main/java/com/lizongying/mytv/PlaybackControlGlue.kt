@@ -5,12 +5,13 @@ import android.view.KeyEvent
 import android.view.View
 import androidx.leanback.media.MediaPlayerAdapter
 import androidx.leanback.media.PlaybackTransportControlGlue
+import androidx.leanback.media.PlayerAdapter
 
 class PlaybackControlGlue(
     context: Context?,
-    playerAdapter: MediaPlayerAdapter?,
+    playerAdapter: PlayerAdapter?,
 ) :
-    PlaybackTransportControlGlue<MediaPlayerAdapter>(context, playerAdapter) {
+    PlaybackTransportControlGlue<PlayerAdapter>(context, playerAdapter) {
 
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
         if (event!!.action == KeyEvent.ACTION_DOWN) {

@@ -5,21 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
-import androidx.leanback.media.MediaPlayerAdapter
+import androidx.leanback.media.PlayerAdapter
 import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.PlaybackControlsRow
 import java.io.IOException
 
 class PlaybackFragment : VideoSupportFragment() {
 
-    private lateinit var mTransportControlGlue: PlaybackTransportControlGlue<MediaPlayerAdapter>
-    private var playerAdapter: MediaPlayerAdapter? = null
+    private lateinit var mTransportControlGlue: PlaybackTransportControlGlue<PlayerAdapter>
+    private var playerAdapter: Custom2MediaPlayerAdapter? = null
     private var lastVideoUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        playerAdapter = MediaPlayerAdapter(context)
+        playerAdapter = Custom2MediaPlayerAdapter(context)
         playerAdapter?.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE)
 
         view?.isFocusable = false
@@ -58,15 +58,6 @@ class PlaybackFragment : VideoSupportFragment() {
             return
         }
         hideControlsOverlay(false)
-    }
-
-    override fun onDestroy() {
-        if (playerAdapter?.mediaPlayer != null) {
-            playerAdapter?.release()
-            Log.d(TAG, "playerAdapter released")
-        }
-
-        super.onDestroy()
     }
 
     companion object {
