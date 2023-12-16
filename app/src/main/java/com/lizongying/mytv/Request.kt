@@ -100,6 +100,7 @@ class Request(var context: Context) {
                             val matchResult = regex.find(decodedString)
                             var keyBytes = byteArrayOf()
                             var ivBytes = byteArrayOf()
+
                             if (matchResult != null) {
                                 val (key, iv) = matchResult.destructured
                                 keyBytes = Base64.decode(key, Base64.DEFAULT)
@@ -107,9 +108,9 @@ class Request(var context: Context) {
                             }
                             tvModel.updateVideoUrlByYSP(
                                 liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
-                                    keyBytes,
+                                    keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
                                     ivBytes
-                                )
+                                ).uppercase()
                             )
                         }
                     }
@@ -177,15 +178,15 @@ class Request(var context: Context) {
     }
 
     private fun encryptTripleDES(key: ByteArray, iv: ByteArray): String {
-        val plaintext =
+        var plaintext =
             """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,AppleM1Pro,OpenGL4.1)"}"""
         return try {
             val keySpec = SecretKeySpec(key, "DESede")
             val ivSpec = IvParameterSpec(iv)
-            val cipher = Cipher.getInstance("DESede/CBC/PKCS7Padding")
+            val cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding")
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec)
             val encryptedBytes = cipher.doFinal(plaintext.toByteArray())
-            encryptedBytes.let { it -> it.joinToString("") { "%02x".format(it) } }
+            return encryptedBytes.let { it -> it.joinToString("") { "%02x".format(it) } }
         } catch (e: Exception) {
             e.printStackTrace()
             ""

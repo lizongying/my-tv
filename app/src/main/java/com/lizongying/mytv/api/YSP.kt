@@ -68,7 +68,7 @@ class YSP(var context: Context) {
         cnlid = tvModel.getTV().sid
         defn = "fhd"
 
-        guid = getGuid()
+//        guid = getGuid()
         randStr = getRand()
         timeStr = getTimeStr()
 
@@ -80,7 +80,6 @@ class YSP(var context: Context) {
             encryptor!!.encrypt(cnlid, timeStr, appVer, guid, platform)
         signature = getSignature()
         return """{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","rand_str":"$randStr","channel":"$channel","defn":"$defn","signature":"$signature"}"""
-
     }
 
     private fun getTimeStr(): String {
@@ -100,7 +99,7 @@ class YSP(var context: Context) {
     }
 
     private fun getGuid(): String {
-//        var guid = sharedPref?.getString("guid", "").toString()
+        var guid = sharedPref?.getString("guid", "").toString()
         if (guid == "") {
             guid = generateGuid()
             with(sharedPref!!.edit()) {
