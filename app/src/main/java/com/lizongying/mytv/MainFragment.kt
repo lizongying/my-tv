@@ -36,6 +36,16 @@ class MainFragment : BrowseSupportFragment() {
 
     private var sharedPref: SharedPreferences? = null
 
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        super.onCreate()
+//        // 使用自定义的布局文件
+//        return inflater.inflate(R.layout.custom_browse_fragment, container, false)
+//    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -66,7 +76,6 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun setupUIElements() {
         brandColor = ContextCompat.getColor(context!!, R.color.fastlane_background)
-//        headersState = HEADERS_DISABLED
     }
 
     private fun updateRows(tv: TV) {
@@ -111,17 +120,29 @@ class MainFragment : BrowseSupportFragment() {
         adapter = rowsAdapter
 
         itemPosition = sharedPref?.getInt("position", 0)!!
+        if (itemPosition >= tvListViewModel.size()) {
+            itemPosition = 0
+            savePosition(0)
+        }
+
+        val tv = list2[itemPosition].item
 
         val tvModel = tvListViewModel.getTVModel(itemPosition)
         if (tvModel?.ysp() != null) {
+            Log.i(TAG, "ysp ${tvModel.getTV()}")
             lifecycleScope.launch(Dispatchers.IO) {
                 tvModel.let { request?.fetchData(it) }
             }
         } else {
-            (activity as? MainActivity)?.play(list2[itemPosition].item)
-//            (activity as? MainActivity)?.switchInfoFragment(list2[itemPosition].item)
+            (activity as? MainActivity)?.play(tv)
+//            (activity as? MainActivity)?.switchInfoFragment(tv)
         }
 
+        Toast.makeText(
+            activity,
+            tv.title,
+            Toast.LENGTH_SHORT
+        ).show()
         (activity as? MainActivity)?.switchMainFragment()
     }
 

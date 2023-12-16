@@ -1,6 +1,5 @@
 package com.lizongying.mytv.models
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lizongying.mytv.TV
@@ -40,5 +39,9 @@ class TVListViewModel : ViewModel() {
 
     fun getTVModel(id: Int): TVViewModel? {
         return tvModelListLiveData.value?.get(id)
+    }
+
+    fun size(): Int {
+        return tvListLiveData.value!!.size
     }
 }
