@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyTV">
         <activity
+            android:keepScreenOn="true"
             android:name=".MainActivity"
             android:banner="@drawable/tv"
             android:exported="true"

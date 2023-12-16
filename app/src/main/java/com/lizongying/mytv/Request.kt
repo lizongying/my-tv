@@ -89,6 +89,7 @@ class Request(var context: Context) {
                 override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
                     if (response.isSuccessful) {
                         val liveInfo = response.body()
+                        Log.i(TAG, "liveInfo $liveInfo")
                         if (liveInfo?.data?.playurl != null) {
                             val chanll = liveInfo.data.chanll
                             val decodedBytes = Base64.decode(
@@ -117,6 +118,7 @@ class Request(var context: Context) {
                 }
 
                 override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
+                    Log.i(TAG, "get data error")
                 }
             })
     }

@@ -15,17 +15,17 @@ if (IS_SO_BUILD)
     # and CMake builds them for you. When you build your app, Gradle
     # automatically packages shared libraries with your APK.
     add_library( # Specifies the name of the library.
-            native-lib
+            native
 
             # Sets the library as a shared library.
             SHARED
 
             # Provides a relative path to your source file(s).
-            src/main/cpp/native-lib.c)
+            src/main/cpp/native.c)
 
     # 设置编译输出路径
     set_target_properties(
-            native-lib
+            native
             PROPERTIES
             LIBRARY_OUTPUT_DIRECTORY
             ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}
@@ -36,18 +36,18 @@ else ()
             SHARED
             src/main/cpp/nothing.c)
 
-    add_library(native-lib
+    add_library(native
             SHARED
             IMPORTED)
 
     set_target_properties( # Specifies the target library.
-            native-lib
+            native
 
             # Specifies the parameter you want to define.
             PROPERTIES IMPORTED_LOCATION
 
             # Provides the path to the library you want to import.
-            ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libnative-lib.so)
+            ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libnative.so)
 endif ()
 
 add_library(libssl
@@ -87,7 +87,7 @@ find_library( # Defines the name of the path variable that stores the
 if (IS_SO_BUILD)
     # Links your native library against one or more other native libraries.
     target_link_libraries( # Specifies the target library.
-            native-lib
+            native
             libssl
             libcrypto
             ${log-lib})
@@ -96,6 +96,6 @@ else ()
             nothing
             libssl
             libcrypto
-            native-lib
+            native
             ${log-lib})
 endif ()
