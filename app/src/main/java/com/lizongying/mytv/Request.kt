@@ -114,7 +114,7 @@ class Request(var context: Context) {
                                 tvModel.firstSource()
                             }
                         } else {
-                            Log.e(TAG, "$title url error")
+                            Log.e(TAG, "$title url error $request")
                             tvModel.firstSource()
                         }
                     } else {

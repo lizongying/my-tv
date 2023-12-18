@@ -60,7 +60,7 @@ class YSP(var context: Context) {
             sharedPref = (context as MainActivity).getPreferences(Context.MODE_PRIVATE)
         }
 
-        guid = getGuid()
+//        guid = getGuid()
     }
 
     fun switch(tvModel: TVViewModel): String {
@@ -68,7 +68,7 @@ class YSP(var context: Context) {
         cnlid = tvModel.getTV().sid
         defn = "fhd"
 
-//        guid = getGuid()
+        guid = getGuid()
         randStr = getRand()
         timeStr = getTimeStr()
 
@@ -99,13 +99,13 @@ class YSP(var context: Context) {
     }
 
     private fun getGuid(): String {
-        var guid = sharedPref?.getString("guid", "").toString()
+//        var guid = sharedPref?.getString("guid", "")
         if (guid == "") {
             guid = generateGuid()
-            with(sharedPref!!.edit()) {
-                putString("guid", guid)
-                apply()
-            }
+//            with(sharedPref!!.edit()) {
+//                putString("guid", guid)
+//                apply()
+//            }
         }
         return guid
     }
