@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run build with Gradle wrapper
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease -PIS_SO_BUILD=false
 
       - name: Sign app APK
         id: sign_app

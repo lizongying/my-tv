@@ -37,17 +37,17 @@ class Request(var context: Context) {
         "CCTV10" to "CCTV10 科教",
         "CCTV11" to "CCTV11 戏曲",
         "CCTV12" to "CCTV12 社会与法",
-//        "CCTV13" to "CCTV13",
+        "CCTV13" to "CCTV13 新闻",
         "CCTV14" to "CCTV14 少儿",
         "CCTV15" to "CCTV15 音乐",
         "CCTV16-HD" to "CCTV16 奥林匹克",
         "CCTV17" to "CCTV17 农业农村",
         "CGTN" to "CGTN",
+        "CGTN外语纪录频道" to "CGTN 纪录频道",
         "CGTN法语频道" to "CGTN 法语频道",
         "CGTN俄语频道" to "CGTN 俄语频道",
         "CGTN阿拉伯语频道" to "CGTN 阿拉伯语频道",
         "CGTN西班牙语频道" to "CGTN 西班牙语频道",
-//        "CGTN外语纪录频道" to "CGTN外语纪录频道",
 
         "东方卫视" to "东方卫视",
         "湖南卫视" to "湖南卫视",
@@ -82,6 +82,7 @@ class Request(var context: Context) {
 
     fun fetchData(tvModel: TVViewModel) {
         val data = ysp?.switch(tvModel)
+        val title = tvModel.getTV().title
 
         val request = data?.let { LiveInfoRequest(it) }
         request?.let { yspApiService?.getLiveInfo(it) }
@@ -89,7 +90,6 @@ class Request(var context: Context) {
                 override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
                     if (response.isSuccessful) {
                         val liveInfo = response.body()
-                        Log.i(TAG, "liveInfo $liveInfo")
                         if (liveInfo?.data?.playurl != null) {
                             val chanll = liveInfo.data.chanll
                             val decodedBytes = Base64.decode(
@@ -99,26 +99,33 @@ class Request(var context: Context) {
                             val decodedString = String(decodedBytes)
                             val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
                             val matchResult = regex.find(decodedString)
-                            var keyBytes = byteArrayOf()
-                            var ivBytes = byteArrayOf()
-
                             if (matchResult != null) {
                                 val (key, iv) = matchResult.destructured
-                                keyBytes = Base64.decode(key, Base64.DEFAULT)
-                                ivBytes = Base64.decode(iv, Base64.DEFAULT)
-                            }
-                            tvModel.updateVideoUrlByYSP(
-                                liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
+                                val keyBytes = Base64.decode(key, Base64.DEFAULT)
+                                val ivBytes = Base64.decode(iv, Base64.DEFAULT)
+                                val url = liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
                                     keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
                                     ivBytes
                                 ).uppercase()
-                            )
+                                Log.i(TAG, "$title url $url")
+                                tvModel.addVideoUrl(url)
+                            } else {
+                                Log.e(TAG, "$title key error")
+                                tvModel.firstSource()
+                            }
+                        } else {
+                            Log.e(TAG, "$title url error")
+                            tvModel.firstSource()
                         }
+                    } else {
+                        Log.e(TAG, "$title status error")
+                        tvModel.firstSource()
                     }
                 }
 
                 override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
-                    Log.i(TAG, "get data error")
+                    Log.e(TAG, "${tvModel.getTV().title} request error")
+                    tvModel.firstSource()
                 }
             })
     }

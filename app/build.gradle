@@ -24,8 +24,7 @@ android {
 
             // For ndk-build, instead use the ndkBuild block.
             cmake {
-//                arguments "-DIS_SO_BUILD=${project.hasProperty('IS_SO_BUILD') ? project.IS_SO_BUILD : false}"
-                arguments "-DIS_SO_BUILD=${false}"
+                arguments "-DIS_SO_BUILD=${project.hasProperty('IS_SO_BUILD') ? project.IS_SO_BUILD : true}"
 
                 abiFilters "armeabi-v7a", "arm64-v8a"
             }

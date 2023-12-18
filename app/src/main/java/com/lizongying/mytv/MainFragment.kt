@@ -61,11 +61,12 @@ class MainFragment : BrowseSupportFragment() {
         }
 
         tvListViewModel.getListLiveData().value?.forEach { tvViewModel ->
-            tvViewModel.videoUrl.observe(viewLifecycleOwner) { _ ->
-//                Log.i(TAG, "tv ${tvViewModel.getTV()}")
-                if (tvViewModel.updateByYSP()) {
+            tvViewModel.videoIndex.observe(viewLifecycleOwner) { videoIndex ->
+                if (tvViewModel.getIsFirstTime()) {
+                    tvViewModel.isFirstTime(false)
+                } else {
                     val tv = tvViewModel.getTV()
-                    if (tv.id == itemPosition) {
+                    if (tvViewModel.id.value == itemPosition) {
                         (activity as? MainActivity)?.play(tv)
 //                        (activity as? MainActivity)?.switchInfoFragment(tv)
                     }
@@ -129,7 +130,6 @@ class MainFragment : BrowseSupportFragment() {
 
         val tvModel = tvListViewModel.getTVModel(itemPosition)
         if (tvModel?.ysp() != null) {
-            Log.i(TAG, "ysp ${tvModel.getTV()}")
             lifecycleScope.launch(Dispatchers.IO) {
                 tvModel.let { request?.fetchData(it) }
             }
@@ -171,6 +171,7 @@ class MainFragment : BrowseSupportFragment() {
 
             val tvModel = tvListViewModel.getTVModel(itemPosition)
             if (tvModel?.ysp() != null) {
+                Log.i(TAG, "${tvModel.title} to get ysp")
                 lifecycleScope.launch(Dispatchers.IO) {
                     tvModel.let { request?.fetchData(it) }
                 }
@@ -202,6 +203,7 @@ class MainFragment : BrowseSupportFragment() {
 
             val tvModel = tvListViewModel.getTVModel(itemPosition)
             if (tvModel?.ysp() != null) {
+                Log.i(TAG, "${tvModel.title} to get ysp")
                 lifecycleScope.launch(Dispatchers.IO) {
                     tvModel.let { request?.fetchData(it) }
                 }
@@ -270,6 +272,7 @@ class MainFragment : BrowseSupportFragment() {
 
                 val tvModel = tvListViewModel.getTVModel(itemPosition)
                 if (tvModel?.ysp() != null) {
+                    Log.i(TAG, "${tvModel.title} to get ysp")
                     lifecycleScope.launch(Dispatchers.IO) {
                         tvModel.let { request?.fetchData(it) }
                     }
