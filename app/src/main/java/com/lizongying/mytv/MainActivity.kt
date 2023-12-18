@@ -43,6 +43,8 @@ class MainActivity : FragmentActivity() {
                 .hide(infoFragment)
                 .commit()
         }
+
+        Log.i(TAG, "Signature ${getAppSignature()}")
     }
 
     fun switchInfoFragment(tv: TV) {
