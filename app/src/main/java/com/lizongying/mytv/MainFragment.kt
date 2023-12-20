@@ -19,32 +19,25 @@ import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVListViewModel
+import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 class MainFragment : BrowseSupportFragment() {
-
     var itemPosition: Int = 0
-
-    private val list2: MutableList<Info> = mutableListOf()
 
     private var request: Request? = null
 
     private var rowsAdapter: ArrayObjectAdapter? = null
 
-    private var tvListViewModel = TVListViewModel()
+    var tvListViewModel = TVListViewModel()
 
     private var sharedPref: SharedPreferences? = null
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        super.onCreate()
-//        // 使用自定义的布局文件
-//        return inflater.inflate(R.layout.custom_browse_fragment, container, false)
-//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        headersState = HEADERS_DISABLED
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -60,59 +53,109 @@ class MainFragment : BrowseSupportFragment() {
 //            request?.fetchPage()
         }
 
-        tvListViewModel.getListLiveData().value?.forEach { tvViewModel ->
-            tvViewModel.videoIndex.observe(viewLifecycleOwner) { videoIndex ->
-                if (tvViewModel.getIsFirstTime()) {
-                    tvViewModel.isFirstTime(false)
-                } else {
-                    val tv = tvViewModel.getTV()
+        tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
+            tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
+                if (tvViewModel.ready.value != null) {
+                    Log.i(TAG, "ready ${tvViewModel.title.value}")
                     if (tvViewModel.id.value == itemPosition) {
-                        (activity as? MainActivity)?.play(tv)
+                        (activity as? MainActivity)?.play(tvViewModel)
 //                        (activity as? MainActivity)?.switchInfoFragment(tv)
                     }
+                }
+            }
+            tvViewModel.change.observe(viewLifecycleOwner) { _ ->
+                if (tvViewModel.change.value != null) {
+                    Log.i(TAG, "switch to ${tvViewModel.title.value}")
+                    if (tvViewModel.ysp() != null) {
+                        Log.i(TAG, "${tvViewModel.title.value} to get ysp")
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            tvViewModel.let { request?.fetchData(it) }
+                        }
+                    } else {
+                        (activity as? MainActivity)?.play(tvViewModel)
+//                        (activity as? MainActivity)?.switchInfoFragment(item)
+                    }
+                    setSelectedPosition(
+                        tvViewModel.getRowPosition(), true,
+                        SelectItemViewHolderTask(tvViewModel.getItemPosition())
+                    )
+                    Toast.makeText(
+                        activity,
+                        tvViewModel.title.value,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
 
+    fun toLastPosition() {
+        setSelectedPosition(
+            selectedPosition, false,
+            SelectItemViewHolderTask(tvListViewModel.maxNum[selectedPosition] - 1)
+        )
+    }
+
+    fun toFirstPosition() {
+        setSelectedPosition(
+            selectedPosition, false,
+            SelectItemViewHolderTask(0)
+        )
+    }
+
+    override fun startHeadersTransition(withHeaders: Boolean) {
+//        check(mCanShowHeaders) { "Cannot start headers transition" }
+//        if (isInHeadersTransition || mShowingHeaders == withHeaders) {
+//            return
+//        }
+//        startHeadersTransitionInternal(withHeaders)
+    }
+
     private fun setupUIElements() {
         brandColor = ContextCompat.getColor(context!!, R.color.fastlane_background)
+//        var headers = headersSupportFragment
+//        headers.setMenuVisibility(false)
+//        Log.i(TAG, "headers $headers")
+
+//        setHeadersState(HEADERS_DISABLED);
+//
+//        setHeaderPresenterSelector(object : PresenterSelector() {
+//            override fun getPresenter(o: Any): Presenter {
+//                return IconHeaderItemPresenter()
+//            }
+//        })
+//        showHeaders(true)
     }
 
-    private fun updateRows(tv: TV) {
-// 获取适配器中的数据
-        val dataList = rowsAdapter?.replace(tv.id, tv)
-//
-//// 修改数据
-//// 这里假设 dataList 是一个可变的列表
-//        dataList[position] = updatedData
-//
-//// 刷新适配器
-//        rowsAdapter.notifyItemChanged(position)
-//        rowsAdapter.notifyItemRangeChanged()
-    }
+//    private fun updateRows(tv: TV) {
+//// 获取适配器中的数据
+//        val dataList = rowsAdapter?.replace(tv.id, tv)
+////
+////// 修改数据
+////// 这里假设 dataList 是一个可变的列表
+////        dataList[position] = updatedData
+////
+////// 刷新适配器
+////        rowsAdapter.notifyItemChanged(position)
+////        rowsAdapter.notifyItemRangeChanged()
+//    }
 
     private fun loadRows() {
-        val list = TVList.list
-
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
         val cardPresenter = CardPresenter(lifecycleScope)
 
         var idx: Long = 0
-        for ((k, v) in list) {
+        for ((k, v) in TVList.list) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-            var idx2 = 0
-            for ((_, v1) in v) {
-                list2.add(
-                    Info(
-                        idx.toInt(), idx2, v1
-                    )
-                )
-                listRowAdapter.add(v1)
-                idx2++
-                tvListViewModel.addTV(v1)
+            for ((idx2, v1) in v.withIndex()) {
+                val tvViewModel = TVViewModel(v1)
+                tvViewModel.setRowPosition(idx.toInt())
+                tvViewModel.setItemPosition(idx2)
+                tvListViewModel.addTVViewModel(tvViewModel)
+                listRowAdapter.add(tvViewModel)
             }
+            tvListViewModel.maxNum.add(v.size)
             val header = HeaderItem(idx, k)
             rowsAdapter!!.add(ListRow(header, listRowAdapter))
             idx++
@@ -126,23 +169,9 @@ class MainFragment : BrowseSupportFragment() {
             savePosition(0)
         }
 
-        val tv = list2[itemPosition].item
+        val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+        tvViewModel?.changed()
 
-        val tvModel = tvListViewModel.getTVModel(itemPosition)
-        if (tvModel?.ysp() != null) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                tvModel.let { request?.fetchData(it) }
-            }
-        } else {
-            (activity as? MainActivity)?.play(tv)
-//            (activity as? MainActivity)?.switchInfoFragment(tv)
-        }
-
-        Toast.makeText(
-            activity,
-            tv.title,
-            Toast.LENGTH_SHORT
-        ).show()
         (activity as? MainActivity)?.switchMainFragment()
     }
 
@@ -153,6 +182,7 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     fun savePosition(position: Int) {
+        tvListViewModel.setItemPosition(position)
         with(sharedPref!!.edit()) {
             putInt("position", position)
             apply()
@@ -163,95 +193,61 @@ class MainFragment : BrowseSupportFragment() {
         view?.post {
             itemPosition--
             if (itemPosition == -1) {
-                itemPosition = list2.size - 1
+                itemPosition = tvListViewModel.size() - 1
             }
             savePosition(itemPosition)
 
-            val l = list2[itemPosition]
-
-            val tvModel = tvListViewModel.getTVModel(itemPosition)
-            if (tvModel?.ysp() != null) {
-                Log.i(TAG, "${tvModel.title} to get ysp")
-                lifecycleScope.launch(Dispatchers.IO) {
-                    tvModel.let { request?.fetchData(it) }
-                }
-            } else {
-                l.item.let { (activity as? MainActivity)?.play(it) }
-            }
-
-            setSelectedPosition(
-                l.rowPosition, false,
-                SelectItemViewHolderTask(l.itemPosition)
-            )
-            Toast.makeText(
-                activity,
-                l.item.title,
-                Toast.LENGTH_SHORT
-            ).show()
+            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+            tvViewModel?.changed()
         }
     }
 
     fun next() {
         view?.post {
             itemPosition++
-            if (itemPosition == list2.size) {
+            if (itemPosition == tvListViewModel.size()) {
                 itemPosition = 0
             }
             savePosition(itemPosition)
 
-            val l = list2[itemPosition]
-
-            val tvModel = tvListViewModel.getTVModel(itemPosition)
-            if (tvModel?.ysp() != null) {
-                Log.i(TAG, "${tvModel.title} to get ysp")
-                lifecycleScope.launch(Dispatchers.IO) {
-                    tvModel.let { request?.fetchData(it) }
-                }
-            } else {
-                l.item.let { (activity as? MainActivity)?.play(it) }
-            }
-
-            setSelectedPosition(
-                l.rowPosition, false,
-                SelectItemViewHolderTask(l.itemPosition)
-            )
-            Toast.makeText(
-                activity,
-                l.item.title,
-                Toast.LENGTH_SHORT
-            ).show()
+            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+            tvViewModel?.changed()
         }
     }
 
     fun prevSource() {
         view?.post {
-            val tv = list2[itemPosition].item
-            if (tv.videoUrl.size > 1) {
-                tv.videoIndex--
-                if (tv.videoIndex == -1) {
-                    tv.videoIndex = tv.videoUrl.size - 1
+            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+            if (tvViewModel != null) {
+                if (tvViewModel.videoUrl.value!!.size > 1) {
+                    val videoIndex = tvViewModel.videoIndex.value?.minus(1)
+                    if (videoIndex == -1) {
+                        tvViewModel.setVideoIndex(tvViewModel.videoUrl.value!!.size - 1)
+                    }
+                    tvViewModel.changed()
                 }
-
-                (activity as? MainActivity)?.play(tv)
-//                (activity as? MainActivity)?.switchInfoFragment(tv)
             }
         }
     }
 
     fun nextSource() {
         view?.post {
-            val tv = list2[itemPosition].item
-
-            if (tv.videoUrl.size > 1) {
-                tv.videoIndex++
-                if (tv.videoIndex == tv.videoUrl.size) {
-                    tv.videoIndex = 0
-                }
-
-                (activity as? MainActivity)?.play(tv)
-//                (activity as? MainActivity)?.switchInfoFragment(tv)
+            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+            if (tvViewModel != null) {
+                tvViewModel.changed()
+//                if (tvViewModel.videoUrl.value!!.size > 1) {
+//                    val videoIndex = tvViewModel.videoIndex.value?.plus(1)
+//                    if (videoIndex == tvViewModel.videoUrl.value!!.size) {
+//                        tvViewModel.setVideoIndex(0)
+//                    }
+//                tvViewModel.changed()
+//                }
             }
         }
+    }
+
+    fun tvViewModel(): TVViewModel? {
+        return tvListViewModel.getTVViewModel(itemPosition)
     }
 
     private fun setupEventListeners() {
@@ -266,20 +262,12 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-            if (item is TV) {
-                itemPosition = item.id
+            if (item is TVViewModel) {
+                itemPosition = item.id.value!!
                 savePosition(itemPosition)
 
-                val tvModel = tvListViewModel.getTVModel(itemPosition)
-                if (tvModel?.ysp() != null) {
-                    Log.i(TAG, "${tvModel.title} to get ysp")
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        tvModel.let { request?.fetchData(it) }
-                    }
-                } else {
-                    (activity as? MainActivity)?.play(item)
-//                    (activity as? MainActivity)?.switchInfoFragment(item)
-                }
+                val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+                tvViewModel?.changed()
 
                 (activity as? MainActivity)?.switchMainFragment()
             }
@@ -293,12 +281,17 @@ class MainFragment : BrowseSupportFragment() {
         ) {
             if (itemViewHolder == null) {
                 view?.post {
-                    val it = list2[itemPosition]
-                    setSelectedPosition(
-                        it.rowPosition, false,
-                        SelectItemViewHolderTask(it.itemPosition)
-                    )
+                    val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+                    if (tvViewModel != null) {
+                        setSelectedPosition(
+                            tvViewModel.getRowPosition(), false,
+                            SelectItemViewHolderTask(tvViewModel.getItemPosition())
+                        )
+                    }
                 }
+            }
+            if (item is TVViewModel) {
+                tvListViewModel.setItemPositionCurrent(item.id.value!!)
             }
         }
     }

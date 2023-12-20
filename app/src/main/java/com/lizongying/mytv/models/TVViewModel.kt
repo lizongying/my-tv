@@ -56,6 +56,9 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     private var isFirstTime = true
 
+    private var rowPosition: Int = 0
+    private var itemPosition: Int = 0
+
     private val _id = MutableLiveData<Int>()
     val id: LiveData<Int>
         get() = _id
@@ -72,6 +75,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val videoIndex: LiveData<Int>
         get() = _videoIndex
 
+    private val _logo = MutableLiveData<String>()
+    val logo: LiveData<String>
+        get() = _logo
+
     private val _pid = MutableLiveData<String>()
     val pid: LiveData<String>
         get() = _pid
@@ -80,32 +87,52 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val sid: LiveData<String>
         get() = _sid
 
-    private val _backgroundImage = MutableLiveData<String>()
-    val backgroundImage: LiveData<String>
-        get() = _backgroundImage
+    private val _change = MutableLiveData<Boolean>()
+    val change: LiveData<Boolean>
+        get() = _change
 
-    fun getBackgroundImage(): String {
-        return tv.logo ?: ""
-    }
-
-    fun updateBackgroundImage(url: String) {
-        _backgroundImage.value = url
-    }
+    private val _ready = MutableLiveData<Boolean>()
+    val ready: LiveData<Boolean>
+        get() = _ready
 
     fun addVideoUrl(url: String) {
-        tv.videoUrl = tv.videoUrl + listOf(url)
+        if (_videoUrl.value?.isNotEmpty() == true) {
+            if (_videoUrl.value!!.last().contains("cctv.cn")) {
+                tv.videoUrl = tv.videoUrl.subList(0, tv.videoUrl.lastIndex) + listOf(url)
+            } else {
+                tv.videoUrl = tv.videoUrl + listOf(url)
+            }
+        } else {
+            tv.videoUrl = tv.videoUrl + listOf(url)
+        }
         tv.videoIndex = tv.videoUrl.lastIndex
         _videoUrl.value = tv.videoUrl
         _videoIndex.value = tv.videoIndex
     }
 
     fun firstSource() {
-        if (tv.videoUrl.isNotEmpty()) {
-            tv.videoIndex = 0
-            _videoIndex.value = 0
+        if (_videoUrl.value!!.isNotEmpty()) {
+            setVideoIndex(0)
+            allReady()
         } else {
             Log.e(TAG, "no first")
         }
+    }
+
+    fun changed() {
+        _change.value = true
+    }
+
+    fun allReady() {
+        _ready.value = true
+    }
+
+    fun setVideoIndex(videoIndex: Int) {
+        _videoIndex.value = videoIndex
+    }
+
+    fun setLogo(url: String) {
+        _logo.value = url
     }
 
     init {
@@ -123,6 +150,22 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun isFirstTime(firstTime: Boolean) {
         isFirstTime = firstTime
+    }
+
+    fun getRowPosition(): Int {
+        return rowPosition
+    }
+
+    fun getItemPosition(): Int {
+        return itemPosition
+    }
+
+    fun setRowPosition(position: Int) {
+        rowPosition = position
+    }
+
+    fun setItemPosition(position: Int) {
+        itemPosition = position
     }
 
     fun update(t: TV) {

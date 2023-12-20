@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.content.Context
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import androidx.leanback.media.MediaPlayerAdapter
@@ -17,6 +18,7 @@ class PlaybackControlGlue(
         if (event!!.action == KeyEvent.ACTION_DOWN) {
             when (keyCode) {
                 KeyEvent.KEYCODE_DPAD_CENTER -> {
+                    Log.i(TAG, "KEYCODE_DPAD_CENTER")
                     (context as? MainActivity)?.switchMainFragment()
                 }
 
@@ -50,6 +52,6 @@ class PlaybackControlGlue(
     }
 
     companion object {
-        private const val TAG = "CustomPlaybackControlGlue"
+        private const val TAG = "PlaybackControlGlue"
     }
 }

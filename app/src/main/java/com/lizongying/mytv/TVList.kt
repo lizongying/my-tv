@@ -1,20 +1,20 @@
 package com.lizongying.mytv
 
 object TVList {
-    val list: Map<String, Map<String, TV>> by lazy {
+    val list: Map<String, List<TV>> by lazy {
         setupTV()
     }
 
     private var count: Int = 0
 
-    private fun setupTV(): Map<String, Map<String, TV>> {
+    private fun setupTV(): Map<String, List<TV>> {
         val tvs = """
 央视频道
 CCTV4K,,https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp,600002264,2000266303
 CCTV1 综合,http://tvpull.dxhmt.cn/tv/11481-4.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp,600001859,2000210103
 CCTV2 财经,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226195/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp,600001800,2000203603
 CCTV3 综艺,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226397/index.m3u8
-CCTV4 中文国际,http://39.134.24.161/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226191/index.m3u8;http://hlsbkmgsplive.miguvideo.com/wd_r2/cctv/cctv4hd/1500/index.m3u8?&encrypt=,https://resources.yangshipin.cn/assets/oms/image/202306/f357e58fdbcc076a3d65e1f958c942b2e14f14342c60736ceed98b092d35356a.png?imageMogr2/format/webp,600001814,2000204803
+CCTV4 中文国际,http://39.134.24.161/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226191/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/f357e58fdbcc076a3d65e1f958c942b2e14f14342c60736ceed98b092d35356a.png?imageMogr2/format/webp,600001814,2000204803
 CCTV5 体育,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226395/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/0a6a7138952675983a3d854df7688557b286d59aa06166edae51506f9204d655.png?imageMogr2/format/webp,600001818,2000205103
 CCTV5+ 体育赛事,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226221/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/649ad76a90bfef55b05db9fe52e006487280f619089099d5dc971e387fc6eff0.png?imageMogr2/format/webp,600001817,2000204503
 CCTV6 电影,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226393/index.m3u8
@@ -143,7 +143,6 @@ CETV4,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226225/index.m3u8
 兵团卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226214/index.m3u8
 延边卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226220/index.m3u8
 内蒙古卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225786/index.m3u8
-康巴卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226234/index.m3u8
 电视指南,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226987/index.m3u8
 风云足球,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226984/index.m3u8
 风云剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226950/index.m3u8
@@ -206,7 +205,7 @@ CHC动作电影,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226465/in
 老故事,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226236/index.m3u8
         """.trimIndent()
 
-        val map: MutableMap<String, MutableMap<String, TV>> = mutableMapOf()
+        val map: MutableMap<String, MutableList<TV>> = mutableMapOf()
 
         var channel = ""
         for (i in tvs.split("\n")) {
@@ -218,14 +217,13 @@ CHC动作电影,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226465/in
                 continue
             }
             val p = i.split(",")
-            val titleMap = map[channel] ?: mutableMapOf()
+            val titleMap = map[channel] ?: mutableListOf()
 
-            val tv = titleMap[p[0]] ?: TV(
+            val tv = TV(
                 count,
                 p[0],
                 p[1].split(";").map { it.trim() }
             )
-            count++
 
             if (p.size > 2) {
                 tv.logo = p[2]
@@ -237,8 +235,9 @@ CHC动作电影,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226465/in
                 tv.sid = p[4]
             }
 
-            titleMap[p[0]] = tv
+            titleMap.add(tv)
             map[channel] = titleMap
+            count++
         }
 
         return map

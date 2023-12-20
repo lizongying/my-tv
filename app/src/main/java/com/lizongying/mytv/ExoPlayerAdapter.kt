@@ -10,6 +10,8 @@ import androidx.leanback.media.PlaybackGlueHost
 import androidx.leanback.media.PlayerAdapter
 import androidx.leanback.media.SurfaceHolderGlueHost
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -176,6 +178,14 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
         return mBufferedProgress
     }
 
+    private var mPlayerErrorListener: PlayerErrorListener? = null
+
+    private inner class PlayerErrorListener : Player.Listener {
+        override fun onPlayerError(error: PlaybackException) {
+            callback.onError(this@ExoPlayerAdapter, error.errorCode, error.message)
+        }
+    }
+
     /**
      * Sets the media source of the player witha given URI.
      *
@@ -189,6 +199,13 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
         }
         mMediaSourceUri = uri
         prepareMediaForPlaying()
+
+        mPlayer?.playWhenReady = true
+
+        if (mPlayerErrorListener == null) {
+            mPlayerErrorListener = PlayerErrorListener()
+            mPlayer?.addListener(mPlayerErrorListener!!)
+        }
         return true
     }
 
@@ -221,7 +238,7 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
             throw RuntimeException(e)
         }
         mPlayer?.prepare()
-        mPlayer?.playWhenReady = true
+
         callback.onPlayStateChanged(this@ExoPlayerAdapter)
     }
 
@@ -231,6 +248,10 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
      */
     override fun isPrepared(): Boolean {
         return mInitialized && (mSurfaceHolderGlueHost == null || mHasDisplay)
+    }
+
+    companion object {
+        private const val TAG = "ExoPlayerAdapter"
     }
 }
 

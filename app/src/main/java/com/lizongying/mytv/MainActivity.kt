@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.lizongying.mytv.models.TVViewModel
 import java.security.MessageDigest
 
 
@@ -43,8 +44,6 @@ class MainActivity : FragmentActivity() {
                 .hide(infoFragment)
                 .commit()
         }
-
-        Log.i(TAG, "Signature ${getAppSignature()}")
     }
 
     fun switchInfoFragment(tv: TV) {
@@ -68,9 +67,9 @@ class MainActivity : FragmentActivity() {
             .commit()
     }
 
-    fun play(tv: TV) {
-        Log.i(TAG, "play: $tv")
-        playbackFragment.play(tv)
+    fun play(tvViewModel: TVViewModel) {
+        Log.i(TAG, "play: ${tvViewModel.getTV()}")
+        playbackFragment.play(tvViewModel)
     }
 
     fun prev() {
@@ -173,30 +172,57 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_DPAD_CENTER -> {
+                Log.i(TAG, "KEYCODE_DPAD_CENTER")
                 switchMainFragment()
             }
 
             KeyEvent.KEYCODE_DPAD_UP -> {
                 if (mainFragment.isHidden) {
                     prev()
+                } else {
+                    if (mainFragment.selectedPosition == 0) {
+                        mainFragment.setSelectedPosition(
+                            mainFragment.tvListViewModel.maxNum.size - 1,
+                            false
+                        )
+                    }
                 }
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
                 if (mainFragment.isHidden) {
                     next()
+                } else {
+                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
+//                        mainFragment.setSelectedPosition(0, false)
+                        hideMainFragment()
+                        return false
+                    }
                 }
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
                 if (mainFragment.isHidden) {
                     prevSource()
+                } else {
+                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
+                            ?.getItemPosition() == 0
+                    ) {
+//                        mainFragment.toLastPosition()
+                        hideMainFragment()
+                    }
                 }
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
                 if (mainFragment.isHidden) {
                     nextSource()
+                } else {
+                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
+                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
+                    ) {
+                        mainFragment.toFirstPosition()
+                    }
                 }
             }
         }

@@ -1,4 +1,7 @@
 <resources>
 
-    <style name="Theme.MyTV" parent="@style/Theme.Leanback" />
+    <style name="Theme.MyTV" parent="@style/Theme.Leanback">
+        <item name="browseRowsMarginTop">40dp</item>
+    </style>
+
 </resources>

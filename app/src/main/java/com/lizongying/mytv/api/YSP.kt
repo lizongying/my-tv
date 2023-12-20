@@ -64,8 +64,8 @@ class YSP(var context: Context) {
     }
 
     fun switch(tvModel: TVViewModel): String {
-        livepid = tvModel.getTV().pid
-        cnlid = tvModel.getTV().sid
+        livepid = tvModel.pid.value!!
+        cnlid = tvModel.sid.value!!
         defn = "fhd"
 
 //        guid = getGuid()

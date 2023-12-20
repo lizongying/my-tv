@@ -1,47 +1,61 @@
 package com.lizongying.mytv.models
 
+import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lizongying.mytv.TV
 
 class TVListViewModel : ViewModel() {
-    private val tvListLiveData = MutableLiveData<MutableList<TV>>()
 
-    private val tvModelListLiveData = MutableLiveData<MutableList<TVViewModel>>()
+    var maxNum = mutableListOf<Int>()
 
-    fun getListLiveData(): MutableLiveData<MutableList<TVViewModel>> {
-        return tvModelListLiveData
+    private var sharedPref: SharedPreferences? = null
+
+    private val tvListViewModel = MutableLiveData<MutableList<TVViewModel>>()
+
+    private val _itemPosition = MutableLiveData<Int>()
+    val itemPosition: LiveData<Int>
+        get() = _itemPosition
+
+    private val _itemPositionCurrent = MutableLiveData<Int>()
+    val itemPositionCurrent: LiveData<Int>
+        get() = _itemPositionCurrent
+
+    fun getTVListViewModel(): MutableLiveData<MutableList<TVViewModel>> {
+        return tvListViewModel
     }
 
-    fun addTV(tv: TV) {
-        val currentList = tvListLiveData.value ?: mutableListOf()
-        currentList.add(tv)
-        tvListLiveData.value = currentList
-
-        val currentModelList = tvModelListLiveData.value ?: mutableListOf()
-        currentModelList.add(TVViewModel(tv))
-        tvModelListLiveData.value = currentModelList
+    fun addTVViewModel(tvViewModel: TVViewModel) {
+        val currentTVModelList = tvListViewModel.value ?: mutableListOf()
+        currentTVModelList.add(tvViewModel)
+        tvListViewModel.value = currentTVModelList
     }
 
-    fun updateTV(tv: TV) {
-        val currentList = tvListLiveData.value ?: mutableListOf()
-        currentList[tv.id] = tv
-        tvListLiveData.value = currentList
-
-        val currentModelList = tvModelListLiveData.value ?: mutableListOf()
-        currentModelList[tv.id].update(tv)
-        tvModelListLiveData.value = currentModelList
+    fun getTVViewModel(id: Int): TVViewModel? {
+        return tvListViewModel.value?.get(id)
     }
 
-    fun getTV(id: Int): TV? {
-        return tvListLiveData.value?.get(id)
+    fun getTVViewModelCurrent(): TVViewModel? {
+        return _itemPositionCurrent.value?.let { tvListViewModel.value?.get(it) }
     }
 
-    fun getTVModel(id: Int): TVViewModel? {
-        return tvModelListLiveData.value?.get(id)
+    fun setItemPosition(position: Int) {
+        _itemPosition.value = position
+        _itemPositionCurrent.value = position
+    }
+
+    fun setItemPositionCurrent(position: Int) {
+        _itemPositionCurrent.value = position
+    }
+
+    fun savePosition(position: Int) {
+        with(sharedPref!!.edit()) {
+            putInt("position", position)
+            apply()
+        }
     }
 
     fun size(): Int {
-        return tvListLiveData.value!!.size
+        return tvListViewModel.value!!.size
     }
 }

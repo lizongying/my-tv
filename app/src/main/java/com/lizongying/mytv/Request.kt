@@ -82,7 +82,7 @@ class Request(var context: Context) {
 
     fun fetchData(tvModel: TVViewModel) {
         val data = ysp?.switch(tvModel)
-        val title = tvModel.getTV().title
+        val title = tvModel.title.value
 
         val request = data?.let { LiveInfoRequest(it) }
         request?.let { yspApiService?.getLiveInfo(it) }
@@ -109,6 +109,7 @@ class Request(var context: Context) {
                                 ).uppercase()
                                 Log.i(TAG, "$title url $url")
                                 tvModel.addVideoUrl(url)
+                                tvModel.allReady()
                             } else {
                                 Log.e(TAG, "$title key error")
                                 tvModel.firstSource()
@@ -124,7 +125,7 @@ class Request(var context: Context) {
                 }
 
                 override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
-                    Log.e(TAG, "${tvModel.getTV().title} request error")
+                    Log.e(TAG, "$title request error")
                     tvModel.firstSource()
                 }
             })
@@ -155,7 +156,8 @@ class Request(var context: Context) {
                             if (!mapping.containsKey(item.channelName)) {
                                 continue
                             }
-                            val tv = TVList.list[channelType]?.get(mapping[item.channelName])
+                            val tv =
+                                TVList.list[channelType]?.find { it.title == mapping[item.channelName] }
                             if (tv != null) {
                                 tv.logo = item.tvLogo
                                 tv.pid = item.pid
@@ -187,7 +189,7 @@ class Request(var context: Context) {
     }
 
     private fun encryptTripleDES(key: ByteArray, iv: ByteArray): String {
-        var plaintext =
+        val plaintext =
             """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,AppleM1Pro,OpenGL4.1)"}"""
         return try {
             val keySpec = SecretKeySpec(key, "DESede")
