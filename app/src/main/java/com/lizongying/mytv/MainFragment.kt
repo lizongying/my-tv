@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -44,7 +43,6 @@ class MainFragment : BrowseSupportFragment() {
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
-        setupUIElements()
         request = activity?.let { Request(it) }
         loadRows()
         setupEventListeners()
@@ -88,11 +86,22 @@ class MainFragment : BrowseSupportFragment() {
                 }
             }
             tvViewModel.program.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.program.value == null || tvViewModel.program.value?.size!! < 3) {
+                if (tvViewModel.program.value!!.isEmpty()) {
                     if (tvViewModel.programId.value != null) {
                         Log.i(TAG, "get program ${tvViewModel.title.value}")
                         request?.fetchProgram(tvViewModel)
                     }
+                }
+            }
+        }
+    }
+
+    fun checkProgram() {
+        tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
+            if (tvViewModel.program.value!!.isEmpty()) {
+                if (tvViewModel.programId.value != null) {
+                    Log.i(TAG, "get program ${tvViewModel.title.value}")
+                    request?.fetchProgram(tvViewModel)
                 }
             }
         }
@@ -113,41 +122,7 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     override fun startHeadersTransition(withHeaders: Boolean) {
-//        check(mCanShowHeaders) { "Cannot start headers transition" }
-//        if (isInHeadersTransition || mShowingHeaders == withHeaders) {
-//            return
-//        }
-//        startHeadersTransitionInternal(withHeaders)
     }
-
-    private fun setupUIElements() {
-        brandColor = ContextCompat.getColor(context!!, R.color.fastlane_background)
-//        var headers = headersSupportFragment
-//        headers.setMenuVisibility(false)
-//        Log.i(TAG, "headers $headers")
-
-//        setHeadersState(HEADERS_DISABLED);
-//
-//        setHeaderPresenterSelector(object : PresenterSelector() {
-//            override fun getPresenter(o: Any): Presenter {
-//                return IconHeaderItemPresenter()
-//            }
-//        })
-//        showHeaders(true)
-    }
-
-//    private fun updateRows(tv: TV) {
-//// 获取适配器中的数据
-//        val dataList = rowsAdapter?.replace(tv.id, tv)
-////
-////// 修改数据
-////// 这里假设 dataList 是一个可变的列表
-////        dataList[position] = updatedData
-////
-////// 刷新适配器
-////        rowsAdapter.notifyItemChanged(position)
-////        rowsAdapter.notifyItemRangeChanged()
-//    }
 
     private fun loadRows() {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
@@ -243,14 +218,13 @@ class MainFragment : BrowseSupportFragment() {
         view?.post {
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             if (tvViewModel != null) {
-                tvViewModel.changed()
-//                if (tvViewModel.videoUrl.value!!.size > 1) {
-//                    val videoIndex = tvViewModel.videoIndex.value?.plus(1)
-//                    if (videoIndex == tvViewModel.videoUrl.value!!.size) {
-//                        tvViewModel.setVideoIndex(0)
-//                    }
-//                tvViewModel.changed()
-//                }
+                if (tvViewModel.videoUrl.value!!.size > 1) {
+                    val videoIndex = tvViewModel.videoIndex.value?.plus(1)
+                    if (videoIndex == tvViewModel.videoUrl.value!!.size) {
+                        tvViewModel.setVideoIndex(0)
+                    }
+                    tvViewModel.changed()
+                }
             }
         }
     }

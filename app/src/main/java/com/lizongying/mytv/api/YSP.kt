@@ -68,7 +68,6 @@ class YSP(var context: Context) {
         cnlid = tvModel.sid.value!!
         defn = "fhd"
 
-//        guid = getGuid()
         randStr = getRand()
         timeStr = getTimeStr()
 

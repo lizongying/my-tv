@@ -30,7 +30,7 @@ class Request(var context: Context) {
     private var yspProtoService: YSPProtoService? = null
 
     private var mapping = mapOf(
-        "CCTV4K" to "CCTV4K",
+        "CCTV4K" to "CCTV4K 超高清",
         "CCTV1" to "CCTV1 综合",
         "CCTV2" to "CCTV2 财经",
         "CCTV4" to "CCTV4 中文国际",

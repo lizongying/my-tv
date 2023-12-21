@@ -10,7 +10,7 @@ import java.util.Date
 
 class TVViewModel(private var tv: TV) : ViewModel() {
     private var mapping = mapOf(
-        "CCTV4K" to "CCTV4K",
+        "CCTV4K" to "CCTV4K 超高清",
         "CCTV1" to "CCTV1 综合",
         "CCTV2" to "CCTV2 财经",
         "CCTV4" to "CCTV4 中文国际",
@@ -58,12 +58,13 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     private var mappingLogo = mapOf(
         "CCTV4K" to "https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp",
+        "CCTV4K 超高清" to "https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp",
         "CCTV1" to "https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp",
         "CCTV1 综合" to "https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp",
         "CCTV2" to "https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp",
         "CCTV2 财经" to "https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp",
-        "CCTV3" to "https://p2.img.cctvpic.com/photoAlbum/page/performance/img/2021/8/16/1629103576424_839.png",
-        "CCTV3 综艺" to "https://p2.img.cctvpic.com/photoAlbum/page/performance/img/2021/8/16/1629103576424_839.png",
+        "CCTV3" to "https://resources.yangshipin.cn/assets/oms/image/202306/7b7a65c712450da3deb6ca66fbacf4f9aee00d3f20bd80eafb5ada01ec63eb3a.png?imageMogr2/format/webp",
+        "CCTV3 综艺" to "https://resources.yangshipin.cn/assets/oms/image/202306/7b7a65c712450da3deb6ca66fbacf4f9aee00d3f20bd80eafb5ada01ec63eb3a.png?imageMogr2/format/webp",
         "CCTV4" to "https://resources.yangshipin.cn/assets/oms/image/202306/f357e58fdbcc076a3d65e1f958c942b2e14f14342c60736ceed98b092d35356a.png?imageMogr2/format/webp",
         "CCTV4 中文国际" to "https://resources.yangshipin.cn/assets/oms/image/202306/f357e58fdbcc076a3d65e1f958c942b2e14f14342c60736ceed98b092d35356a.png?imageMogr2/format/webp",
         "CCTV5" to "https://resources.yangshipin.cn/assets/oms/image/202306/0a6a7138952675983a3d854df7688557b286d59aa06166edae51506f9204d655.png?imageMogr2/format/webp",
@@ -126,12 +127,13 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     private var mappingEPG = mapOf(
         "CCTV4K" to "600002264",
+        "CCTV4K 超高清" to "600002264",
         "CCTV1" to "600001859",
         "CCTV1 综合" to "600001859",
         "CCTV2" to "600001800",
         "CCTV2 财经" to "600001800",
-//        "CCTV3" to "",
-//        "CCTV3 综艺" to "",
+        "CCTV3" to "600001801",
+        "CCTV3 综艺" to "600001801",
         "CCTV4" to "600001814",
         "CCTV4 中文国际" to "600001814",
         "CCTV5" to "600001818",
@@ -343,7 +345,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun getProgramOne(): Program? {
         val programNew = (_program.value?.filter { it.et > (Date().time / 1000) })?.toMutableList()
-        if (_program.value != programNew) {
+        if (programNew != null && _program.value != programNew) {
             _program.value = programNew
         }
         if (_program.value!!.isEmpty()) {
@@ -353,11 +355,18 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     }
 
     fun addProgram(p: MutableList<Program>) {
-        if (_program.value == null) {
-            _program.value = p
+        val p1 = (p.filter { it.et > (Date().time / 1000) }).toMutableList()
+        if (p1.isEmpty() || _program.value == p1) {
+            return
+        }
+
+        if (_program.value!!.isEmpty()) {
+            _program.value = p1
         } else {
             _program.value =
-                ((_program.value?.filter { it.st < p.first().st })?.plus(p))?.toMutableList()
+                ((_program.value?.filter { it.et > (Date().time / 1000) && it.st < p1.first().st })?.plus(
+                    p1
+                ))?.toMutableList()
         }
     }
 

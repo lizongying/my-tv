@@ -10,7 +10,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.GestureDetector
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -30,11 +32,14 @@ class MainActivity : FragmentActivity() {
 
     private var doubleBackToExitPressedOnce = false
 
+    private lateinit var gestureDetector: GestureDetector
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -44,6 +49,7 @@ class MainActivity : FragmentActivity() {
                 .hide(infoFragment)
                 .commit()
         }
+        gestureDetector = GestureDetector(this, GestureListener())
     }
 
     fun switchInfoFragment(tv: TV) {
@@ -117,6 +123,85 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        // 在触摸事件中将事件传递给 GestureDetector 处理手势
+        if (event != null) {
+            gestureDetector.onTouchEvent(event)
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            // 处理单击事件
+            val versionName = getPackageInfo().versionName
+
+            val textView = TextView(this@MainActivity)
+            textView.text =
+                "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+
+            val imageView = ImageView(this@MainActivity)
+            val drawable = ContextCompat.getDrawable(this@MainActivity, R.drawable.appreciate)
+            imageView.setImageDrawable(drawable)
+
+            val linearLayout = LinearLayout(this@MainActivity)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.addView(textView)
+            linearLayout.addView(imageView)
+
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            imageView.layoutParams = layoutParams
+            textView.layoutParams = layoutParams
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+            builder
+                .setView(linearLayout)
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+            return true
+        }
+
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            // 如果 Y 方向的速度为负值，表示向上滑动
+            if (velocityY < 0) {
+                // 在这里执行上滑时的操作
+                if (mainFragment.isHidden) {
+                    prev()
+                } else {
+                    if (mainFragment.selectedPosition == 0) {
+                        mainFragment.setSelectedPosition(
+                            mainFragment.tvListViewModel.maxNum.size - 1,
+                            false
+                        )
+                    }
+                }
+            }
+            if (velocityY > 0) {
+                // 在这里执行上滑时的操作
+                if (mainFragment.isHidden) {
+                    next()
+                } else {
+                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
+//                        mainFragment.setSelectedPosition(0, false)
+                        hideMainFragment()
+                        return false
+                    }
+                }
+            }
+            return super.onFling(e1, e2, velocityX, velocityY)
+        }
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_BACK -> {
@@ -173,6 +258,9 @@ class MainActivity : FragmentActivity() {
 
             KeyEvent.KEYCODE_DPAD_CENTER -> {
                 Log.i(TAG, "KEYCODE_DPAD_CENTER")
+//                if (mainFragment.isHidden) {
+//                    mainFragment.checkProgram()
+//                }
                 switchMainFragment()
             }
 
