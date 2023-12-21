@@ -12,9 +12,13 @@ import com.lizongying.mytv.api.YSPApiService
 import com.lizongying.mytv.api.YSPProtoService
 import com.lizongying.mytv.models.TVViewModel
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.oms.common.proto.pageModel
+import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.epgProgramModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -174,18 +178,31 @@ class Request(var context: Context) {
         })
     }
 
-    fun fetchProgram(tvModel: TVViewModel) {
-        yspProtoService?.getProgram("", "")?.enqueue(object : Callback<LiveInfo> {
-            override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
-                if (response.isSuccessful) {
-                    val liveInfo = response.body()
-                    Log.i(TAG, "${liveInfo?.data?.playurl}")
-                }
-            }
+    private fun getCurrentDate(): String {
+        val currentDate = Date()
+        val formatter = SimpleDateFormat("yyyyMMdd", Locale.CHINA)
+        return formatter.format(currentDate)
+    }
 
-            override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
-            }
-        })
+    fun fetchProgram(tvModel: TVViewModel) {
+        yspProtoService?.getProgram(tvModel.programId.value!!, getCurrentDate())
+            ?.enqueue(object : Callback<epgProgramModel.Response> {
+                override fun onResponse(
+                    call: Call<epgProgramModel.Response>,
+                    response: Response<epgProgramModel.Response>
+                ) {
+                    if (response.isSuccessful) {
+                        val program = response.body()
+                        if (program != null) {
+                            tvModel.addProgram(program.dataListList)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<epgProgramModel.Response>, t: Throwable) {
+                    Log.e(TAG, "Program request failed", t)
+                }
+            })
     }
 
     private fun encryptTripleDES(key: ByteArray, iv: ByteArray): String {

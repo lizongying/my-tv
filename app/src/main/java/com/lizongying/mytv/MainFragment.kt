@@ -51,6 +51,7 @@ class MainFragment : BrowseSupportFragment() {
 
         view?.post {
 //            request?.fetchPage()
+//            tvListViewModel.getTVViewModel(0)?.let { request?.fetchProgram(it) }
         }
 
         tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
@@ -84,6 +85,14 @@ class MainFragment : BrowseSupportFragment() {
                         tvViewModel.title.value,
                         Toast.LENGTH_SHORT
                     ).show()
+                }
+            }
+            tvViewModel.program.observe(viewLifecycleOwner) { _ ->
+                if (tvViewModel.program.value == null || tvViewModel.program.value?.size!! < 3) {
+                    if (tvViewModel.programId.value != null) {
+                        Log.i(TAG, "get program ${tvViewModel.title.value}")
+                        request?.fetchProgram(tvViewModel)
+                    }
                 }
             }
         }
@@ -143,7 +152,7 @@ class MainFragment : BrowseSupportFragment() {
     private fun loadRows() {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-        val cardPresenter = CardPresenter(lifecycleScope)
+        val cardPresenter = CardPresenter(viewLifecycleOwner)
 
         var idx: Long = 0
         for ((k, v) in TVList.list) {

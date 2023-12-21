@@ -2,7 +2,8 @@
 
 
     <style name="CustomImageCardViewStyle" parent="Widget.Leanback.ImageCardViewStyle">
-        <item name="lbImageCardViewType">Title</item>
+<!--        <item name="infoVisibility">activated</item>-->
+        <item name="lbImageCardViewType">Title|Content</item>
     </style>
 
     <style name="CustomImageCardTheme" parent="Theme.Leanback">

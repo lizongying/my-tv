@@ -1,7 +1,9 @@
 <resources>
 
     <style name="Theme.MyTV" parent="@style/Theme.Leanback">
-        <item name="browseRowsMarginTop">40dp</item>
+        <item name="browsePaddingStart">11dp</item>
+        <item name="browsePaddingEnd">11dp</item>
+        <item name="browseRowsMarginTop">54dp</item>
     </style>
 
 </resources>
