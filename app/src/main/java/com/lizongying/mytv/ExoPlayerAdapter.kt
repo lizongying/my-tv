@@ -38,6 +38,22 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
 
     var mBufferingStart = false
 
+
+    private var mMinimumLoadableRetryCount = 3
+
+
+    private var mPlayerErrorListener: PlayerErrorListener? = null
+
+    init {
+        mPlayer?.playWhenReady = true
+
+        if (mPlayerErrorListener == null) {
+            mPlayerErrorListener = PlayerErrorListener()
+            mPlayer?.addListener(mPlayerErrorListener!!)
+        }
+    }
+
+
     open fun notifyBufferingStartEnd() {
         callback.onBufferingStateChanged(
             this@ExoPlayerAdapter,
@@ -178,12 +194,17 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
         return mBufferedProgress
     }
 
-    private var mPlayerErrorListener: PlayerErrorListener? = null
-
     private inner class PlayerErrorListener : Player.Listener {
         override fun onPlayerError(error: PlaybackException) {
             callback.onError(this@ExoPlayerAdapter, error.errorCode, error.message)
         }
+    }
+
+
+    private var mHeaders: Map<String, String>? = mapOf()
+
+    fun setHeaders(headers: Map<String, String>) {
+        mHeaders = headers
     }
 
     /**
@@ -193,46 +214,43 @@ open class ExoPlayerAdapter(private var mContext: Context?) : PlayerAdapter() {
      * otherwise.
      * @see MediaPlayer.setDataSource
      */
+
+    @OptIn(UnstableApi::class)
     open fun setDataSource(uri: Uri?): Boolean {
         if (if (mMediaSourceUri != null) mMediaSourceUri == uri else uri == null) {
             return false
         }
         mMediaSourceUri = uri
-        prepareMediaForPlaying()
 
-        mPlayer?.playWhenReady = true
+        val httpDataSource = DefaultHttpDataSource.Factory()
+        mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
 
-        if (mPlayerErrorListener == null) {
-            mPlayerErrorListener = PlayerErrorListener()
-            mPlayer?.addListener(mPlayerErrorListener!!)
-        }
+        val hlsMediaSource =
+            HlsMediaSource.Factory(httpDataSource).setLoadErrorHandlingPolicy(
+                CustomLoadErrorHandlingPolicy(mMinimumLoadableRetryCount)
+            ).createMediaSource(
+                MediaItem.fromUri(
+                    mMediaSourceUri!!
+                )
+            )
+        prepareMediaForPlaying(hlsMediaSource)
         return true
     }
 
-    private var mHeaders: Map<String, String>? = mapOf()
+    @OptIn(UnstableApi::class)
+    open fun setDataSource(hlsMediaSource: HlsMediaSource): Boolean {
+        prepareMediaForPlaying(hlsMediaSource)
+        return true
+    }
 
-    fun setHeaders(headers: Map<String, String>) {
-        mHeaders = headers
+    fun setMinimumLoadableRetryCount(minimumLoadableRetryCount: Int) {
+        mMinimumLoadableRetryCount = minimumLoadableRetryCount
     }
 
     @OptIn(UnstableApi::class)
-    private fun prepareMediaForPlaying() {
-        reset()
+    private fun prepareMediaForPlaying(hlsMediaSource: HlsMediaSource) {
         try {
-            if (mMediaSourceUri != null) {
-                val httpDataSource = DefaultHttpDataSource.Factory()
-                mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
-
-                val hlsMediaSource =
-                    HlsMediaSource.Factory(httpDataSource).createMediaSource(
-                        MediaItem.fromUri(
-                            mMediaSourceUri!!
-                        )
-                    )
-                mPlayer?.setMediaSource(hlsMediaSource)
-            } else {
-                return
-            }
+            mPlayer?.setMediaSource(hlsMediaSource)
         } catch (e: IOException) {
             e.printStackTrace()
             throw RuntimeException(e)

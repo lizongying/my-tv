@@ -25,6 +25,11 @@ class PlaybackFragment : VideoSupportFragment() {
 
         view?.isFocusable = false
         view?.isFocusableInTouchMode = false
+
+        val glueHost = VideoSupportFragmentGlueHost(this@PlaybackFragment)
+        mTransportControlGlue = PlaybackControlGlue(activity, playerAdapter)
+        mTransportControlGlue.host = glueHost
+        mTransportControlGlue.playWhenPrepared()
     }
 
     override fun showControlsOverlay(runAnimation: Boolean) {
@@ -44,12 +49,10 @@ class PlaybackFragment : VideoSupportFragment() {
 
         lastVideoUrl = videoUrl
 
-        val glueHost = VideoSupportFragmentGlueHost(this@PlaybackFragment)
-        mTransportControlGlue = PlaybackControlGlue(activity, playerAdapter)
-        mTransportControlGlue.host = glueHost
-        mTransportControlGlue.playWhenPrepared()
-
         playerAdapter?.callback = PlayerCallback(tvModel)
+        if (tvModel.ysp() != null) {
+            playerAdapter?.setMinimumLoadableRetryCount(0)
+        }
         try {
             playerAdapter?.setDataSource(Uri.parse(videoUrl))
         } catch (e: IOException) {

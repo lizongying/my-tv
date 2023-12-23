@@ -1,9 +1,16 @@
 package com.lizongying.mytv.models
 
+import android.net.Uri
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import com.lizongying.mytv.CustomLoadErrorHandlingPolicy
 import com.lizongying.mytv.TV
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
 import java.util.Date
@@ -242,6 +249,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val ready: LiveData<Boolean>
         get() = _ready
 
+    private var mMinimumLoadableRetryCount = 3
+
+    var seq = 0
+
     fun addVideoUrl(url: String) {
         if (_videoUrl.value?.isNotEmpty() == true) {
             if (_videoUrl.value!!.last().contains("cctv.cn")) {
@@ -368,6 +379,32 @@ class TVViewModel(private var tv: TV) : ViewModel() {
                     p1
                 ))?.toMutableList()
         }
+    }
+
+
+    private var mHeaders: Map<String, String>? = mapOf()
+
+    fun setHeaders(headers: Map<String, String>) {
+        mHeaders = headers
+    }
+
+
+    fun setMinimumLoadableRetryCount(minimumLoadableRetryCount: Int) {
+        mMinimumLoadableRetryCount = minimumLoadableRetryCount
+    }
+
+    @OptIn(UnstableApi::class)
+    fun buildSource(videoUrl: String, mHeaders: Map<String, String>?): HlsMediaSource {
+        val httpDataSource = DefaultHttpDataSource.Factory()
+        mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
+
+        return HlsMediaSource.Factory(httpDataSource).setLoadErrorHandlingPolicy(
+            CustomLoadErrorHandlingPolicy(mMinimumLoadableRetryCount)
+        ).createMediaSource(
+            MediaItem.fromUri(
+                Uri.parse(videoUrl)
+            )
+        )
     }
 
     companion object {

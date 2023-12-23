@@ -85,7 +85,7 @@ class YSP(var context: Context) {
         return (Date().time / 1000).toString()
     }
 
-    private fun generateGuid(): String {
+    fun generateGuid(): String {
         val timestamp = (System.currentTimeMillis()).toString(36)
         val originalString = Math.random().toString()
         val resultString = if (originalString.startsWith("0.")) {
@@ -97,7 +97,7 @@ class YSP(var context: Context) {
         return timestamp + "_" + randomPart
     }
 
-    private fun getGuid(): String {
+    fun getGuid(): String {
         var guid = sharedPref?.getString("guid", "")
         if (guid == null || guid.length < 18) {
             guid = generateGuid()
@@ -109,7 +109,7 @@ class YSP(var context: Context) {
         return guid
     }
 
-    private fun getRand(): String {
+    fun getRand(): String {
         var n = ""
         val e = "ABCDEFGHIJKlMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         val r = e.length

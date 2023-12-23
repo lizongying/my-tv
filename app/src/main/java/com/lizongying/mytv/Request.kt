@@ -1,14 +1,18 @@
 package com.lizongying.mytv
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Base64
 import android.util.Log
 import com.lizongying.mytv.api.ApiClient
+import com.lizongying.mytv.api.BtraceClient
 import com.lizongying.mytv.api.LiveInfo
 import com.lizongying.mytv.api.LiveInfoRequest
 import com.lizongying.mytv.api.ProtoClient
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.api.YSPApiService
+import com.lizongying.mytv.api.YSPBtraceService
 import com.lizongying.mytv.api.YSPProtoService
 import com.lizongying.mytv.models.TVViewModel
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.oms.common.proto.pageModel
@@ -27,7 +31,11 @@ import javax.crypto.spec.SecretKeySpec
 class Request(var context: Context) {
     private var ysp: YSP? = null
     private var yspApiService: YSPApiService? = null
+    private var yspBtraceService: YSPBtraceService? = null
     private var yspProtoService: YSPProtoService? = null
+
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var myRunnable: MyRunnable
 
     private var mapping = mapOf(
         "CCTV4K" to "CCTV4K 超高清",
@@ -81,10 +89,16 @@ class Request(var context: Context) {
             ysp = YSP(context)
         }
         yspApiService = ApiClient().yspApiService
+        yspBtraceService = BtraceClient().yspBtraceService
         yspProtoService = ProtoClient().yspProtoService
     }
 
     fun fetchData(tvModel: TVViewModel) {
+        if (::myRunnable.isInitialized) {
+            handler.removeCallbacks(myRunnable)
+        }
+
+        tvModel.seq = 0
         val data = ysp?.switch(tvModel)
         val title = tvModel.title.value
 
@@ -114,6 +128,9 @@ class Request(var context: Context) {
                                 Log.i(TAG, "$title url $url")
                                 tvModel.addVideoUrl(url)
                                 tvModel.allReady()
+
+                                myRunnable = MyRunnable(tvModel)
+                                handler.post(myRunnable)
                             } else {
                                 Log.e(TAG, "$title key error")
                                 tvModel.firstSource()
@@ -133,6 +150,49 @@ class Request(var context: Context) {
                     tvModel.firstSource()
                 }
             })
+    }
+
+    inner class MyRunnable(private val tvModel: TVViewModel) : Runnable {
+        override fun run() {
+            fetchBtrace(tvModel)
+            handler.postDelayed(this, 60000)
+        }
+    }
+
+    fun fetchBtrace(tvModel: TVViewModel) {
+        val title = tvModel.title.value
+
+        val guid = ysp?.getGuid()!!
+        val pid = tvModel.pid.value!!
+        val sid = tvModel.sid.value!!
+        yspBtraceService?.kvcollect(
+            c_timestamp = ysp?.generateGuid()!!,
+            guid = guid,
+            c_guid = guid,
+            prog = sid,
+            viewid = sid,
+            fpid = pid,
+            livepid = pid,
+            sUrl = "https://www.yangshipin.cn/#/tv/home?pid=$pid",
+            playno = ysp?.getRand()!!,
+            ftime = getCurrentDate2(),
+            seq = tvModel.seq.toString(),
+        )
+            ?.enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        Log.i(TAG, "$title kvcollect success")
+                    } else {
+                        Log.e(TAG, "$title status error")
+                        tvModel.firstSource()
+                    }
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e(TAG, "$title btrace error")
+                }
+            })
+        tvModel.seq++
     }
 
     fun fetchPage() {
@@ -181,6 +241,12 @@ class Request(var context: Context) {
     private fun getCurrentDate(): String {
         val currentDate = Date()
         val formatter = SimpleDateFormat("yyyyMMdd", Locale.CHINA)
+        return formatter.format(currentDate)
+    }
+
+    private fun getCurrentDate2(): String {
+        val currentDate = Date()
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         return formatter.format(currentDate)
     }
 
