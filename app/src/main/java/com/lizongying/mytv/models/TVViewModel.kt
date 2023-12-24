@@ -34,11 +34,11 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         "CCTV16-HD" to "CCTV16 奥林匹克",
         "CCTV17" to "CCTV17 农业农村",
         "CGTN" to "CGTN",
-        "CGTN外语纪录频道" to "CGTN 纪录频道",
         "CGTN法语频道" to "CGTN 法语频道",
         "CGTN俄语频道" to "CGTN 俄语频道",
         "CGTN阿拉伯语频道" to "CGTN 阿拉伯语频道",
         "CGTN西班牙语频道" to "CGTN 西班牙语频道",
+        "CGTN外语纪录频道" to "CGTN 纪录频道",
 
         "东方卫视" to "东方卫视",
         "湖南卫视" to "湖南卫视",
@@ -103,11 +103,24 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         "CCTV17" to "https://resources.yangshipin.cn/assets/oms/image/202306/ddef563072f8bad2bea5b9e52674cb7b4ed50efb20c26e61994dfbdf05c1e3c0.png?imageMogr2/format/webp",
         "CCTV17 农业农村" to "https://resources.yangshipin.cn/assets/oms/image/202306/ddef563072f8bad2bea5b9e52674cb7b4ed50efb20c26e61994dfbdf05c1e3c0.png?imageMogr2/format/webp",
         "CGTN" to "https://resources.yangshipin.cn/assets/oms/image/202306/a72dff758ca1c17cd0ecc8cedc11b893d208f409d5e6302faa0e9d298848abc3.png?imageMogr2/format/webp",
-        "CGTN 记录频道" to "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
         "CGTN 法语频道" to "https://resources.yangshipin.cn/assets/oms/image/202306/a8d0046a47433d952bf6ed17062deb8bd2184ba9aec0f7781df6bf9487a3ffcf.png?imageMogr2/format/webp",
         "CGTN 俄语频道" to "https://resources.yangshipin.cn/assets/oms/image/202306/bf0a820893cbaf20dd0333e27042e1ef9c8806e5b602b6a8c95af399db0bc77a.png?imageMogr2/format/webp",
-        "CGTN 西班牙语频道" to "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
         "CGTN 阿拉伯语频道" to "https://resources.yangshipin.cn/assets/oms/image/202306/2e44e2aa3e7a1cedf07fd0ae59fe69e86a60a2632660a006e3e9e7397b2d107e.png?imageMogr2/format/webp",
+        "CGTN 西班牙语频道" to "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
+        "CGTN 纪录频道" to "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
+
+        "风云剧场" to "https://resources.yangshipin.cn/assets/oms/image/202306/4d549e53e6d0f632d5a633d1945280797b153e588f919221a07faa869812cc89.png?imageMogr2/format/webp",
+        "第一剧场" to "https://resources.yangshipin.cn/assets/oms/image/202306/a556bd7d93ce65e18f243a8892b5604f4faa994a4897315914216a710a706208.png?imageMogr2/format/webp",
+        "怀旧剧场" to "https://resources.yangshipin.cn/assets/oms/image/202306/5661bd04fecdb6e899f801147a22ab5d3a475bf2b62e30aec2c0023190ebc9b1.png?imageMogr2/format/webp",
+        "风云音乐" to "https://resources.yangshipin.cn/assets/oms/image/202306/bbf1d024c5228b8dd128b0e3cb1717d173fab4ee84c3a4c8a57b1a215362ca3b.png?imageMogr2/format/webp",
+        "兵器科技" to "https://resources.yangshipin.cn/assets/oms/image/202306/4c6b6a6d3839889f34d33db3c2f80233b26b74d3489b393487635f8704e70796.png?imageMogr2/format/webp",
+        "风云足球" to "https://resources.yangshipin.cn/assets/oms/image/202306/cd1e2bb52b06a991de168733e5ff0f1d85adc8042d40c8f393f723543e5dd08a.png?imageMogr2/format/webp",
+        "高尔夫网球" to "https://resources.yangshipin.cn/assets/oms/image/202306/cdd1b31ede7a5ad049ed53d9a072422f829e72dd062ed2c19e077fdd01699071.png?imageMogr2/format/webp",
+        "女性时尚" to "https://resources.yangshipin.cn/assets/oms/image/202306/fa28955ce8b2539d728bf4c6a13a46ff57ad76eae46627f7bcfb1ed8a613d3fc.png?imageMogr2/format/webp",
+        "央视文化精品" to "https://resources.yangshipin.cn/assets/oms/image/202306/14ac5ce40482cacd3d4b37435222bfe86af2b452a2f04ecbfc1d13d76edd7c57.png?imageMogr2/format/webp",
+        "央视台球" to "https://resources.yangshipin.cn/assets/oms/image/202306/10e14a92478011aa6c3c8562e62127f3b1908e29fcd78e4b2b24b9e6d3ec2fbc.png?imageMogr2/format/webp",
+        "电视指南" to "https://resources.yangshipin.cn/assets/oms/image/202306/244d72c0eb1615ed7d51c2f5db5a67f306aa3f58c05bc2d34de3aa7e956dc8c9.png?imageMogr2/format/webp",
+        "卫生健康" to "https://resources.yangshipin.cn/assets/oms/image/202306/54a6863656fdfd8f803be193ddf22441c5000a108833889816fd2d8911715ce8.png?imageMogr2/format/webp",
 
         "东方卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/9bd372ca292a82ce3aa08772b07efc4af1f85c21d1f268ea33440c49e9a0a488.png?imageMogr2/format/webp",
         "湖南卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/4120e89d3079d08aa17d382f69a2308ec70839b278367763c34a34666c75cb88.png?imageMogr2/format/webp",
@@ -174,8 +187,22 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         "CGTN" to "600014550",
         "CGTN 法语频道" to "600084704",
         "CGTN 俄语频道" to "600084758",
-        "CGTN 西班牙语频道" to "600084744",
         "CGTN 阿拉伯语频道" to "600084782",
+        "CGTN 西班牙语频道" to "600084744",
+        "CGTN 记录频道" to "600084781",
+
+        "风云剧场" to "600099658",
+        "第一剧场" to "600099655",
+        "怀旧剧场" to "600099620",
+        "风云音乐" to "600099660",
+        "兵器科技" to "600099649",
+        "风云足球" to "600099636",
+        "高尔夫网球" to "600099659",
+        "女性时尚" to "600099650",
+        "央视文化精品" to "600099653",
+        "央视台球" to "600099652",
+        "电视指南" to "600099656",
+        "卫生健康" to "600099651",
 
         "东方卫视" to "600002483",
         "湖南卫视" to "600002475",
@@ -298,6 +325,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _title.value = tv.title
         _videoUrl.value = tv.videoUrl
         _videoIndex.value = tv.videoIndex
+        Log.i(TAG, "tv.title ${tv.title} ${mappingLogo[tv.title]}")
         if (mappingLogo[tv.title] != null) {
             _logo.value = mappingLogo[tv.title]
         }

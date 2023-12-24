@@ -55,11 +55,11 @@ class Request(var context: Context) {
         "CCTV16-HD" to "CCTV16 奥林匹克",
         "CCTV17" to "CCTV17 农业农村",
         "CGTN" to "CGTN",
-        "CGTN外语纪录频道" to "CGTN 纪录频道",
         "CGTN法语频道" to "CGTN 法语频道",
         "CGTN俄语频道" to "CGTN 俄语频道",
         "CGTN阿拉伯语频道" to "CGTN 阿拉伯语频道",
         "CGTN西班牙语频道" to "CGTN 西班牙语频道",
+        "CGTN外语纪录频道" to "CGTN 纪录频道",
 
         "东方卫视" to "东方卫视",
         "湖南卫视" to "湖南卫视",
@@ -181,15 +181,15 @@ class Request(var context: Context) {
             ?.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
-                        Log.i(TAG, "$title kvcollect success")
+//                        Log.i(TAG, "$title kvcollect success")
                     } else {
-                        Log.e(TAG, "$title status error")
+                        Log.e(TAG, "$title kvcollect status error")
                         tvModel.firstSource()
                     }
                 }
 
                 override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Log.e(TAG, "$title btrace error")
+                    Log.e(TAG, "$title kvcollect request error")
                 }
             })
         tvModel.seq++
