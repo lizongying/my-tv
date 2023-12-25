@@ -1,40 +1,37 @@
 package com.lizongying.mytv
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.leanback.app.VideoSupportFragment
-import androidx.leanback.app.VideoSupportFragmentGlueHost
-import androidx.leanback.media.PlaybackTransportControlGlue
-import androidx.leanback.media.PlayerAdapter
-import androidx.leanback.widget.PlaybackControlsRow
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.OptIn
+import androidx.fragment.app.Fragment
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+import com.lizongying.mytv.databinding.PlayerBinding
 import com.lizongying.mytv.models.TVViewModel
-import java.io.IOException
 
-class PlaybackFragment : VideoSupportFragment() {
 
-    private lateinit var mTransportControlGlue: PlaybackTransportControlGlue<PlayerAdapter>
-    private var playerAdapter: ExoPlayerAdapter? = null
+class PlaybackFragment : Fragment() {
+
     private var lastVideoUrl: String = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private var _binding: PlayerBinding? = null
+    private var playerView: PlayerView? = null
 
-        playerAdapter = ExoPlayerAdapter(context)
-        playerAdapter?.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE)
-
-        view?.isFocusable = false
-        view?.isFocusableInTouchMode = false
-
-        val glueHost = VideoSupportFragmentGlueHost(this@PlaybackFragment)
-        mTransportControlGlue = PlaybackControlGlue(activity, playerAdapter)
-        mTransportControlGlue.host = glueHost
-        mTransportControlGlue.playWhenPrepared()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = PlayerBinding.inflate(inflater, container, false)
+        playerView = _binding!!.playerView
+        return _binding!!.root
     }
 
-    override fun showControlsOverlay(runAnimation: Boolean) {
-    }
-
+    @OptIn(UnstableApi::class)
     fun play(tvModel: TVViewModel) {
         val videoUrl = tvModel.videoIndex.value?.let { tvModel.videoUrl.value?.get(it) }
         if (videoUrl == null || videoUrl == "") {
@@ -49,26 +46,17 @@ class PlaybackFragment : VideoSupportFragment() {
 
         lastVideoUrl = videoUrl
 
-        playerAdapter?.callback = PlayerCallback(tvModel)
-        if (tvModel.ysp() != null) {
-            playerAdapter?.setMinimumLoadableRetryCount(0)
-        }
-        try {
-            playerAdapter?.setDataSource(Uri.parse(videoUrl))
-        } catch (e: IOException) {
-            Log.e(TAG, "error $e")
-            return
-        }
-        hideControlsOverlay(false)
-    }
-
-    private inner class PlayerCallback(private var tvModel: TVViewModel) :
-        PlayerAdapter.Callback() {
-        override fun onError(adapter: PlayerAdapter?, errorCode: Int, errorMessage: String?) {
-            Log.e(TAG, "on error: $errorMessage")
-            if (tvModel.ysp() != null && tvModel.videoIndex.value!! > 0 && errorMessage == "Source error") {
-                tvModel.changed()
+        if (playerView!!.player == null) {
+            playerView!!.player = activity?.let {
+                ExoPlayer.Builder(it)
+                    .build()
             }
+            playerView!!.player?.playWhenReady = true
+        }
+
+        playerView!!.player?.run {
+            setMediaItem(MediaItem.fromUri(videoUrl))
+            prepare()
         }
     }
 

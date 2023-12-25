@@ -134,35 +134,7 @@ class MainActivity : FragmentActivity() {
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            // 处理单击事件
-            val versionName = getPackageInfo().versionName
-
-            val textView = TextView(this@MainActivity)
-            textView.text =
-                "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
-
-            val imageView = ImageView(this@MainActivity)
-            val drawable = ContextCompat.getDrawable(this@MainActivity, R.drawable.appreciate)
-            imageView.setImageDrawable(drawable)
-
-            val linearLayout = LinearLayout(this@MainActivity)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.addView(textView)
-            linearLayout.addView(imageView)
-
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            imageView.layoutParams = layoutParams
-            textView.layoutParams = layoutParams
-
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
-            builder
-                .setView(linearLayout)
-
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
+            switchMainFragment()
             return true
         }
 

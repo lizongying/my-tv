@@ -51,7 +51,6 @@ class MainFragment : BrowseSupportFragment() {
 //            request?.fetchPage()
 //            tvListViewModel.getTVViewModel(0)?.let { request?.fetchProgram(it) }
         }
-
         tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
             tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
                 if (tvViewModel.ready.value != null) {

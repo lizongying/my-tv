@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Must be kept in sync with AspectRatioFrameLayout -->
+    <attr name="resize_mode" format="enum">
+        <enum name="fit" value="0"/>
+        <enum name="fixed_width" value="1"/>
+        <enum name="fixed_height" value="2"/>
+        <enum name="fill" value="3"/>
+        <enum name="zoom" value="4"/>
+    </attr>
+
+    <!-- Must be kept in sync with LegacyPlayerView and PlayerView -->
+    <attr name="surface_type" format="enum">
+        <enum name="none" value="0"/>
+        <enum name="surface_view" value="1"/>
+        <enum name="texture_view" value="2"/>
+        <enum name="spherical_gl_surface_view" value="3"/>
+        <enum name="video_decoder_gl_surface_view" value="4"/>
+    </attr>
+
+    <!-- Must be kept in sync with RepeatModeUtil -->
+    <attr name="repeat_toggle_modes">
+        <flag name="none" value="0"/>
+        <flag name="one" value="1"/>
+        <flag name="all" value="2"/>
+    </attr>
+
+    <!-- LegacyPlayerView and PlayerView attributes -->
+    <attr name="use_artwork" format="boolean"/>
+    <attr name="artwork_display_mode" format="enum">
+        <enum name="off" value="0"/>
+        <enum name="fit" value="1"/>
+        <enum name="fill" value="2"/>
+    </attr>
+    <attr name="shutter_background_color" format="color"/>
+    <attr name="default_artwork" format="reference"/>
+    <attr name="use_controller" format="boolean"/>
+    <attr name="hide_on_touch" format="boolean"/>
+    <attr name="hide_during_ads" format="boolean"/>
+    <attr name="auto_show" format="boolean"/>
+    <attr name="show_buffering" format="enum">
+        <enum name="never" value="0"/>
+        <enum name="when_playing" value="1"/>
+        <enum name="always" value="2"/>
+    </attr>
+    <attr name="keep_content_on_player_reset" format="boolean"/>
+    <attr name="player_layout_id" format="reference"/>
+
+    <!-- LegacyPlayerControlView and PlayerControlView attributes -->
+    <attr name="show_timeout" format="integer"/>
+    <attr name="show_rewind_button" format="boolean"/>
+    <attr name="show_fastforward_button" format="boolean"/>
+    <attr name="show_previous_button" format="boolean"/>
+    <attr name="show_next_button" format="boolean"/>
+    <attr name="show_shuffle_button" format="boolean"/>
+    <attr name="show_subtitle_button" format="boolean"/>
+    <attr name="show_vr_button" format="boolean"/>
+    <attr name="time_bar_min_update_interval" format="integer"/>
+    <attr name="controller_layout_id" format="reference"/>
+    <attr name="animation_enabled" format="boolean"/>
+
+    <!-- Needed for https://github.com/google/ExoPlayer/issues/7898 -->
+    <attr name="backgroundTint" format="color"/>
+
+    <!-- DefaultTimeBar attributes -->
+    <attr name="bar_height" format="dimension"/>
+    <attr name="bar_gravity" format="enum">
+        <enum name="center" value="0"/>
+        <enum name="bottom" value="1"/>
+    </attr>
+    <attr name="touch_target_height" format="dimension"/>
+    <attr name="ad_marker_width" format="dimension"/>
+    <attr name="scrubber_enabled_size" format="dimension"/>
+    <attr name="scrubber_disabled_size" format="dimension"/>
+    <attr name="scrubber_dragged_size" format="dimension"/>
+    <attr name="scrubber_drawable" format="reference"/>
+    <attr name="played_color" format="color"/>
+    <attr name="scrubber_color" format="color"/>
+    <attr name="buffered_color" format="color"/>
+    <attr name="unplayed_color" format="color"/>
+    <attr name="ad_marker_color" format="color"/>
+    <attr name="played_ad_marker_color" format="color"/>
+
+    <declare-styleable name="PlayerView">
+        <attr name="use_artwork"/>
+        <attr name="artwork_display_mode"/>
+        <attr name="shutter_background_color"/>
+        <attr name="default_artwork"/>
+        <attr name="use_controller"/>
+        <attr name="hide_on_touch"/>
+        <attr name="hide_during_ads"/>
+        <attr name="auto_show"/>
+        <attr name="show_buffering"/>
+        <attr name="keep_content_on_player_reset"/>
+        <attr name="player_layout_id"/>
+        <attr name="surface_type"/>
+        <!-- AspectRatioFrameLayout attributes -->
+        <attr name="resize_mode"/>
+        <!-- PlayerControlView attributes -->
+        <attr name="show_timeout"/>
+        <attr name="repeat_toggle_modes"/>
+        <attr name="show_shuffle_button"/>
+        <attr name="show_subtitle_button"/>
+        <attr name="show_vr_button"/>
+        <attr name="time_bar_min_update_interval"/>
+        <attr name="controller_layout_id"/>
+        <attr name="animation_enabled"/>
+        <!-- DefaultTimeBar attributes -->
+        <attr name="bar_height"/>
+        <attr name="bar_gravity"/>
+        <attr name="touch_target_height"/>
+        <attr name="ad_marker_width"/>
+        <attr name="scrubber_enabled_size"/>
+        <attr name="scrubber_disabled_size"/>
+        <attr name="scrubber_dragged_size"/>
+        <attr name="scrubber_drawable"/>
+        <attr name="played_color"/>
+        <attr name="scrubber_color"/>
+        <attr name="buffered_color" />
+        <attr name="unplayed_color"/>
+        <attr name="ad_marker_color"/>
+        <attr name="played_ad_marker_color"/>
+    </declare-styleable>
+
+    <declare-styleable name="AspectRatioFrameLayout">
+        <attr name="resize_mode"/>
+    </declare-styleable>
+
+    <declare-styleable name="LegacyPlayerControlView">
+        <attr name="show_timeout"/>
+        <attr name="repeat_toggle_modes"/>
+        <attr name="show_rewind_button"/>
+        <attr name="show_fastforward_button"/>
+        <attr name="show_previous_button"/>
+        <attr name="show_next_button"/>
+        <attr name="show_shuffle_button"/>
+        <attr name="time_bar_min_update_interval"/>
+        <attr name="controller_layout_id"/>
+        <!-- DefaultTimeBar attributes -->
+        <attr name="bar_height"/>
+        <attr name="bar_gravity"/>
+        <attr name="touch_target_height"/>
+        <attr name="ad_marker_width"/>
+        <attr name="scrubber_enabled_size"/>
+        <attr name="scrubber_disabled_size"/>
+        <attr name="scrubber_dragged_size"/>
+        <attr name="scrubber_drawable"/>
+        <attr name="played_color"/>
+        <attr name="scrubber_color"/>
+        <attr name="buffered_color" />
+        <attr name="unplayed_color"/>
+        <attr name="ad_marker_color"/>
+        <attr name="played_ad_marker_color"/>
+    </declare-styleable>
+
+    <declare-styleable name="PlayerControlView">
+        <attr name="show_timeout"/>
+        <attr name="repeat_toggle_modes"/>
+        <attr name="show_rewind_button"/>
+        <attr name="show_fastforward_button"/>
+        <attr name="show_previous_button"/>
+        <attr name="show_next_button"/>
+        <attr name="show_shuffle_button"/>
+        <attr name="show_subtitle_button"/>
+        <attr name="show_vr_button"/>
+        <attr name="time_bar_min_update_interval"/>
+        <attr name="controller_layout_id"/>
+        <attr name="animation_enabled"/>
+        <!-- DefaultTimeBar attributes -->
+        <attr name="bar_height"/>
+        <attr name="bar_gravity"/>
+        <attr name="touch_target_height"/>
+        <attr name="ad_marker_width"/>
+        <attr name="scrubber_enabled_size"/>
+        <attr name="scrubber_disabled_size"/>
+        <attr name="scrubber_dragged_size"/>
+        <attr name="scrubber_drawable"/>
+        <attr name="played_color"/>
+        <attr name="scrubber_color"/>
+        <attr name="buffered_color" />
+        <attr name="unplayed_color"/>
+        <attr name="ad_marker_color"/>
+        <attr name="played_ad_marker_color"/>
+    </declare-styleable>
+
+    <declare-styleable name="DefaultTimeBar">
+        <attr name="bar_height"/>
+        <attr name="bar_gravity"/>
+        <attr name="touch_target_height"/>
+        <attr name="ad_marker_width"/>
+        <attr name="scrubber_enabled_size"/>
+        <attr name="scrubber_disabled_size"/>
+        <attr name="scrubber_dragged_size"/>
+        <attr name="scrubber_drawable"/>
+        <attr name="played_color"/>
+        <attr name="scrubber_color"/>
+        <attr name="buffered_color" />
+        <attr name="unplayed_color"/>
+        <attr name="ad_marker_color"/>
+        <attr name="played_ad_marker_color"/>
+    </declare-styleable>
+</resources>
