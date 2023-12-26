@@ -2,11 +2,13 @@ package com.lizongying.mytv.api
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.lizongying.mytv.Encryptor
 import com.lizongying.mytv.MainActivity
 import com.lizongying.mytv.models.TVViewModel
 import java.util.Date
 import kotlin.math.floor
+import kotlin.random.Random
 
 class YSP(var context: Context) {
     private var cnlid = ""
@@ -87,14 +89,8 @@ class YSP(var context: Context) {
 
     fun generateGuid(): String {
         val timestamp = (System.currentTimeMillis()).toString(36)
-        val originalString = Math.random().toString()
-        val resultString = if (originalString.startsWith("0.")) {
-            originalString.substring(2)
-        } else {
-            originalString
-        }
-        val randomPart = resultString.toLong().toString(36)
-        return timestamp + "_" + randomPart
+        val randomPart = Random.nextLong().toString(36).take(11)
+        return timestamp + "_" + "0".repeat(11 - randomPart.length) + randomPart
     }
 
     fun getGuid(): String {

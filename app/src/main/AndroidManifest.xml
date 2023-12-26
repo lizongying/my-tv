@@ -16,10 +16,10 @@
         <activity
             android:keepScreenOn="true"
             android:name=".MainActivity"
-            android:banner="@drawable/tv"
+            android:banner="@drawable/logo"
             android:exported="true"
-            android:icon="@drawable/tv"
-            android:logo="@drawable/tv"
+            android:icon="@drawable/logo"
+            android:logo="@drawable/logo"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

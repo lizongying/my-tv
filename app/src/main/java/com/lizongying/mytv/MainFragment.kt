@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -90,17 +93,6 @@ class MainFragment : BrowseSupportFragment() {
                         Log.i(TAG, "get program ${tvViewModel.title.value}")
                         request?.fetchProgram(tvViewModel)
                     }
-                }
-            }
-        }
-    }
-
-    fun checkProgram() {
-        tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
-            if (tvViewModel.program.value!!.isEmpty()) {
-                if (tvViewModel.programId.value != null) {
-                    Log.i(TAG, "get program ${tvViewModel.title.value}")
-                    request?.fetchProgram(tvViewModel)
                 }
             }
         }
@@ -244,6 +236,7 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
+            Log.i(TAG, "onSingleTapConfirmed")
             if (item is TVViewModel) {
                 itemPosition = item.id.value!!
                 savePosition(itemPosition)
@@ -261,17 +254,7 @@ class MainFragment : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
-            if (itemViewHolder == null) {
-                view?.post {
-                    val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-                    if (tvViewModel != null) {
-                        setSelectedPosition(
-                            tvViewModel.getRowPosition(), false,
-                            SelectItemViewHolderTask(tvViewModel.getItemPosition())
-                        )
-                    }
-                }
-            }
+            Log.i(TAG, "onSingleTapConfirmed1111")
             if (item is TVViewModel) {
                 tvListViewModel.setItemPositionCurrent(item.id.value!!)
             }

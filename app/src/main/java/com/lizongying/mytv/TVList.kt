@@ -84,7 +84,6 @@ CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8,https://resource
 三沙卫视,https://pullsstv90080111.ssws.tv/live/SSTV20220729.m3u8
 延边卫视,http://live.ybtvyun.com/video/s10006-44f040627ca1/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226220/index.m3u8
 浙江少儿,http://hw-m-l.cztv.com/channels/lantian/channel008/1080p.m3u8
-南京少儿,http://live.nbs.cn/channels/njtv/sepd/500k.m3u8
 
 移动专区
 CETV1,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225753/index.m3u8
@@ -161,6 +160,9 @@ CHC动作电影,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226465/in
             }
             if (!i.contains(",")) {
                 channel = i.trim()
+                if (channel == "移动专区") {
+                    break
+                }
                 continue
             }
             val p = i.split(",")

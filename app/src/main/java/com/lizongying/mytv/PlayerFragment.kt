@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -15,7 +17,7 @@ import com.lizongying.mytv.databinding.PlayerBinding
 import com.lizongying.mytv.models.TVViewModel
 
 
-class PlaybackFragment : Fragment() {
+class PlayerFragment : Fragment() {
 
     private var lastVideoUrl: String = ""
 
@@ -52,6 +54,14 @@ class PlaybackFragment : Fragment() {
                     .build()
             }
             playerView!!.player?.playWhenReady = true
+            playerView!!.player?.addListener(object : Player.Listener {
+                override fun onVideoSizeChanged(videoSize: VideoSize) {
+                    val aspectRatio = 16f / 9f
+                    val layoutParams = playerView?.layoutParams
+                    layoutParams?.width = (playerView?.measuredHeight?.times(aspectRatio))?.toInt()
+                    playerView?.layoutParams = layoutParams
+                }
+            })
         }
 
         playerView!!.player?.run {

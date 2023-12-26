@@ -4,11 +4,14 @@
     android:id="@+id/player_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:keepScreenOn="true">
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:resize_mode="fill"
         app:use_controller="false" />
 </FrameLayout>

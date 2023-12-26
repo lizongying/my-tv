@@ -1,3 +1,4 @@
 <resources>
     <color name="fastlane_background">#30000000</color>
+    <color name="black">#000</color>
 </resources>

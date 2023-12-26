@@ -10,7 +10,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
-import com.lizongying.mytv.CustomLoadErrorHandlingPolicy
 import com.lizongying.mytv.TV
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
 import java.util.Date
@@ -426,9 +425,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         val httpDataSource = DefaultHttpDataSource.Factory()
         mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
 
-        return HlsMediaSource.Factory(httpDataSource).setLoadErrorHandlingPolicy(
-            CustomLoadErrorHandlingPolicy(mMinimumLoadableRetryCount)
-        ).createMediaSource(
+        return HlsMediaSource.Factory(httpDataSource).createMediaSource(
             MediaItem.fromUri(
                 Uri.parse(videoUrl)
             )

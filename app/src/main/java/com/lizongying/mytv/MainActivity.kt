@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -26,7 +27,7 @@ import java.security.MessageDigest
 
 class MainActivity : FragmentActivity() {
 
-    private val playbackFragment = PlaybackFragment()
+    private val playerFragment = PlayerFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
 
@@ -40,10 +41,11 @@ class MainActivity : FragmentActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.main_browse_fragment, playbackFragment)
+                .add(R.id.main_browse_fragment, playerFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
                 .hide(infoFragment)
@@ -75,7 +77,7 @@ class MainActivity : FragmentActivity() {
 
     fun play(tvViewModel: TVViewModel) {
         Log.i(TAG, "play: ${tvViewModel.getTV()}")
-        playbackFragment.play(tvViewModel)
+        playerFragment.play(tvViewModel)
     }
 
     fun prev() {
@@ -134,6 +136,7 @@ class MainActivity : FragmentActivity() {
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            Log.i(TAG, "onSingleTapConfirmed")
             switchMainFragment()
             return true
         }
@@ -240,12 +243,12 @@ class MainActivity : FragmentActivity() {
                 if (mainFragment.isHidden) {
                     prev()
                 } else {
-                    if (mainFragment.selectedPosition == 0) {
-                        mainFragment.setSelectedPosition(
-                            mainFragment.tvListViewModel.maxNum.size - 1,
-                            false
-                        )
-                    }
+//                    if (mainFragment.selectedPosition == 0) {
+//                        mainFragment.setSelectedPosition(
+//                            mainFragment.tvListViewModel.maxNum.size - 1,
+//                            false
+//                        )
+//                    }
                 }
             }
 
@@ -253,11 +256,11 @@ class MainActivity : FragmentActivity() {
                 if (mainFragment.isHidden) {
                     next()
                 } else {
-                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
-//                        mainFragment.setSelectedPosition(0, false)
-                        hideMainFragment()
-                        return false
-                    }
+//                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
+////                        mainFragment.setSelectedPosition(0, false)
+//                        hideMainFragment()
+//                        return false
+//                    }
                 }
             }
 
@@ -265,12 +268,12 @@ class MainActivity : FragmentActivity() {
                 if (mainFragment.isHidden) {
                     prevSource()
                 } else {
-                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-                            ?.getItemPosition() == 0
-                    ) {
-//                        mainFragment.toLastPosition()
-                        hideMainFragment()
-                    }
+//                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
+//                            ?.getItemPosition() == 0
+//                    ) {
+////                        mainFragment.toLastPosition()
+//                        hideMainFragment()
+//                    }
                 }
             }
 
@@ -278,11 +281,11 @@ class MainActivity : FragmentActivity() {
                 if (mainFragment.isHidden) {
                     nextSource()
                 } else {
-                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
-                    ) {
-                        mainFragment.toFirstPosition()
-                    }
+//                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
+//                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
+//                    ) {
+//                        mainFragment.toFirstPosition()
+//                    }
                 }
             }
         }
