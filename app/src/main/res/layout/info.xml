@@ -5,15 +5,50 @@
     android:layout_height="80dp"
     android:layout_gravity="center_horizontal|bottom"
     android:layout_marginBottom="20dp"
-    android:background="@color/fastlane_background"
-    >
+    android:background="@drawable/rounded_background">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/info_logo"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="10dp"
-        android:textSize="40sp"
-        />
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/logo"
+        android:padding="10dp" />
+
+    <LinearLayout
+        android:layout_width="216dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="100dp"
+        android:background="#FF263238"
+        android:gravity="start|center_vertical"
+        android:orientation="vertical"
+        android:padding="7dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="0dp"
+            android:gravity="start"
+            android:textColor="#FFEEEEEE"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/info_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="10dp"
+            android:gravity="start"
+            android:singleLine="true"
+            android:textColor="#B3EEEEEE"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="8dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/rounded_background2" />
 </FrameLayout>

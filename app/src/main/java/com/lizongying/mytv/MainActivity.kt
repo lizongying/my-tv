@@ -55,25 +55,9 @@ class MainActivity : FragmentActivity() {
         gestureDetector = GestureDetector(this, GestureListener())
     }
 
-    fun switchInfoFragment(tv: TV) {
-        infoFragment.setInfo(tv)
-
-        if (infoFragment.isHidden) {
-            supportFragmentManager.beginTransaction().show(infoFragment).commit()
-        }
-    }
-
-    fun showInfoFragment(tv: TV) {
-        infoFragment.setInfo(tv)
-        supportFragmentManager.beginTransaction()
-            .show(infoFragment)
-            .commit()
-    }
-
-    fun hideInfoFragment() {
-        supportFragmentManager.beginTransaction()
-            .hide(infoFragment)
-            .commit()
+    fun showInfoFragment(tvViewModel: TVViewModel) {
+        infoFragment.setInfo(tvViewModel)
+        infoFragment.show()
     }
 
     fun play(tvViewModel: TVViewModel) {

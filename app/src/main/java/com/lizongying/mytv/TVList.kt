@@ -69,10 +69,10 @@ CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8,https://resource
 四川卫视,http://39.134.24.166/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/3276a414ae0eaa0f116f2045cd913367967d0c7c1e978e8621ac3879436c6ed7.png?imageMogr2/format/webp,600002516,2000295003
 东南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226341/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225766/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/3208fe6564a293c21b711333fb3edb05bb5b406cff840573c9a8d839680a1579.png?imageMogr2/format/webp,600002484,2000292503
 海南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226465/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225769/index.m3u8,https://resources.yangshipin.cn/assets/oms/image/202306/6e060391fde0469801fc3d84dbf204b4f8d650d251f17d7595a6964c0bb99e81.png?imageMogr2/format/webp,600002506,2000291503
-三沙卫视,https://pullsstv90080111.ssws.tv/live/SSTV20220729.m3u8
 
 移动专区
 
+三沙卫视,https://pullsstv90080111.ssws.tv/live/SSTV20220729.m3u8
 
 天津卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225740/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226204/index.m3u8
 吉林卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226397/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225792/index.m3u8

@@ -324,7 +324,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _title.value = tv.title
         _videoUrl.value = tv.videoUrl
         _videoIndex.value = tv.videoIndex
-        Log.i(TAG, "tv.title ${tv.title} ${mappingLogo[tv.title]}")
+        Log.d(TAG, "${tv.title} ${mappingLogo[tv.title]}")
         if (mappingLogo[tv.title] != null) {
             _logo.value = mappingLogo[tv.title]
         }

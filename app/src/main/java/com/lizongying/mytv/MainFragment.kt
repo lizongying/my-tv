@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -64,7 +63,6 @@ class MainFragment : BrowseSupportFragment() {
                 ) {
                     Log.i(TAG, "ready ${tvViewModel.title.value}")
                     (activity as? MainActivity)?.play(tvViewModel)
-//                        (activity as? MainActivity)?.switchInfoFragment(item)
                 }
             }
             tvViewModel.change.observe(viewLifecycleOwner) { _ ->
@@ -76,29 +74,20 @@ class MainFragment : BrowseSupportFragment() {
                         lifecycleScope.launch(Dispatchers.IO) {
                             tvViewModel.let { request?.fetchData(it) }
                         }
+                        (activity as? MainActivity)?.showInfoFragment(tvViewModel)
                         setSelectedPosition(
                             tvViewModel.getRowPosition(), true,
                             SelectItemViewHolderTask(tvViewModel.getItemPosition())
                         )
-                        Toast.makeText(
-                            activity,
-                            title,
-                            Toast.LENGTH_SHORT
-                        ).show()
                     } else {
                         if (check(tvViewModel)) {
                             (activity as? MainActivity)?.play(tvViewModel)
-//                        (activity as? MainActivity)?.switchInfoFragment(item)
+                            (activity as? MainActivity)?.showInfoFragment(tvViewModel)
 
                             setSelectedPosition(
                                 tvViewModel.getRowPosition(), true,
                                 SelectItemViewHolderTask(tvViewModel.getItemPosition())
                             )
-                            Toast.makeText(
-                                activity,
-                                title,
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
                     }
                 }
