@@ -86,6 +86,26 @@ CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8,https://resource
 浙江少儿,http://hw-m-l.cztv.com/channels/lantian/channel008/1080p.m3u8
 
 移动专区
+
+
+天津卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225740/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226204/index.m3u8
+吉林卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226397/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225792/index.m3u8
+云南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226444/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225751/index.m3u8
+内蒙古卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226389/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225786/index.m3u8
+新疆卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226460/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225747/index.m3u8
+甘肃卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225633/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225754/index.m3u8
+青海卫视,http://stream.qhbtv.com/qhws/sd/live.m3u8
+陕西卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226457/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225821/index.m3u8
+西藏卫视,http://39.134.24.161/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226212/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226212/index.m3u8
+山西卫视,http://39.134.24.161/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225763/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225763/index.m3u8
+宁夏卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225748/index.m3u8
+安多卫视,http://stream.qhbtv.com/adws/sd/live.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226228/index.m3u8
+三沙卫视,https://pullsstv90080111.ssws.tv/live/SSTV20220729.m3u8
+延边卫视,http://live.ybtvyun.com/video/s10006-44f040627ca1/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226220/index.m3u8
+浙江少儿,http://hw-m-l.cztv.com/channels/lantian/channel008/1080p.m3u8
+
+
+
 CETV1,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225753/index.m3u8
 CETV2,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225756/index.m3u8
 CETV3,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226226/index.m3u8

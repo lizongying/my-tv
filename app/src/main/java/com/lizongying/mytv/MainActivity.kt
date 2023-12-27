@@ -27,7 +27,7 @@ import java.security.MessageDigest
 
 class MainActivity : FragmentActivity() {
 
-    private val playerFragment = PlayerFragment()
+    var playerFragment = PlayerFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
 
@@ -88,11 +88,11 @@ class MainActivity : FragmentActivity() {
         mainFragment.next()
     }
 
-    fun prevSource() {
+    private fun prevSource() {
         mainFragment.prevSource()
     }
 
-    fun nextSource() {
+    private fun nextSource() {
         mainFragment.nextSource()
     }
 
@@ -100,7 +100,7 @@ class MainActivity : FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
 
         if (mainFragment.isHidden) {
-            focusMainFragment()
+//            focusMainFragment()
             transaction.show(mainFragment)
         } else {
             transaction.hide(mainFragment)
@@ -113,7 +113,7 @@ class MainActivity : FragmentActivity() {
         mainFragment.focus()
     }
 
-    fun mainFragmentIsHidden(): Boolean {
+    private fun mainFragmentIsHidden(): Boolean {
         return mainFragment.isHidden
     }
 
@@ -126,7 +126,6 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        // 在触摸事件中将事件传递给 GestureDetector 处理手势
         if (event != null) {
             gestureDetector.onTouchEvent(event)
         }
@@ -147,30 +146,27 @@ class MainActivity : FragmentActivity() {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            // 如果 Y 方向的速度为负值，表示向上滑动
-            if (velocityY < 0) {
-                // 在这里执行上滑时的操作
+            if (velocityY > 0) {
                 if (mainFragment.isHidden) {
                     prev()
                 } else {
-                    if (mainFragment.selectedPosition == 0) {
-                        mainFragment.setSelectedPosition(
-                            mainFragment.tvListViewModel.maxNum.size - 1,
-                            false
-                        )
-                    }
+//                    if (mainFragment.selectedPosition == 0) {
+//                        mainFragment.setSelectedPosition(
+//                            mainFragment.tvListViewModel.maxNum.size - 1,
+//                            false
+//                        )
+//                    }
                 }
             }
-            if (velocityY > 0) {
-                // 在这里执行上滑时的操作
+            if (velocityY < 0) {
                 if (mainFragment.isHidden) {
                     next()
                 } else {
-                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
-//                        mainFragment.setSelectedPosition(0, false)
-                        hideMainFragment()
-                        return false
-                    }
+//                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
+////                        mainFragment.setSelectedPosition(0, false)
+//                        hideMainFragment()
+//                        return false
+//                    }
                 }
             }
             return super.onFling(e1, e2, velocityX, velocityY)

@@ -4,9 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -36,6 +33,9 @@ class MainFragment : BrowseSupportFragment() {
     var tvListViewModel = TVListViewModel()
 
     private var sharedPref: SharedPreferences? = null
+
+    private var lastVideoUrl: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
@@ -56,19 +56,23 @@ class MainFragment : BrowseSupportFragment() {
         }
         tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
             tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.ready.value != null) {
+
+                // not first time && channel not change
+                if (tvViewModel.ready.value != null
+                    && tvViewModel.id.value == itemPosition
+                    && check(tvViewModel)
+                ) {
                     Log.i(TAG, "ready ${tvViewModel.title.value}")
-                    if (tvViewModel.id.value == itemPosition) {
-                        (activity as? MainActivity)?.play(tvViewModel)
-//                        (activity as? MainActivity)?.switchInfoFragment(tv)
-                    }
+                    (activity as? MainActivity)?.play(tvViewModel)
+//                        (activity as? MainActivity)?.switchInfoFragment(item)
                 }
             }
             tvViewModel.change.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.change.value != null) {
-                    Log.i(TAG, "switch to ${tvViewModel.title.value}")
+                if (tvViewModel.change.value != null && check(tvViewModel)) {
+                    val title = tvViewModel.title.value
+                    Log.i(TAG, "switch $title")
                     if (tvViewModel.ysp() != null) {
-                        Log.i(TAG, "${tvViewModel.title.value} to get ysp")
+                        Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
                             tvViewModel.let { request?.fetchData(it) }
                         }
@@ -82,7 +86,7 @@ class MainFragment : BrowseSupportFragment() {
                     )
                     Toast.makeText(
                         activity,
-                        tvViewModel.title.value,
+                        title,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -96,6 +100,22 @@ class MainFragment : BrowseSupportFragment() {
                 }
             }
         }
+    }
+
+    fun check(tvViewModel: TVViewModel): Boolean {
+        val title = tvViewModel.title.value
+        val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
+        if (videoUrl == null || videoUrl == "") {
+            Log.e(TAG, "$title videoUrl is empty")
+            return false
+        }
+
+        if (videoUrl == lastVideoUrl) {
+            Log.e(TAG, "$title videoUrl is duplication")
+            return false
+        }
+
+        return true
     }
 
     fun toLastPosition() {
