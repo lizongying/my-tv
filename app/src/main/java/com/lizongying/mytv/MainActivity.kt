@@ -50,6 +50,7 @@ class MainActivity : FragmentActivity() {
                 .add(R.id.main_browse_fragment, infoFragment)
                 .hide(infoFragment)
                 .commit()
+            mainFragment.view?.requestFocus()
         }
         gestureDetector = GestureDetector(this, GestureListener())
     }
@@ -78,6 +79,7 @@ class MainActivity : FragmentActivity() {
     fun play(tvViewModel: TVViewModel) {
         Log.i(TAG, "play: ${tvViewModel.getTV()}")
         playerFragment.play(tvViewModel)
+        mainFragment.view?.requestFocus()
     }
 
     fun prev() {
@@ -100,7 +102,7 @@ class MainActivity : FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
 
         if (mainFragment.isHidden) {
-//            focusMainFragment()
+            focusMainFragment()
             transaction.show(mainFragment)
         } else {
             transaction.hide(mainFragment)

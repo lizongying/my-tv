@@ -68,7 +68,7 @@ class MainFragment : BrowseSupportFragment() {
                 }
             }
             tvViewModel.change.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.change.value != null && check(tvViewModel)) {
+                if (tvViewModel.change.value != null) {
                     val title = tvViewModel.title.value
                     Log.i(TAG, "switch $title")
                     if (tvViewModel.ysp() != null) {
@@ -76,19 +76,31 @@ class MainFragment : BrowseSupportFragment() {
                         lifecycleScope.launch(Dispatchers.IO) {
                             tvViewModel.let { request?.fetchData(it) }
                         }
+                        setSelectedPosition(
+                            tvViewModel.getRowPosition(), true,
+                            SelectItemViewHolderTask(tvViewModel.getItemPosition())
+                        )
+                        Toast.makeText(
+                            activity,
+                            title,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
-                        (activity as? MainActivity)?.play(tvViewModel)
+                        if (check(tvViewModel)) {
+                            (activity as? MainActivity)?.play(tvViewModel)
 //                        (activity as? MainActivity)?.switchInfoFragment(item)
+
+                            setSelectedPosition(
+                                tvViewModel.getRowPosition(), true,
+                                SelectItemViewHolderTask(tvViewModel.getItemPosition())
+                            )
+                            Toast.makeText(
+                                activity,
+                                title,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                    setSelectedPosition(
-                        tvViewModel.getRowPosition(), true,
-                        SelectItemViewHolderTask(tvViewModel.getItemPosition())
-                    )
-                    Toast.makeText(
-                        activity,
-                        title,
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
             tvViewModel.program.observe(viewLifecycleOwner) { _ ->
@@ -256,14 +268,14 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-            Log.i(TAG, "onSingleTapConfirmed")
             if (item is TVViewModel) {
-                itemPosition = item.id.value!!
-                savePosition(itemPosition)
+                if (itemPosition != item.id.value!!) {
+                    itemPosition = item.id.value!!
+                    savePosition(itemPosition)
 
-                val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-                tvViewModel?.changed()
-
+                    val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+                    tvViewModel?.changed()
+                }
                 (activity as? MainActivity)?.switchMainFragment()
             }
         }
@@ -274,11 +286,15 @@ class MainFragment : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
-            Log.i(TAG, "onSingleTapConfirmed1111")
             if (item is TVViewModel) {
                 tvListViewModel.setItemPositionCurrent(item.id.value!!)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view!!.requestFocus()
     }
 
     companion object {
