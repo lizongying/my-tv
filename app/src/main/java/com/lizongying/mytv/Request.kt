@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Base64
 import android.util.Log
+import com.lizongying.mytv.Utils.getDateFormat
 import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.api.BtraceClient
 import com.lizongying.mytv.api.LiveInfo
@@ -20,9 +21,6 @@ import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.epgProgram
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -34,6 +32,7 @@ class Request(var context: Context) {
     private var yspBtraceService: YSPBtraceService? = null
     private var yspProtoService: YSPProtoService? = null
 
+    // TODO onDestroy
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var myRunnable: MyRunnable
 
@@ -175,13 +174,13 @@ class Request(var context: Context) {
             livepid = pid,
             sUrl = "https://www.yangshipin.cn/#/tv/home?pid=$pid",
             playno = ysp?.getRand()!!,
-            ftime = getCurrentDate2(),
+            ftime = getDateFormat("yyyy-MM-dd HH:mm:ss"),
             seq = tvModel.seq.toString(),
         )
             ?.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
-//                        Log.i(TAG, "$title kvcollect success")
+                        Log.d(TAG, "$title kvcollect success")
                     } else {
                         Log.e(TAG, "$title kvcollect status error")
                         tvModel.firstSource()
@@ -238,20 +237,9 @@ class Request(var context: Context) {
         })
     }
 
-    private fun getCurrentDate(): String {
-        val currentDate = Date()
-        val formatter = SimpleDateFormat("yyyyMMdd", Locale.CHINA)
-        return formatter.format(currentDate)
-    }
-
-    private fun getCurrentDate2(): String {
-        val currentDate = Date()
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-        return formatter.format(currentDate)
-    }
-
-    fun fetchProgram(tvModel: TVViewModel) {
-        yspProtoService?.getProgram(tvModel.programId.value!!, getCurrentDate())
+    fun fetchProgram(tvViewModel: TVViewModel) {
+        val title = tvViewModel.title.value
+        yspProtoService?.getProgram(tvViewModel.programId.value!!, getDateFormat("yyyyMMdd"))
             ?.enqueue(object : Callback<epgProgramModel.Response> {
                 override fun onResponse(
                     call: Call<epgProgramModel.Response>,
@@ -260,13 +248,14 @@ class Request(var context: Context) {
                     if (response.isSuccessful) {
                         val program = response.body()
                         if (program != null) {
-                            tvModel.addProgram(program.dataListList)
+                            tvViewModel.addProgram(program.dataListList)
+                            Log.i(TAG, "$title program ${program.dataListList.size}")
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<epgProgramModel.Response>, t: Throwable) {
-                    Log.e(TAG, "Program request failed", t)
+                    Log.e(TAG, "$title program request failed $t")
                 }
             })
     }

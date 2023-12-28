@@ -46,8 +46,8 @@ class MainActivity : FragmentActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
-                .add(R.id.main_browse_fragment, mainFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
+                .add(R.id.main_browse_fragment, mainFragment)
                 .hide(infoFragment)
                 .commit()
             mainFragment.view?.requestFocus()
@@ -56,8 +56,7 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
-        infoFragment.setInfo(tvViewModel)
-        infoFragment.show()
+        infoFragment.show(tvViewModel)
     }
 
     fun play(tvViewModel: TVViewModel) {

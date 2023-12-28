@@ -11,6 +11,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.lizongying.mytv.TV
+import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
 import java.util.Date
 
@@ -231,6 +232,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var rowPosition: Int = 0
     private var itemPosition: Int = 0
 
+    var programUpdateTime: Int = 0
+
     private val _programId = MutableLiveData<String>()
     val programId: LiveData<String>
         get() = _programId
@@ -376,10 +379,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         return mapping[tv.title]
     }
 
-    fun getProgram(): MutableList<Program>? {
-        _program.value = (_program.value?.filter { it.et > (Date().time / 1000) })?.toMutableList()
-        return _program.value?.subList(0, 2)
-    }
+//    fun getProgram(): MutableList<Program>? {
+//        _program.value = (_program.value?.filter { it.et > (Date().time / 1000) })?.toMutableList()
+//        return _program.value?.subList(0, 2)
+//    }
 
     fun getProgramOne(): Program? {
         val programNew = (_program.value?.filter { it.et > (Date().time / 1000) })?.toMutableList()
@@ -393,7 +396,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     }
 
     fun addProgram(p: MutableList<Program>) {
-        val p1 = (p.filter { it.et > (Date().time / 1000) }).toMutableList()
+        val timestamp = getDateTimestamp()
+
+        // after now & not empty & different
+        val p1 = (p.filter { it.et > timestamp }).toMutableList()
         if (p1.isEmpty() || _program.value == p1) {
             return
         }
@@ -402,7 +408,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
             _program.value = p1
         } else {
             _program.value =
-                ((_program.value?.filter { it.et > (Date().time / 1000) && it.st < p1.first().st })?.plus(
+                ((_program.value?.filter { it.et > timestamp && it.st < p1.first().st })?.plus(
                     p1
                 ))?.toMutableList()
         }
@@ -414,7 +420,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     fun setHeaders(headers: Map<String, String>) {
         mHeaders = headers
     }
-
 
     fun setMinimumLoadableRetryCount(minimumLoadableRetryCount: Int) {
         mMinimumLoadableRetryCount = minimumLoadableRetryCount

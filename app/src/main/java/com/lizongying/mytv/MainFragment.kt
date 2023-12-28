@@ -3,6 +3,8 @@ package com.lizongying.mytv
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -16,6 +18,7 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
+import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +38,9 @@ class MainFragment : BrowseSupportFragment() {
 
     private var lastVideoUrl: String = ""
 
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
@@ -47,6 +53,9 @@ class MainFragment : BrowseSupportFragment() {
 
         request = activity?.let { Request(it) }
         loadRows()
+        mUpdateProgramRunnable = UpdateProgramRunnable()
+        handler.post(mUpdateProgramRunnable)
+
         setupEventListeners()
 
         view?.post {
@@ -92,14 +101,38 @@ class MainFragment : BrowseSupportFragment() {
                     }
                 }
             }
-            tvViewModel.program.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.program.value!!.isEmpty()) {
-                    if (tvViewModel.programId.value != null) {
-                        Log.i(TAG, "get program ${tvViewModel.title.value}")
-                        request?.fetchProgram(tvViewModel)
-                    }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(mUpdateProgramRunnable)
+    }
+
+    fun updateProgram(tvViewModel: TVViewModel) {
+        val timestamp = getDateTimestamp()
+        if (timestamp - tvViewModel.programUpdateTime > 60) {
+            if (tvViewModel.program.value!!.isEmpty()) {
+                tvViewModel.programUpdateTime = timestamp
+                request?.fetchProgram(tvViewModel)
+            } else {
+                if (timestamp - tvViewModel.program.value!!.last().et < 600) {
+                    tvViewModel.programUpdateTime = timestamp
+                    request?.fetchProgram(tvViewModel)
                 }
             }
+        }
+    }
+
+    inner class UpdateProgramRunnable : Runnable {
+        override fun run() {
+            tvListViewModel.getTVListViewModel().value?.filter { it.programId.value != null }
+                ?.forEach { tvViewModel ->
+                    updateProgram(
+                        tvViewModel
+                    )
+                }
+            handler.postDelayed(this, 60000)
         }
     }
 

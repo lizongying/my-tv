@@ -33,8 +33,17 @@ class InfoFragment : Fragment() {
         handler.postDelayed(removeRunnable, delay)
     }
 
-    fun show() {
+    fun show(tvViewModel: TVViewModel) {
         Log.i("", "show")
+        binding.textView.text = tvViewModel.title.value
+        Glide.with(this)
+            .load(tvViewModel.logo.value)
+            .into(binding.infoLogo)
+        val program = tvViewModel.getProgramOne()
+        if (program != null) {
+            binding.infoDesc.text = program.name
+        }
+
         handler.removeCallbacks(removeRunnable)
         view?.visibility = View.VISIBLE
         handler.postDelayed(removeRunnable, delay)
@@ -50,17 +59,6 @@ class InfoFragment : Fragment() {
     private val removeRunnable = Runnable {
         Log.i("", "hide")
         view?.visibility = View.GONE
-    }
-
-    fun setInfo(tvViewModel: TVViewModel) {
-        binding.textView.text = tvViewModel.title.value
-        Glide.with(this)
-            .load(tvViewModel.logo.value)
-            .into(binding.infoLogo)
-        val program = tvViewModel.getProgramOne()
-        if (program != null) {
-            binding.infoDesc.text = program.name
-        }
     }
 
     override fun onDestroyView() {
