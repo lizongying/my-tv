@@ -214,9 +214,6 @@ class MainActivity : FragmentActivity() {
 
             KeyEvent.KEYCODE_DPAD_CENTER -> {
                 Log.i(TAG, "KEYCODE_DPAD_CENTER")
-//                if (mainFragment.isHidden) {
-//                    mainFragment.checkProgram()
-//                }
                 switchMainFragment()
             }
 
@@ -246,28 +243,28 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                if (mainFragment.isHidden) {
-                    prevSource()
-                } else {
-//                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-//                            ?.getItemPosition() == 0
-//                    ) {
-////                        mainFragment.toLastPosition()
-//                        hideMainFragment()
-//                    }
-                }
+//                if (mainFragment.isHidden) {
+//                    prevSource()
+//                } else {
+////                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
+////                            ?.getItemPosition() == 0
+////                    ) {
+//////                        mainFragment.toLastPosition()
+////                        hideMainFragment()
+////                    }
+//                }
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                if (mainFragment.isHidden) {
-                    nextSource()
-                } else {
-//                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-//                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
-//                    ) {
-//                        mainFragment.toFirstPosition()
-//                    }
-                }
+//                if (mainFragment.isHidden) {
+//                    nextSource()
+//                } else {
+////                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
+////                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
+////                    ) {
+////                        mainFragment.toFirstPosition()
+////                    }
+//                }
             }
         }
 

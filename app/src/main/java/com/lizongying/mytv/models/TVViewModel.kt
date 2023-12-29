@@ -13,7 +13,6 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.lizongying.mytv.TV
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
-import java.util.Date
 
 class TVViewModel(private var tv: TV) : ViewModel() {
     private var mapping = mapOf(
@@ -232,7 +231,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var rowPosition: Int = 0
     private var itemPosition: Int = 0
 
-    var programUpdateTime: Int = 0
+    var programUpdateTime: Long = 0
 
     private val _programId = MutableLiveData<String>()
     val programId: LiveData<String>
@@ -379,13 +378,9 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         return mapping[tv.title]
     }
 
-//    fun getProgram(): MutableList<Program>? {
-//        _program.value = (_program.value?.filter { it.et > (Date().time / 1000) })?.toMutableList()
-//        return _program.value?.subList(0, 2)
-//    }
-
     fun getProgramOne(): Program? {
-        val programNew = (_program.value?.filter { it.et > (Date().time / 1000) })?.toMutableList()
+        val programNew =
+            (_program.value?.filter { it.et > getDateTimestamp() })?.toMutableList()
         if (programNew != null && _program.value != programNew) {
             _program.value = programNew
         }

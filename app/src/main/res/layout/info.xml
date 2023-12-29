@@ -32,14 +32,14 @@
             android:layout_marginTop="0dp"
             android:gravity="start"
             android:textColor="#FFEEEEEE"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/info_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:gravity="start"
             android:singleLine="true"
             android:textColor="#B3EEEEEE"

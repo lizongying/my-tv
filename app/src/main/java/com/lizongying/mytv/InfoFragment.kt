@@ -34,7 +34,7 @@ class InfoFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
-        Log.i("", "show")
+        Log.i(TAG, "show")
         binding.textView.text = tvViewModel.title.value
         Glide.with(this)
             .load(tvViewModel.logo.value)
@@ -51,13 +51,13 @@ class InfoFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        Log.i("", "onPause")
+        Log.i(TAG, "onPause")
         // Cancel the delayed task when the fragment is paused
         handler.removeCallbacks(removeRunnable)
     }
 
     private val removeRunnable = Runnable {
-        Log.i("", "hide")
+        Log.i(TAG, "hide")
         view?.visibility = View.GONE
     }
 

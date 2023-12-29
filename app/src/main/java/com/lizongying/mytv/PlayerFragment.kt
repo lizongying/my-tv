@@ -88,17 +88,17 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStart() {
+        super.onStart()
         if (playerView != null) {
-            playerView!!.player?.stop()
+            playerView!!.player?.play()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStop() {
+        super.onStop()
         if (playerView != null) {
-            playerView!!.player?.play()
+            playerView!!.player?.stop()
         }
     }
 

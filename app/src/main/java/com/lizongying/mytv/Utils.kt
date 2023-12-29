@@ -9,7 +9,7 @@ object Utils {
         return SimpleDateFormat(format, Locale.CHINA).format(Date())
     }
 
-    fun getDateTimestamp(): Int {
-        return (Date().time / 1000).toInt()
+    fun getDateTimestamp(): Long {
+        return Date().time / 1000
     }
 }

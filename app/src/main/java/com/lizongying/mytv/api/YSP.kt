@@ -2,11 +2,10 @@ package com.lizongying.mytv.api
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.lizongying.mytv.Encryptor
 import com.lizongying.mytv.MainActivity
+import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel
-import java.util.Date
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -84,7 +83,7 @@ class YSP(var context: Context) {
     }
 
     private fun getTimeStr(): String {
-        return (Date().time / 1000).toString()
+        return getDateTimestamp().toString()
     }
 
     fun generateGuid(): String {
