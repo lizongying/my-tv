@@ -8,7 +8,8 @@
 
 其他地址 [my-tv](https://lyrics.run/my-tv.html)
 
-![image](./screenshots/img.png)
+![image](./screenshots/img_3.png)
+![image](./screenshots/img_2.png)
 ![image](./screenshots/img_1.png)
 
 ## 更新日志
