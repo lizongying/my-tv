@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.lizongying.mytv"
-        minSdk 21
+        minSdk 17
         targetSdk 33
         versionCode VersionCode()
         versionName VersionName()
@@ -38,6 +38,7 @@ android {
             // libraries Gradle should build and package with your app.
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
+        multiDexEnabled true
     }
 
     buildTypes {

@@ -78,7 +78,7 @@ class MainFragment : BrowseSupportFragment() {
                 if (tvViewModel.change.value != null) {
                     val title = tvViewModel.title.value
                     Log.i(TAG, "switch $title")
-                    if (tvViewModel.ysp() != null) {
+                    if (tvViewModel.pid.value != null) {
                         Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
                             tvViewModel.let { request?.fetchData(it) }

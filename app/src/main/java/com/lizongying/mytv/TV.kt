@@ -10,6 +10,7 @@ data class TV(
     var logo: String = "",
     var pid: String = "",
     var sid: String = "",
+    var programId: String = "",
 ) : Serializable {
 
     override fun toString(): String {
@@ -21,6 +22,7 @@ data class TV(
                 ", logo='" + logo + '\'' +
                 ", pid='" + pid + '\'' +
                 ", sid='" + sid + '\'' +
+                ", programId='" + programId + '\'' +
                 '}'
     }
 
