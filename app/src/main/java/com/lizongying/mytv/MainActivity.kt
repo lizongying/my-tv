@@ -85,7 +85,7 @@ class MainActivity : FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
 
         if (mainFragment.isHidden) {
-            focusMainFragment()
+//            focusMainFragment()
             transaction.show(mainFragment)
         } else {
             transaction.hide(mainFragment)
@@ -108,6 +108,10 @@ class MainActivity : FragmentActivity() {
                 .hide(mainFragment)
                 .commit()
         }
+    }
+
+    fun fragmentReady() {
+        mainFragment.fragmentReady()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

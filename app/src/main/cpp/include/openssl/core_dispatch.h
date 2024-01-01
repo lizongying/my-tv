@@ -300,16 +300,12 @@ OSSL_CORE_MAKE_FUNC(int, provider_self_test, (void *provctx))
 # define OSSL_FUNC_DIGEST_GETTABLE_PARAMS           11
 # define OSSL_FUNC_DIGEST_SETTABLE_CTX_PARAMS       12
 # define OSSL_FUNC_DIGEST_GETTABLE_CTX_PARAMS       13
-# define OSSL_FUNC_DIGEST_SQUEEZE                   14
 
 OSSL_CORE_MAKE_FUNC(void *, digest_newctx, (void *provctx))
 OSSL_CORE_MAKE_FUNC(int, digest_init, (void *dctx, const OSSL_PARAM params[]))
 OSSL_CORE_MAKE_FUNC(int, digest_update,
                     (void *dctx, const unsigned char *in, size_t inl))
 OSSL_CORE_MAKE_FUNC(int, digest_final,
-                    (void *dctx,
-                     unsigned char *out, size_t *outl, size_t outsz))
-OSSL_CORE_MAKE_FUNC(int, digest_squeeze,
                     (void *dctx,
                      unsigned char *out, size_t *outl, size_t outsz))
 OSSL_CORE_MAKE_FUNC(int, digest_digest,
@@ -665,14 +661,6 @@ OSSL_CORE_MAKE_FUNC(const OSSL_PARAM *, keymgmt_export_types,
 OSSL_CORE_MAKE_FUNC(void *, keymgmt_dup,
                     (const void *keydata_from, int selection))
 
-/* Extended import and export functions */
-# define OSSL_FUNC_KEYMGMT_IMPORT_TYPES_EX            45
-# define OSSL_FUNC_KEYMGMT_EXPORT_TYPES_EX            46
-OSSL_CORE_MAKE_FUNC(const OSSL_PARAM *, keymgmt_import_types_ex,
-                    (void *provctx, int selection))
-OSSL_CORE_MAKE_FUNC(const OSSL_PARAM *, keymgmt_export_types_ex,
-                    (void *provctx, int selection))
-
 /* Key Exchange */
 
 # define OSSL_FUNC_KEYEXCH_NEWCTX                      1
@@ -844,24 +832,16 @@ OSSL_CORE_MAKE_FUNC(const OSSL_PARAM *, asym_cipher_settable_ctx_params,
 # define OSSL_FUNC_KEM_GETTABLE_CTX_PARAMS     9
 # define OSSL_FUNC_KEM_SET_CTX_PARAMS         10
 # define OSSL_FUNC_KEM_SETTABLE_CTX_PARAMS    11
-# define OSSL_FUNC_KEM_AUTH_ENCAPSULATE_INIT  12
-# define OSSL_FUNC_KEM_AUTH_DECAPSULATE_INIT  13
 
 OSSL_CORE_MAKE_FUNC(void *, kem_newctx, (void *provctx))
 OSSL_CORE_MAKE_FUNC(int, kem_encapsulate_init, (void *ctx, void *provkey,
                                                 const OSSL_PARAM params[]))
-OSSL_CORE_MAKE_FUNC(int, kem_auth_encapsulate_init, (void *ctx, void *provkey,
-                                                     void *authprivkey,
-                                                     const OSSL_PARAM params[]))
 OSSL_CORE_MAKE_FUNC(int, kem_encapsulate, (void *ctx,
                                            unsigned char *out, size_t *outlen,
                                            unsigned char *secret,
                                            size_t *secretlen))
 OSSL_CORE_MAKE_FUNC(int, kem_decapsulate_init, (void *ctx, void *provkey,
                                                 const OSSL_PARAM params[]))
-OSSL_CORE_MAKE_FUNC(int, kem_auth_decapsulate_init, (void *ctx, void *provkey,
-                                                     void *authpubkey,
-                                                     const OSSL_PARAM params[]))
 OSSL_CORE_MAKE_FUNC(int, kem_decapsulate, (void *ctx,
                                            unsigned char *out, size_t *outlen,
                                            const unsigned char *in, size_t inlen))
@@ -957,8 +937,6 @@ OSSL_CORE_MAKE_FUNC(int, decoder_export_object,
 #define OSSL_FUNC_STORE_EOF                         6
 #define OSSL_FUNC_STORE_CLOSE                       7
 #define OSSL_FUNC_STORE_EXPORT_OBJECT               8
-#define OSSL_FUNC_STORE_DELETE                      9
-#define OSSL_FUNC_STORE_OPEN_EX                     10
 OSSL_CORE_MAKE_FUNC(void *, store_open, (void *provctx, const char *uri))
 OSSL_CORE_MAKE_FUNC(void *, store_attach, (void *provctx, OSSL_CORE_BIO *in))
 OSSL_CORE_MAKE_FUNC(const OSSL_PARAM *, store_settable_ctx_params,
@@ -974,12 +952,6 @@ OSSL_CORE_MAKE_FUNC(int, store_close, (void *loaderctx))
 OSSL_CORE_MAKE_FUNC(int, store_export_object,
                     (void *loaderctx, const void *objref, size_t objref_sz,
                      OSSL_CALLBACK *export_cb, void *export_cbarg))
-OSSL_CORE_MAKE_FUNC(int, store_delete,
-                    (void *provctx, const char *uri, const OSSL_PARAM params[],
-                     OSSL_PASSPHRASE_CALLBACK *pw_cb, void *pw_cbarg))
-OSSL_CORE_MAKE_FUNC(void *, store_open_ex,
-                    (void *provctx, const char *uri, const OSSL_PARAM params[],
-                     OSSL_PASSPHRASE_CALLBACK *pw_cb, void *pw_cbarg))
 
 # ifdef __cplusplus
 }

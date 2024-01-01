@@ -23,6 +23,7 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = InfoBinding.inflate(inflater, container, false)
+        (activity as MainActivity).fragmentReady()
         return binding.root
     }
 
@@ -34,7 +35,6 @@ class InfoFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
-        Log.i(TAG, "show")
         binding.textView.text = tvViewModel.title.value
         Glide.with(this)
             .load(tvViewModel.logo.value)
@@ -57,7 +57,6 @@ class InfoFragment : Fragment() {
     }
 
     private val removeRunnable = Runnable {
-        Log.i(TAG, "hide")
         view?.visibility = View.GONE
     }
 

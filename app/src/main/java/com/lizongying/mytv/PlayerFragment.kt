@@ -1,7 +1,6 @@
 package com.lizongying.mytv
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import android.view.ViewTreeObserver
 import androidx.annotation.OptIn
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
@@ -23,7 +21,6 @@ class PlayerFragment : Fragment() {
 
     private var _binding: PlayerBinding? = null
     private var playerView: PlayerView? = null
-    private var videoUrl: String? = null
     private var tvViewModel: TVViewModel? = null
 
     override fun onCreateView(
@@ -55,16 +52,9 @@ class PlayerFragment : Fragment() {
 //                            super.onPlayerError(error)
 //                    }
                 })
-                if (videoUrl !== null) {
-                    playerView!!.player?.run {
-                        videoUrl?.let { MediaItem.fromUri(it) }?.let { setMediaItem(it) }
-                        prepare()
-                    }
-                    videoUrl = null
-                }
             }
         })
-        Log.i(TAG, "PlayerFragment onCreateView")
+        (activity as MainActivity).fragmentReady()
         return _binding!!.root
     }
 
@@ -73,18 +63,12 @@ class PlayerFragment : Fragment() {
         this.tvViewModel = tvViewModel
         val videoUrlCurrent =
             tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
-        if (playerView == null || playerView?.player == null) {
-            Log.i(TAG, "playerView not ready $view}")
-            videoUrl = videoUrlCurrent
-        } else {
-            Log.i(TAG, "playerView ok")
-            playerView?.player?.run {
-                val mediaItem = MediaItem.Builder()
-                tvViewModel.id.value?.let { mediaItem.setMediaId(it.toString()) }
-                videoUrlCurrent?.let { mediaItem.setUri(it) }
-                setMediaItem(mediaItem.build())
-                prepare()
-            }
+        playerView?.player?.run {
+            val mediaItem = MediaItem.Builder()
+            tvViewModel.id.value?.let { mediaItem.setMediaId(it.toString()) }
+            videoUrlCurrent?.let { mediaItem.setUri(it) }
+            setMediaItem(mediaItem.build())
+            prepare()
         }
     }
 

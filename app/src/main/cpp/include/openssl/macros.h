@@ -158,7 +158,7 @@
 /*
  * Define macros for deprecation and simulated removal purposes.
  *
- * The macros OSSL_DEPRECATEDIN_{major}_{minor} are always defined for
+ * The macros OSSL_DEPRECATED_{major}_{minor} are always defined for
  * all OpenSSL versions we care for.  They can be used as attributes
  * in function declarations where appropriate.
  *
@@ -169,7 +169,6 @@
  * 'no-deprecated'.
  */
 
-# undef OPENSSL_NO_DEPRECATED_3_1
 # undef OPENSSL_NO_DEPRECATED_3_0
 # undef OPENSSL_NO_DEPRECATED_1_1_1
 # undef OPENSSL_NO_DEPRECATED_1_1_0

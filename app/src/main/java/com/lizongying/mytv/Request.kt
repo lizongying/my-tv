@@ -180,7 +180,7 @@ class Request(var context: Context) {
             ?.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "$title kvcollect success")
+//                        Log.d(TAG, "$title kvcollect success")
                     } else {
                         Log.e(TAG, "$title kvcollect status error")
                         tvModel.firstSource()

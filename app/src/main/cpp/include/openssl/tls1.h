@@ -1,5 +1,5 @@
 /*
- * Copyright 1995-2023 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 1995-2022 The OpenSSL Project Authors. All Rights Reserved.
  * Copyright (c) 2002, Oracle and/or its affiliates. All rights reserved
  * Copyright 2005 Nokia. All rights reserved.
  *
@@ -28,7 +28,7 @@ extern "C" {
 
 /* Default security level if not overridden at config time */
 # ifndef OPENSSL_TLS_SECURITY_LEVEL
-#  define OPENSSL_TLS_SECURITY_LEVEL 2
+#  define OPENSSL_TLS_SECURITY_LEVEL 1
 # endif
 
 /* TLS*_VERSION constants are defined in prov_ssl.h */
@@ -123,14 +123,6 @@ extern "C" {
 # define TLSEXT_TYPE_signed_certificate_timestamp    18
 
 /*
- * Extension type for Raw Public Keys
- * https://tools.ietf.org/html/rfc7250
- * https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml
- */
-# define TLSEXT_TYPE_client_cert_type   19
-# define TLSEXT_TYPE_server_cert_type   20
-
-/*
  * ExtensionType value for TLS padding extension.
  * http://tools.ietf.org/html/draft-agl-tls-padding
  */
@@ -141,9 +133,6 @@ extern "C" {
 
 /* ExtensionType value from RFC7627 */
 # define TLSEXT_TYPE_extended_master_secret      23
-
-/* ExtensionType value from RFC8879 */
-# define TLSEXT_TYPE_compress_certificate        27
 
 /* ExtensionType value from RFC4507 */
 # define TLSEXT_TYPE_session_ticket              35
@@ -158,7 +147,6 @@ extern "C" {
 # define TLSEXT_TYPE_post_handshake_auth         49
 # define TLSEXT_TYPE_signature_algorithms_cert   50
 # define TLSEXT_TYPE_key_share                   51
-# define TLSEXT_TYPE_quic_transport_parameters   57
 
 /* Temporary extension type */
 # define TLSEXT_TYPE_renegotiate                 0xff01
@@ -207,15 +195,6 @@ extern "C" {
 
 # define TLSEXT_hash_num                                 10
 
-/* Possible compression values from RFC8879 */
-/* Not defined in RFC8879, but used internally for no-compression */
-# define TLSEXT_comp_cert_none                            0
-# define TLSEXT_comp_cert_zlib                            1
-# define TLSEXT_comp_cert_brotli                          2
-# define TLSEXT_comp_cert_zstd                            3
-/* one more than the number of defined values - used as size of 0-terminated array */
-# define TLSEXT_comp_cert_limit                           4
-
 /* Flag set for unrecognised algorithms */
 # define TLSEXT_nid_unknown                              0x1000000
 
@@ -231,15 +210,6 @@ extern "C" {
 # define TLSEXT_max_fragment_length_1024        2
 # define TLSEXT_max_fragment_length_2048        3
 # define TLSEXT_max_fragment_length_4096        4
-
-/*
- * TLS Certificate Type (for RFC7250)
- * https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#tls-extensiontype-values-3
- */
-# define TLSEXT_cert_type_x509         0
-# define TLSEXT_cert_type_pgp          1 /* recognized, but not supported */
-# define TLSEXT_cert_type_rpk          2
-# define TLSEXT_cert_type_1609dot2     3 /* recognized, but not supported */
 
 int SSL_CTX_set_tlsext_max_fragment_length(SSL_CTX *ctx, uint8_t mode);
 int SSL_set_tlsext_max_fragment_length(SSL *ssl, uint8_t mode);

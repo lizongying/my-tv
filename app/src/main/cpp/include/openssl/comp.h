@@ -40,20 +40,15 @@ int COMP_expand_block(COMP_CTX *ctx, unsigned char *out, int olen,
                       unsigned char *in, int ilen);
 
 COMP_METHOD *COMP_zlib(void);
-COMP_METHOD *COMP_zlib_oneshot(void);
-COMP_METHOD *COMP_brotli(void);
-COMP_METHOD *COMP_brotli_oneshot(void);
-COMP_METHOD *COMP_zstd(void);
-COMP_METHOD *COMP_zstd_oneshot(void);
 
 #ifndef OPENSSL_NO_DEPRECATED_1_1_0
 # define COMP_zlib_cleanup() while(0) continue
 #endif
 
 # ifdef OPENSSL_BIO_H
+#  ifdef ZLIB
 const BIO_METHOD *BIO_f_zlib(void);
-const BIO_METHOD *BIO_f_brotli(void);
-const BIO_METHOD *BIO_f_zstd(void);
+#  endif
 # endif
 
 

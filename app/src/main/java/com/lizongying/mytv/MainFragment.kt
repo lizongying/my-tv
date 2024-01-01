@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -41,6 +42,8 @@ class MainFragment : BrowseSupportFragment() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
 
+    private var ready = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
@@ -52,16 +55,14 @@ class MainFragment : BrowseSupportFragment() {
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
         request = activity?.let { Request(it) }
+
         loadRows()
-        mUpdateProgramRunnable = UpdateProgramRunnable()
-        handler.post(mUpdateProgramRunnable)
 
         setupEventListeners()
 
-        view?.post {
-//            request?.fetchPage()
-//            tvListViewModel.getTVViewModel(0)?.let { request?.fetchProgram(it) }
-        }
+        mUpdateProgramRunnable = UpdateProgramRunnable()
+        handler.post(mUpdateProgramRunnable)
+
         tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
             tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
 
@@ -102,6 +103,12 @@ class MainFragment : BrowseSupportFragment() {
                 }
             }
         }
+
+        fragmentReady()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroy() {
@@ -197,16 +204,26 @@ class MainFragment : BrowseSupportFragment() {
             itemPosition = 0
             savePosition(0)
         }
-
-        val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-        tvViewModel?.changed()
-
-        (activity as? MainActivity)?.switchMainFragment()
     }
 
     fun focus() {
         if (!view?.isFocused!!) {
             view?.requestFocus()
+        }
+    }
+
+    fun fragmentReady() {
+        ready++
+        Log.i(TAG, "ready $ready")
+        if (ready == 3) {
+
+//            request?.fetchPage()
+//            tvListViewModel.getTVViewModel(0)?.let { request?.fetchProgram(it) }
+
+            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+            tvViewModel?.changed()
+
+            (activity as? MainActivity)?.switchMainFragment()
         }
     }
 

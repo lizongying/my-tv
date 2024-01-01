@@ -50,8 +50,34 @@ else ()
             ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libnative.so)
 endif ()
 
+#add_library(libssl
+#        STATIC
+#        IMPORTED)
+#
+#set_target_properties( # Specifies the target library.
+#        libssl
+#
+#        # Specifies the parameter you want to define.
+#        PROPERTIES IMPORTED_LOCATION
+#
+#        # Provides the path to the library you want to import.
+#        ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libssl.so)
+#
+#add_library(libcrypto
+#        SHARED
+#        IMPORTED)
+#
+#set_target_properties( # Specifies the target library.
+#        libcrypto
+#
+#        # Specifies the parameter you want to define.
+#        PROPERTIES IMPORTED_LOCATION
+#
+#        # Provides the path to the library you want to import.
+#        ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libcrypto.so)
+
 add_library(libssl
-        SHARED
+        STATIC
         IMPORTED)
 
 set_target_properties( # Specifies the target library.
@@ -61,10 +87,10 @@ set_target_properties( # Specifies the target library.
         PROPERTIES IMPORTED_LOCATION
 
         # Provides the path to the library you want to import.
-        ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libssl.so)
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libssl.a)
 
 add_library(libcrypto
-        SHARED
+        STATIC
         IMPORTED)
 
 set_target_properties( # Specifies the target library.
@@ -74,7 +100,7 @@ set_target_properties( # Specifies the target library.
         PROPERTIES IMPORTED_LOCATION
 
         # Provides the path to the library you want to import.
-        ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libcrypto.so)
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/${ANDROID_ABI}/libcrypto.a)
 
 find_library( # Defines the name of the path variable that stores the
         # location of the NDK library.
