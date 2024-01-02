@@ -210,12 +210,6 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
-    fun focus() {
-        if (!view?.isFocused!!) {
-            view?.requestFocus()
-        }
-    }
-
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
