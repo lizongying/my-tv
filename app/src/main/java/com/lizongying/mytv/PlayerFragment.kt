@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,11 +44,20 @@ class PlayerFragment : Fragment() {
                     override fun onVideoSizeChanged(videoSize: VideoSize) {
                         val aspectRatio = 16f / 9f
                         val layoutParams = playerView?.layoutParams
-                        layoutParams?.width =
-                            (playerView?.measuredHeight?.times(aspectRatio))?.toInt()
-                        playerView?.layoutParams = layoutParams
+                        val ratio = playerView?.measuredWidth?.div(playerView?.measuredHeight!!)
+                        if (ratio != null) {
+                            if (ratio < aspectRatio) {
+                                layoutParams?.height =
+                                    (playerView?.measuredWidth?.div(aspectRatio))?.toInt()
+                                playerView?.layoutParams = layoutParams
+                            } else if (ratio > aspectRatio) {
+                                layoutParams?.width =
+                                    (playerView?.measuredHeight?.times(aspectRatio))?.toInt()
+                                playerView?.layoutParams = layoutParams
+                            }
+                        }
                     }
-//
+
 //                    override fun onPlayerError(error: PlaybackException) {
 //                            super.onPlayerError(error)
 //                    }

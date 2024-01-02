@@ -114,6 +114,10 @@ class MainFragment : BrowseSupportFragment() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(mUpdateProgramRunnable)
+        with(sharedPref!!.edit()) {
+            putInt("position", itemPosition)
+            apply()
+        }
     }
 
     fun updateProgram(tvViewModel: TVViewModel) {
@@ -202,7 +206,7 @@ class MainFragment : BrowseSupportFragment() {
         itemPosition = sharedPref?.getInt("position", 0)!!
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
-            savePosition(0)
+            tvListViewModel.setItemPosition(itemPosition)
         }
     }
 
@@ -227,21 +231,13 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
-    fun savePosition(position: Int) {
-        tvListViewModel.setItemPosition(position)
-        with(sharedPref!!.edit()) {
-            putInt("position", position)
-            apply()
-        }
-    }
-
     fun prev() {
         view?.post {
             itemPosition--
             if (itemPosition == -1) {
                 itemPosition = tvListViewModel.size() - 1
             }
-            savePosition(itemPosition)
+            tvListViewModel.setItemPosition(itemPosition)
 
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
@@ -254,7 +250,7 @@ class MainFragment : BrowseSupportFragment() {
             if (itemPosition == tvListViewModel.size()) {
                 itemPosition = 0
             }
-            savePosition(itemPosition)
+            tvListViewModel.setItemPosition(itemPosition)
 
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
@@ -310,7 +306,7 @@ class MainFragment : BrowseSupportFragment() {
             if (item is TVViewModel) {
                 if (itemPosition != item.id.value!!) {
                     itemPosition = item.id.value!!
-                    savePosition(itemPosition)
+                    tvListViewModel.setItemPosition(itemPosition)
 
                     val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
                     tvViewModel?.changed()

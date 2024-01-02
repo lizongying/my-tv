@@ -9,8 +9,6 @@ class TVListViewModel : ViewModel() {
 
     var maxNum = mutableListOf<Int>()
 
-    private var sharedPref: SharedPreferences? = null
-
     private val tvListViewModel = MutableLiveData<MutableList<TVViewModel>>()
 
     private val _itemPosition = MutableLiveData<Int>()
@@ -46,13 +44,6 @@ class TVListViewModel : ViewModel() {
 
     fun setItemPositionCurrent(position: Int) {
         _itemPositionCurrent.value = position
-    }
-
-    fun savePosition(position: Int) {
-        with(sharedPref!!.edit()) {
-            putInt("position", position)
-            apply()
-        }
     }
 
     fun size(): Int {
