@@ -31,10 +31,10 @@ object TVList {
         "CGTN 阿拉伯语频道" to "https://resources.yangshipin.cn/assets/oms/image/202306/2e44e2aa3e7a1cedf07fd0ae59fe69e86a60a2632660a006e3e9e7397b2d107e.png?imageMogr2/format/webp",
         "CGTN 西班牙语频道" to "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
         "CGTN 纪录频道" to "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
-
         "风云剧场" to "https://resources.yangshipin.cn/assets/oms/image/202306/4d549e53e6d0f632d5a633d1945280797b153e588f919221a07faa869812cc89.png?imageMogr2/format/webp",
         "第一剧场" to "https://resources.yangshipin.cn/assets/oms/image/202306/a556bd7d93ce65e18f243a8892b5604f4faa994a4897315914216a710a706208.png?imageMogr2/format/webp",
         "怀旧剧场" to "https://resources.yangshipin.cn/assets/oms/image/202306/5661bd04fecdb6e899f801147a22ab5d3a475bf2b62e30aec2c0023190ebc9b1.png?imageMogr2/format/webp",
+        "世界地理" to "https://resources.yangshipin.cn/assets/oms/image/202306/bb3c6c9e145d698137f5bb64a582021a01b51344b929003630eb769ea65832a9.png?imageMogr2/format/webp",
         "风云音乐" to "https://resources.yangshipin.cn/assets/oms/image/202306/bbf1d024c5228b8dd128b0e3cb1717d173fab4ee84c3a4c8a57b1a215362ca3b.png?imageMogr2/format/webp",
         "兵器科技" to "https://resources.yangshipin.cn/assets/oms/image/202306/4c6b6a6d3839889f34d33db3c2f80233b26b74d3489b393487635f8704e70796.png?imageMogr2/format/webp",
         "风云足球" to "https://resources.yangshipin.cn/assets/oms/image/202306/cd1e2bb52b06a991de168733e5ff0f1d85adc8042d40c8f393f723543e5dd08a.png?imageMogr2/format/webp",
@@ -44,7 +44,6 @@ object TVList {
         "央视台球" to "https://resources.yangshipin.cn/assets/oms/image/202306/10e14a92478011aa6c3c8562e62127f3b1908e29fcd78e4b2b24b9e6d3ec2fbc.png?imageMogr2/format/webp",
         "电视指南" to "https://resources.yangshipin.cn/assets/oms/image/202306/244d72c0eb1615ed7d51c2f5db5a67f306aa3f58c05bc2d34de3aa7e956dc8c9.png?imageMogr2/format/webp",
         "卫生健康" to "https://resources.yangshipin.cn/assets/oms/image/202306/54a6863656fdfd8f803be193ddf22441c5000a108833889816fd2d8911715ce8.png?imageMogr2/format/webp",
-
         "东方卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/9bd372ca292a82ce3aa08772b07efc4af1f85c21d1f268ea33440c49e9a0a488.png?imageMogr2/format/webp",
         "湖南卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/4120e89d3079d08aa17d382f69a2308ec70839b278367763c34a34666c75cb88.png?imageMogr2/format/webp",
         "湖北卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/7a6be5a2bb1dc53a945c016ff1f525dc4a84c51db371c15c89aa55404b0ba784.png?imageMogr2/format/webp",
@@ -93,10 +92,10 @@ object TVList {
         "CGTN 阿拉伯语频道" to "600084782",
         "CGTN 西班牙语频道" to "600084744",
         "CGTN 记录频道" to "600084781",
-
         "风云剧场" to "600099658",
         "第一剧场" to "600099655",
         "怀旧剧场" to "600099620",
+        "世界地理" to "600099637",
         "风云音乐" to "600099660",
         "兵器科技" to "600099649",
         "风云足球" to "600099636",
@@ -106,7 +105,6 @@ object TVList {
         "央视台球" to "600099652",
         "电视指南" to "600099656",
         "卫生健康" to "600099651",
-
         "东方卫视" to "600002483",
         "湖南卫视" to "600002475",
         "湖北卫视" to "600002508",
@@ -133,18 +131,18 @@ object TVList {
         "CCTV4K 超高清" to arrayOf("600002264", "2000266303"),
         "CCTV1 综合" to arrayOf("600001859", "2000210103"),
         "CCTV2 财经" to arrayOf("600001800", "2000203603"),
-//        "CCTV3 综艺" to arrayOf("600001801",""),
+        "CCTV3 综艺" to arrayOf("600001801", "2000203803"),
         "CCTV4 中文国际" to arrayOf("600001814", "2000204803"),
         "CCTV5 体育" to arrayOf("600001818", "2000205103"),
         "CCTV5+ 体育赛事" to arrayOf("600001817", "2000204503"),
-//        "CCTV6 电影" to arrayOf("600001802",""),
+        "CCTV6 电影" to arrayOf("600001802", "2000203303"),
         "CCTV7 国防军事" to arrayOf("600004092", "2000510003"),
-//        "CCTV8 电视剧" to arrayOf("600001803",""),
+        "CCTV8 电视剧" to arrayOf("600001803", "2000203903"),
         "CCTV9 记录" to arrayOf("600004078", "2000499403"),
         "CCTV10 科教" to arrayOf("600001805", "2000203503"),
         "CCTV11 戏曲" to arrayOf("600001806", "2000204103"),
         "CCTV12 社会与法" to arrayOf("600001807", "2000202603"),
-//        "CCTV13 新闻" to arrayOf("600001811",""),
+//        "CCTV13 新闻" to arrayOf("600001811","2000204603"),
         "CCTV14 少儿" to arrayOf("600001809", "2000204403"),
         "CCTV15 音乐" to arrayOf("600001815", "2000205003"),
         "CCTV16 奥林匹克" to arrayOf("600098637", "2012375003"),
@@ -155,20 +153,19 @@ object TVList {
         "CGTN 阿拉伯语频道" to arrayOf("600084782", "2010155203"),
         "CGTN 西班牙语频道" to arrayOf("600084744", "2010152503"),
         "CGTN 记录频道" to arrayOf("600084781", "2010155403"),
-
-//        "风云剧场" to arrayOf("600099658",""),
-//        "第一剧场" to arrayOf("600099655",""),
-//        "怀旧剧场" to arrayOf("600099620",""),
-//        "风云音乐" to arrayOf("600099660",""),
-//        "兵器科技" to arrayOf("600099649",""),
-//        "风云足球" to arrayOf("600099636",""),
-//        "高尔夫网球" to arrayOf("600099659",""),
-//        "女性时尚" to arrayOf("600099650",""),
-//        "央视文化精品" to arrayOf("600099653",""),
-//        "央视台球" to arrayOf("600099652",""),
-//        "电视指南" to arrayOf("600099656",""),
-//        "卫生健康" to arrayOf("600099651",""),
-
+        "风云剧场" to arrayOf("600099658", "2012513603"),
+        "第一剧场" to arrayOf("600099655", "2012514403"),
+        "怀旧剧场" to arrayOf("600099620", "2012511203"),
+        "世界地理" to arrayOf("600099637", "2012513303"),
+        "风云音乐" to arrayOf("600099660", "2012514103"),
+        "兵器科技" to arrayOf("600099649", "2012513403"),
+        "风云足球" to arrayOf("600099636", "2012514203"),
+        "高尔夫网球" to arrayOf("600099659", "2012512503"),
+        "女性时尚" to arrayOf("600099650", "2012513903"),
+        "央视文化精品" to arrayOf("600099653", "2012513803"),
+        "央视台球" to arrayOf("600099652", "2012513703"),
+        "电视指南" to arrayOf("600099656", "2012514003"),
+        "卫生健康" to arrayOf("600099651", "2012513503"),
         "东方卫视" to arrayOf("600002483", "2000292403"),
         "湖南卫视" to arrayOf("600002475", "2000296203"),
         "湖北卫视" to arrayOf("600002508", "2000294503"),
@@ -221,18 +218,19 @@ CGTN 俄语频道,http://liveru.cgtn.com/1000r/prog_index.m3u8
 CGTN 阿拉伯语频道,http://livear.cgtn.com/1000a/prog_index.m3u8
 CGTN 西班牙语频道,http://livees.cgtn.com/500e/prog_index.m3u8;http://livees.cgtn.com/1000e/prog_index.m3u8
 CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8
-电视指南,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226987/index.m3u8
-风云足球,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226984/index.m3u8
 风云剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226950/index.m3u8
-风云音乐,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226953/index.m3u8
-央视台球,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226956/index.m3u8
 第一剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226959/index.m3u8
-女性时尚,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226969/index.m3u8
 怀旧剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226972/index.m3u8
+世界地理,
+风云音乐,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226953/index.m3u8
 兵器科技,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226975/index.m3u8
+风云足球,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226984/index.m3u8
 高尔夫网球,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226978/index.m3u8
+女性时尚,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226969/index.m3u8
 央视文化精品,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226981/index.m3u8
-
+央视台球,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226956/index.m3u8
+电视指南,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226987/index.m3u8
+卫生健康,
 地方频道
 东方卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226217/index.m3u8
 湖南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226307/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226211/index.m3u8

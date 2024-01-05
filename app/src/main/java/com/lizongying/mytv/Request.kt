@@ -8,6 +8,7 @@ import android.util.Log
 import com.lizongying.mytv.Utils.getDateFormat
 import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.api.BtraceClient
+import com.lizongying.mytv.api.Info
 import com.lizongying.mytv.api.LiveInfo
 import com.lizongying.mytv.api.LiveInfoRequest
 import com.lizongying.mytv.api.ProtoClient
@@ -15,6 +16,7 @@ import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.api.YSPApiService
 import com.lizongying.mytv.api.YSPBtraceService
 import com.lizongying.mytv.api.YSPProtoService
+import com.lizongying.mytv.api.YSPTokenService
 import com.lizongying.mytv.models.TVViewModel
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.oms.common.proto.pageModel
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.epgProgramModel
@@ -24,13 +26,15 @@ import retrofit2.Response
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.reflect.KFunction0
 
 
-class Request(var context: Context) {
+class Request {
+    private var yspTokenService: YSPTokenService = ApiClient().yspTokenService
+    private var yspApiService: YSPApiService = ApiClient().yspApiService
+    private var yspBtraceService: YSPBtraceService = BtraceClient().yspBtraceService
+    private var yspProtoService: YSPProtoService = ProtoClient().yspProtoService
     private var ysp: YSP? = null
-    private var yspApiService: YSPApiService? = null
-    private var yspBtraceService: YSPBtraceService? = null
-    private var yspProtoService: YSPProtoService? = null
 
     // TODO onDestroy
     private val handler = Handler(Looper.getMainLooper())
@@ -83,13 +87,31 @@ class Request(var context: Context) {
         "海南卫视" to "海南卫视",
     )
 
-    init {
-        if (context is MainActivity) {
-            ysp = YSP(context)
-        }
-        yspApiService = ApiClient().yspApiService
-        yspBtraceService = BtraceClient().yspBtraceService
-        yspProtoService = ProtoClient().yspProtoService
+    private var token: String? = null
+
+    fun initYSP(context: Context) {
+        ysp = YSP(context)
+    }
+
+    fun fetchToken(fragmentReady: KFunction0<Unit>) {
+        yspTokenService.getInfo()
+            .enqueue(object : Callback<Info> {
+                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                    if (response.isSuccessful) {
+                        val info = response.body()
+                        token = info?.data?.token
+                        Log.i(TAG, "info success $token")
+                    } else {
+                        Log.e(TAG, "info status error")
+                    }
+                    fragmentReady()
+                }
+
+                override fun onFailure(call: Call<Info>, t: Throwable) {
+                    Log.e(TAG, "info request error $t")
+                    fragmentReady()
+                }
+            })
     }
 
     fun fetchData(tvModel: TVViewModel) {
@@ -102,7 +124,31 @@ class Request(var context: Context) {
         val title = tvModel.title.value
 
         val request = data?.let { LiveInfoRequest(it) }
-        request?.let { yspApiService?.getLiveInfo(it) }
+        var cookie = "guid=1; vplatform=109"
+        val channels = arrayOf(
+            "CCTV3 综艺",
+            "CCTV6 电影",
+            "CCTV8 电视剧",
+            "风云剧场",
+            "第一剧场",
+            "怀旧剧场",
+            "世界地理",
+            "风云音乐",
+            "兵器科技",
+            "风云足球",
+            "高尔夫网球",
+            "女性时尚",
+            "央视文化精品",
+            "央视台球",
+            "电视指南",
+            "卫生健康",
+        )
+        if (token != null && tvModel.title.value in channels) {
+            cookie =
+                "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+        }
+
+        request?.let { yspApiService.getLiveInfo(cookie, it) }
             ?.enqueue(object : Callback<LiveInfo> {
                 override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
                     if (response.isSuccessful) {
@@ -164,7 +210,7 @@ class Request(var context: Context) {
         val guid = ysp?.getGuid()!!
         val pid = tvModel.pid.value!!
         val sid = tvModel.sid.value!!
-        yspBtraceService?.kvcollect(
+        yspBtraceService.kvcollect(
             c_timestamp = ysp?.generateGuid()!!,
             guid = guid,
             c_guid = guid,
@@ -177,10 +223,10 @@ class Request(var context: Context) {
             ftime = getDateFormat("yyyy-MM-dd HH:mm:ss"),
             seq = tvModel.seq.toString(),
         )
-            ?.enqueue(object : Callback<Void> {
+            .enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
-//                        Log.d(TAG, "$title kvcollect success")
+                        //                        Log.d(TAG, "$title kvcollect success")
                     } else {
                         Log.e(TAG, "$title kvcollect status error")
                         tvModel.firstSource()
@@ -195,7 +241,7 @@ class Request(var context: Context) {
     }
 
     fun fetchPage() {
-        yspProtoService?.getPage()?.enqueue(object : Callback<pageModel.Response> {
+        yspProtoService.getPage().enqueue(object : Callback<pageModel.Response> {
             override fun onResponse(
                 call: Call<pageModel.Response>,
                 response: Response<pageModel.Response>
@@ -239,8 +285,8 @@ class Request(var context: Context) {
 
     fun fetchProgram(tvViewModel: TVViewModel) {
         val title = tvViewModel.title.value
-        yspProtoService?.getProgram(tvViewModel.programId.value!!, getDateFormat("yyyyMMdd"))
-            ?.enqueue(object : Callback<epgProgramModel.Response> {
+        yspProtoService.getProgram(tvViewModel.programId.value!!, getDateFormat("yyyyMMdd"))
+            .enqueue(object : Callback<epgProgramModel.Response> {
                 override fun onResponse(
                     call: Call<epgProgramModel.Response>,
                     response: Response<epgProgramModel.Response>
