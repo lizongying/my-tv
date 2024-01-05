@@ -114,39 +114,16 @@ class Request {
             })
     }
 
-    fun fetchData(tvModel: TVViewModel) {
+    fun fetchVideo(tvModel: TVViewModel, cookie: String) {
         if (::myRunnable.isInitialized) {
             handler.removeCallbacks(myRunnable)
         }
 
-        tvModel.seq = 0
-        val data = ysp?.switch(tvModel)
         val title = tvModel.title.value
 
+        tvModel.seq = 0
+        val data = ysp?.switch(tvModel)
         val request = data?.let { LiveInfoRequest(it) }
-        var cookie = "guid=1; vplatform=109"
-        val channels = arrayOf(
-            "CCTV3 综艺",
-            "CCTV6 电影",
-            "CCTV8 电视剧",
-            "风云剧场",
-            "第一剧场",
-            "怀旧剧场",
-            "世界地理",
-            "风云音乐",
-            "兵器科技",
-            "风云足球",
-            "高尔夫网球",
-            "女性时尚",
-            "央视文化精品",
-            "央视台球",
-            "电视指南",
-            "卫生健康",
-        )
-        if (token != null && tvModel.title.value in channels) {
-            cookie =
-                "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
-        }
 
         request?.let { yspApiService.getLiveInfo(cookie, it) }
             ?.enqueue(object : Callback<LiveInfo> {
@@ -195,6 +172,51 @@ class Request {
                     tvModel.firstSource()
                 }
             })
+    }
+
+    fun fetchData(tvModel: TVViewModel) {
+        var cookie = "guid=1; vplatform=109"
+        val channels = arrayOf(
+            "CCTV3 综艺",
+            "CCTV6 电影",
+            "CCTV8 电视剧",
+            "风云剧场",
+            "第一剧场",
+            "怀旧剧场",
+            "世界地理",
+            "风云音乐",
+            "兵器科技",
+            "风云足球",
+            "高尔夫网球",
+            "女性时尚",
+            "央视文化精品",
+            "央视台球",
+            "电视指南",
+            "卫生健康",
+        )
+        if (tvModel.title.value in channels) {
+            yspTokenService.getInfo()
+                .enqueue(object : Callback<Info> {
+                    override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                        if (response.isSuccessful) {
+                            val info = response.body()
+                            token = info?.data?.token
+                            Log.i(TAG, "info success $token")
+                            cookie =
+                                "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            fetchVideo(tvModel, cookie)
+                        } else {
+                            Log.e(TAG, "info status error")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Info>, t: Throwable) {
+                        Log.e(TAG, "info request error $t")
+                    }
+                })
+        } else {
+            fetchVideo(tvModel, cookie)
+        }
     }
 
     inner class MyRunnable(private val tvModel: TVViewModel) : Runnable {

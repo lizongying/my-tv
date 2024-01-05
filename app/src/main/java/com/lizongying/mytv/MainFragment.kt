@@ -43,10 +43,6 @@ class MainFragment : BrowseSupportFragment() {
 
     private var ready = 0
 
-    init {
-        request.fetchToken(::fragmentReady)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
@@ -212,11 +208,7 @@ class MainFragment : BrowseSupportFragment() {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 4) {
-
-//            request?.fetchPage()
-//            tvListViewModel.getTVViewModel(0)?.let { request?.fetchProgram(it) }
-
+        if (ready == 3) {
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
 
@@ -278,10 +270,6 @@ class MainFragment : BrowseSupportFragment() {
                 }
             }
         }
-    }
-
-    fun tvViewModel(): TVViewModel? {
-        return tvListViewModel.getTVViewModel(itemPosition)
     }
 
     private fun setupEventListeners() {

@@ -14,9 +14,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.analytics.AnalyticsListener
-import androidx.media3.exoplayer.source.LoadEventInfo
-import androidx.media3.exoplayer.source.MediaLoadData
 import androidx.media3.ui.PlayerView
 import com.lizongying.mytv.databinding.PlayerBinding
 import com.lizongying.mytv.models.TVViewModel
@@ -80,71 +77,8 @@ class PlayerFragment : Fragment() {
         val videoUrlCurrent =
             tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
         playerView?.player?.run {
-            val mediaItem = MediaItem.Builder()
-            tvViewModel.id.value?.let { mediaItem.setMediaId(it.toString()) }
-            videoUrlCurrent?.let { mediaItem.setUri(it) }
-            setMediaItem(mediaItem.build())
+            videoUrlCurrent?.let { setMediaItem(MediaItem.fromUri(it)) }
             prepare()
-
-//            val httpDataSource = DefaultHttpDataSource.Factory()
-//            val hls = HlsMediaSource.Factory(httpDataSource).createMediaSource(
-//                MediaItem.fromUri(
-//                    Uri.parse(videoUrlCurrent)
-//                )
-//            )
-//            val analyticsListener: AnalyticsListener= MyAnalyticsListener()
-//            val exoPlayer = playerView?.player as ExoPlayer
-//            exoPlayer.addAnalyticsListener(analyticsListener)
-//            exoPlayer.setMediaSource(hls)
-//            exoPlayer.playWhenReady = true
-//
-//
-//            exoPlayer.let {
-//                val parameters =
-//                    TrackSelectionParameters.Builder().setPreferredAudioMimeType("application/id3").build()
-//                // 更新轨道选择器参数
-//                exoPlayer.trackSelector?.parameters = parameters
-//                Log.i(TAG, "parameters $parameters")
-//            }
-//
-//            // 获取当前轨道组
-//
-//            playerView?.player = exoPlayer
-//            playerView?.player?.prepare()
-
-
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                val codecList = MediaCodecList(MediaCodecList.ALL_CODECS)
-//                val codecInfos = codecList.codecInfos
-//
-//                for (codecInfo in codecInfos) {
-//
-//                    val supportedTypes = codecInfo.supportedTypes
-//                    for (type in supportedTypes) {
-//                        Log.d("supportedTypes", "$type")
-////                        if (type.equals(androidx.media3.exoplayer.mediacode, ignoreCase = true)) {
-////                            Log.d("AudioCodecChecker", "Device supports MPEG-L2")
-////                            return
-////                        }
-//                    }
-//                }
-//
-//                Log.d("AudioCodecChecker", "Device does not support MPEG-L2")
-//            }
-
-        }
-    }
-
-    @UnstableApi
-    class MyAnalyticsListener : AnalyticsListener {
-        override fun onLoadStarted(
-            eventTime: AnalyticsListener.EventTime,
-            loadEventInfo: LoadEventInfo,
-            mediaLoadData: MediaLoadData
-        ) {
-            super.onLoadStarted(eventTime, loadEventInfo, mediaLoadData)
-//            Log.i(TAG, "loadEventInfo.uri ${loadEventInfo.uri} ${mediaLoadData.trackFormat.toString()}")
         }
     }
 
