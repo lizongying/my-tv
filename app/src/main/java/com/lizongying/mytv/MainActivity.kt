@@ -85,17 +85,12 @@ class MainActivity : FragmentActivity() {
         val transaction = supportFragmentManager.beginTransaction()
 
         if (mainFragment.isHidden) {
-//            focusMainFragment()
             transaction.show(mainFragment)
         } else {
             transaction.hide(mainFragment)
         }
 
         transaction.commit()
-    }
-
-    private fun focusMainFragment() {
-        mainFragment.focus()
     }
 
     private fun mainFragmentIsHidden(): Boolean {

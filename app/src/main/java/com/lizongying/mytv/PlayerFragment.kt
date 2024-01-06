@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.view.ViewTreeObserver
 import androidx.annotation.OptIn
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
@@ -43,14 +45,25 @@ class PlayerFragment : Fragment() {
                     override fun onVideoSizeChanged(videoSize: VideoSize) {
                         val aspectRatio = 16f / 9f
                         val layoutParams = playerView?.layoutParams
-                        layoutParams?.width =
-                            (playerView?.measuredHeight?.times(aspectRatio))?.toInt()
-                        playerView?.layoutParams = layoutParams
+                        val ratio = playerView?.measuredWidth?.div(playerView?.measuredHeight!!)
+                        if (ratio != null) {
+                            if (ratio < aspectRatio) {
+                                layoutParams?.height =
+                                    (playerView?.measuredWidth?.div(aspectRatio))?.toInt()
+                                playerView?.layoutParams = layoutParams
+                            } else if (ratio > aspectRatio) {
+                                layoutParams?.width =
+                                    (playerView?.measuredHeight?.times(aspectRatio))?.toInt()
+                                playerView?.layoutParams = layoutParams
+                            }
+                        }
                     }
-//
-//                    override fun onPlayerError(error: PlaybackException) {
-//                            super.onPlayerError(error)
-//                    }
+
+                    override fun onPlayerError(error: PlaybackException) {
+                        super.onPlayerError(error)
+
+                        Log.e(TAG, "PlaybackException $error")
+                    }
                 })
             }
         })
@@ -64,10 +77,7 @@ class PlayerFragment : Fragment() {
         val videoUrlCurrent =
             tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
         playerView?.player?.run {
-            val mediaItem = MediaItem.Builder()
-            tvViewModel.id.value?.let { mediaItem.setMediaId(it.toString()) }
-            videoUrlCurrent?.let { mediaItem.setUri(it) }
-            setMediaItem(mediaItem.build())
+            videoUrlCurrent?.let { setMediaItem(MediaItem.fromUri(it)) }
             prepare()
         }
     }

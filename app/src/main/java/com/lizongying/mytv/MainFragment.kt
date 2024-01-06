@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -29,7 +28,7 @@ import kotlinx.coroutines.launch
 class MainFragment : BrowseSupportFragment() {
     var itemPosition: Int = 0
 
-    private var request: Request? = null
+    private var request: Request = Request()
 
     private var rowsAdapter: ArrayObjectAdapter? = null
 
@@ -52,9 +51,9 @@ class MainFragment : BrowseSupportFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        activity?.let { request.initYSP(it) }
 
-        request = activity?.let { Request(it) }
+        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
         loadRows()
 
@@ -82,7 +81,7 @@ class MainFragment : BrowseSupportFragment() {
                     if (tvViewModel.pid.value != null) {
                         Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
-                            tvViewModel.let { request?.fetchData(it) }
+                            tvViewModel.let { request.fetchData(it) }
                         }
                         (activity as? MainActivity)?.showInfoFragment(tvViewModel)
                         setSelectedPosition(
@@ -107,13 +106,13 @@ class MainFragment : BrowseSupportFragment() {
         fragmentReady()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(mUpdateProgramRunnable)
+        with(sharedPref!!.edit()) {
+            putInt("position", itemPosition)
+            apply()
+        }
     }
 
     fun updateProgram(tvViewModel: TVViewModel) {
@@ -121,11 +120,11 @@ class MainFragment : BrowseSupportFragment() {
         if (timestamp - tvViewModel.programUpdateTime > 60) {
             if (tvViewModel.program.value!!.isEmpty()) {
                 tvViewModel.programUpdateTime = timestamp
-                request?.fetchProgram(tvViewModel)
+                request.fetchProgram(tvViewModel)
             } else {
                 if (timestamp - tvViewModel.program.value!!.last().et < 600) {
                     tvViewModel.programUpdateTime = timestamp
-                    request?.fetchProgram(tvViewModel)
+                    request.fetchProgram(tvViewModel)
                 }
             }
         }
@@ -202,13 +201,7 @@ class MainFragment : BrowseSupportFragment() {
         itemPosition = sharedPref?.getInt("position", 0)!!
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
-            savePosition(0)
-        }
-    }
-
-    fun focus() {
-        if (!view?.isFocused!!) {
-            view?.requestFocus()
+            tvListViewModel.setItemPosition(itemPosition)
         }
     }
 
@@ -216,22 +209,10 @@ class MainFragment : BrowseSupportFragment() {
         ready++
         Log.i(TAG, "ready $ready")
         if (ready == 3) {
-
-//            request?.fetchPage()
-//            tvListViewModel.getTVViewModel(0)?.let { request?.fetchProgram(it) }
-
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
 
             (activity as? MainActivity)?.switchMainFragment()
-        }
-    }
-
-    fun savePosition(position: Int) {
-        tvListViewModel.setItemPosition(position)
-        with(sharedPref!!.edit()) {
-            putInt("position", position)
-            apply()
         }
     }
 
@@ -241,7 +222,7 @@ class MainFragment : BrowseSupportFragment() {
             if (itemPosition == -1) {
                 itemPosition = tvListViewModel.size() - 1
             }
-            savePosition(itemPosition)
+            tvListViewModel.setItemPosition(itemPosition)
 
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
@@ -254,7 +235,7 @@ class MainFragment : BrowseSupportFragment() {
             if (itemPosition == tvListViewModel.size()) {
                 itemPosition = 0
             }
-            savePosition(itemPosition)
+            tvListViewModel.setItemPosition(itemPosition)
 
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
@@ -291,10 +272,6 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
-    fun tvViewModel(): TVViewModel? {
-        return tvListViewModel.getTVViewModel(itemPosition)
-    }
-
     private fun setupEventListeners() {
         onItemViewClickedListener = ItemViewClickedListener()
         onItemViewSelectedListener = ItemViewSelectedListener()
@@ -310,7 +287,7 @@ class MainFragment : BrowseSupportFragment() {
             if (item is TVViewModel) {
                 if (itemPosition != item.id.value!!) {
                     itemPosition = item.id.value!!
-                    savePosition(itemPosition)
+                    tvListViewModel.setItemPosition(itemPosition)
 
                     val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
                     tvViewModel?.changed()
