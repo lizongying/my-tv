@@ -7,6 +7,7 @@ object TVList {
 
     private var mappingLogo = mapOf(
         "CCTV4K 超高清" to "https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp",
+        "CCTV8K 超高清" to "https://static.wikia.nocookie.net/logos/images/6/69/CCTV8K.png/revision/latest/scale-to-width-down/120?cb=20230104110835&path-prefix=vi",
         "CCTV1 综合" to "https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp",
         "CCTV2 财经" to "https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp",
         "CCTV3 综艺" to "https://resources.yangshipin.cn/assets/oms/image/202306/7b7a65c712450da3deb6ca66fbacf4f9aee00d3f20bd80eafb5ada01ec63eb3a.png?imageMogr2/format/webp",
@@ -68,6 +69,7 @@ object TVList {
     )
     private var mappingEPG = mapOf(
         "CCTV4K 超高清" to "600002264",
+        "CCTV8K 超高清" to "600156816",
         "CCTV1 综合" to "600001859",
         "CCTV2 财经" to "600001800",
         "CCTV3 综艺" to "600001801",
@@ -129,6 +131,7 @@ object TVList {
     )
     private var mappingVideo = mapOf(
         "CCTV4K 超高清" to arrayOf("600002264", "2000266303"),
+        "CCTV8K 超高清" to arrayOf("600156816", "2020603421"),
         "CCTV1 综合" to arrayOf("600001859", "2000210103"),
         "CCTV2 财经" to arrayOf("600001800", "2000203603"),
         "CCTV3 综艺" to arrayOf("600001801", "2000203803"),
@@ -194,6 +197,7 @@ object TVList {
         val tvs = """
 央视频道
 CCTV4K 超高清,
+CCTV8K 超高清,
 CCTV1 综合,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226231/index.m3u8
 CCTV2 财经,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226195/index.m3u8
 CCTV3 综艺,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226397/index.m3u8
@@ -212,12 +216,6 @@ CCTV14 少儿,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226193/inde
 CCTV15 音乐,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225785/index.m3u8
 CCTV16 奥林匹克,http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8
 CCTV17 农业农村,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226198/index.m3u8
-CGTN,http://live.cgtn.com/1000/prog_index.m3u8
-CGTN 法语频道,https://livefr.cgtn.com/1000f/prog_index.m3u8
-CGTN 俄语频道,http://liveru.cgtn.com/1000r/prog_index.m3u8
-CGTN 阿拉伯语频道,http://livear.cgtn.com/1000a/prog_index.m3u8
-CGTN 西班牙语频道,http://livees.cgtn.com/500e/prog_index.m3u8;http://livees.cgtn.com/1000e/prog_index.m3u8
-CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8
 风云剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226950/index.m3u8
 第一剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226959/index.m3u8
 怀旧剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226972/index.m3u8
@@ -253,6 +251,13 @@ CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8
 四川卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8;http://39.134.24.166/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8
 东南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226341/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225766/index.m3u8
 海南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226465/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225769/index.m3u8
+国际频道
+CGTN,http://live.cgtn.com/1000/prog_index.m3u8
+CGTN 法语频道,https://livefr.cgtn.com/1000f/prog_index.m3u8
+CGTN 俄语频道,http://liveru.cgtn.com/1000r/prog_index.m3u8
+CGTN 阿拉伯语频道,http://livear.cgtn.com/1000a/prog_index.m3u8
+CGTN 西班牙语频道,http://livees.cgtn.com/500e/prog_index.m3u8;http://livees.cgtn.com/1000e/prog_index.m3u8
+CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8
         """.trimIndent()
 
         val map: MutableMap<String, MutableList<TV>> = mutableMapOf()

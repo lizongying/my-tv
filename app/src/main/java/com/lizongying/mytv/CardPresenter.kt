@@ -32,10 +32,17 @@ class CardPresenter(
         cardView.tag = tvViewModel.videoUrl.value
 
         if (tvViewModel.logo.value != null) {
-            Glide.with(viewHolder.view.context)
-                .load(tvViewModel.logo.value)
-                .centerInside()
-                .into(cardView.mainImageView)
+            if (tvViewModel.title.value == "CCTV8K 超高清") {
+                Glide.with(viewHolder.view.context)
+                    .load(R.drawable.cctv8k)
+                    .centerInside()
+                    .into(cardView.mainImageView)
+            } else {
+                Glide.with(viewHolder.view.context)
+                    .load(tvViewModel.logo.value)
+                    .centerInside()
+                    .into(cardView.mainImageView)
+            }
 
             cardView.setBackgroundColor(Color.WHITE)
             cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)

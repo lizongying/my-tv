@@ -209,6 +209,7 @@ class MainFragment : BrowseSupportFragment() {
         ready++
         Log.i(TAG, "ready $ready")
         if (ready == 3) {
+            request.fetchPage()
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
 

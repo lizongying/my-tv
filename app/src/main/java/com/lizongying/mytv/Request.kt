@@ -278,7 +278,7 @@ class Request {
                             }
                             Log.i(
                                 TAG,
-                                "${item.channelName} ,${item.tvLogo},${item.pid},${item.streamId}"
+                                "${item.channelName},${item.pid},${item.streamId}"
                             )
                             var channelType = "央视频道"
                             if (item?.channelType === "weishi") {
