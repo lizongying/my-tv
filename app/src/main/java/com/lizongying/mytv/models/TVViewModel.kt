@@ -19,6 +19,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var rowPosition: Int = 0
     private var itemPosition: Int = 0
 
+    var retryTimes: Int = 0
+    var retryMaxTimes: Int = 3
     var programUpdateTime: Long = 0
 
     private val _programId = MutableLiveData<String>()

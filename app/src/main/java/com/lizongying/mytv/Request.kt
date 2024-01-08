@@ -26,7 +26,6 @@ import retrofit2.Response
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import kotlin.reflect.KFunction0
 
 
 class Request {
@@ -93,27 +92,6 @@ class Request {
         ysp = YSP(context)
     }
 
-    fun fetchToken(fragmentReady: KFunction0<Unit>) {
-        yspTokenService.getInfo()
-            .enqueue(object : Callback<Info> {
-                override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                    if (response.isSuccessful) {
-                        val info = response.body()
-                        token = info?.data?.token
-                        Log.i(TAG, "info success $token")
-                    } else {
-                        Log.e(TAG, "info status error")
-                    }
-                    fragmentReady()
-                }
-
-                override fun onFailure(call: Call<Info>, t: Throwable) {
-                    Log.e(TAG, "info request error $t")
-                    fragmentReady()
-                }
-            })
-    }
-
     fun fetchVideo(tvModel: TVViewModel, cookie: String) {
         if (::myRunnable.isInitialized) {
             handler.removeCallbacks(myRunnable)
@@ -150,26 +128,38 @@ class Request {
                                 Log.i(TAG, "$title url $url")
                                 tvModel.addVideoUrl(url)
                                 tvModel.allReady()
-
+                                tvModel.retryTimes = 0
                                 myRunnable = MyRunnable(tvModel)
                                 handler.post(myRunnable)
                             } else {
                                 Log.e(TAG, "$title key error")
-                                tvModel.firstSource()
+                                if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                    tvModel.retryTimes++
+                                    fetchData(tvModel)
+                                }
                             }
                         } else {
                             Log.e(TAG, "$title url error $request")
-                            tvModel.firstSource()
+                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                tvModel.retryTimes++
+                                fetchData(tvModel)
+                            }
                         }
                     } else {
                         Log.e(TAG, "$title status error")
-                        tvModel.firstSource()
+                        if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                            tvModel.retryTimes++
+                            fetchData(tvModel)
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
                     Log.e(TAG, "$title request error")
-                    tvModel.firstSource()
+                    if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                        tvModel.retryTimes++
+                        fetchData(tvModel)
+                    }
                 }
             })
     }
@@ -207,11 +197,19 @@ class Request {
                             fetchVideo(tvModel, cookie)
                         } else {
                             Log.e(TAG, "info status error")
+                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                tvModel.retryTimes++
+                                fetchData(tvModel)
+                            }
                         }
                     }
 
                     override fun onFailure(call: Call<Info>, t: Throwable) {
                         Log.e(TAG, "info request error $t")
+                        if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                            tvModel.retryTimes++
+                            fetchData(tvModel)
+                        }
                     }
                 })
         } else {
@@ -251,7 +249,6 @@ class Request {
                         //                        Log.d(TAG, "$title kvcollect success")
                     } else {
                         Log.e(TAG, "$title kvcollect status error")
-                        tvModel.firstSource()
                     }
                 }
 

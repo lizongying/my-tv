@@ -12,12 +12,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MyTV">
         <activity
             android:keepScreenOn="true"
             android:name=".MainActivity"
-            android:banner="@drawable/logo"
+            android:banner="@drawable/banner"
             android:exported="true"
             android:icon="@drawable/logo"
             android:logo="@drawable/logo"
