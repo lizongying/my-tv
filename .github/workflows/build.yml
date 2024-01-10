@@ -33,9 +33,9 @@ jobs:
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ALIAS_PASSWORD }}
-#        env:
+        env:
           # override default build-tools version (29.0.3) -- optional
-#          BUILD_TOOLS_VERSION: "30.0.2"
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Create Release
         id: create_release
