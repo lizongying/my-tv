@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -63,6 +64,13 @@ class MainFragment : BrowseSupportFragment() {
         handler.post(mUpdateProgramRunnable)
 
         tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
+            tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
+                if (tvViewModel.errInfo.value != null
+                    && tvViewModel.id.value == itemPosition
+                ) {
+                    Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT).show()
+                }
+            }
             tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
 
                 // not first time && channel not change
@@ -305,6 +313,7 @@ class MainFragment : BrowseSupportFragment() {
         ) {
             if (item is TVViewModel) {
                 tvListViewModel.setItemPositionCurrent(item.id.value!!)
+                (activity as MainActivity).keepRunnable()
             }
         }
     }

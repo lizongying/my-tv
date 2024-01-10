@@ -86,8 +86,6 @@ class Request {
         "海南卫视" to "海南卫视",
     )
 
-    private var token: String? = null
-
     fun initYSP(context: Context) {
         ysp = YSP(context)
     }
@@ -135,21 +133,26 @@ class Request {
                                 Log.e(TAG, "$title key error")
                                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                     tvModel.retryTimes++
-                                    fetchData(tvModel)
+                                    fetchVideo(tvModel, cookie)
                                 }
                             }
                         } else {
-                            Log.e(TAG, "$title url error $request")
-                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                                tvModel.retryTimes++
-                                fetchData(tvModel)
+                            if (liveInfo?.data?.errinfo != null && liveInfo.data.errinfo != "success!") {
+                                Log.e(TAG, "$title url error ${liveInfo.data.errinfo}")
+                                tvModel.setErrInfo(liveInfo.data.errinfo)
+                            } else {
+                                Log.e(TAG, "$title url error $request $liveInfo")
+                                if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                    tvModel.retryTimes++
+                                    fetchVideo(tvModel, cookie)
+                                }
                             }
                         }
                     } else {
                         Log.e(TAG, "$title status error")
                         if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                             tvModel.retryTimes++
-                            fetchData(tvModel)
+                            fetchVideo(tvModel, cookie)
                         }
                     }
                 }
@@ -158,61 +161,47 @@ class Request {
                     Log.e(TAG, "$title request error")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
-                        fetchData(tvModel)
+                        fetchVideo(tvModel, cookie)
+                    }
+                }
+            })
+    }
+
+    fun fetchVideo(tvModel: TVViewModel) {
+        yspTokenService.getInfo()
+            .enqueue(object : Callback<Info> {
+                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                    if (response.isSuccessful) {
+                        val info = response.body()
+                        val token = info?.data?.token
+                        Log.i(TAG, "info success $token")
+                        val cookie =
+                            "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                        fetchVideo(tvModel, cookie)
+                    } else {
+                        Log.e(TAG, "info status error")
+                        if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                            tvModel.retryTimes++
+                            fetchVideo(tvModel)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<Info>, t: Throwable) {
+                    Log.e(TAG, "info request error $t")
+                    if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                        tvModel.retryTimes++
+                        fetchVideo(tvModel)
                     }
                 }
             })
     }
 
     fun fetchData(tvModel: TVViewModel) {
-        var cookie = "guid=1; vplatform=109"
-        val channels = arrayOf(
-            "CCTV3 综艺",
-            "CCTV6 电影",
-            "CCTV8 电视剧",
-            "风云剧场",
-            "第一剧场",
-            "怀旧剧场",
-            "世界地理",
-            "风云音乐",
-            "兵器科技",
-            "风云足球",
-            "高尔夫网球",
-            "女性时尚",
-            "央视文化精品",
-            "央视台球",
-            "电视指南",
-            "卫生健康",
-        )
-        if (tvModel.title.value in channels) {
-            yspTokenService.getInfo()
-                .enqueue(object : Callback<Info> {
-                    override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                        if (response.isSuccessful) {
-                            val info = response.body()
-                            token = info?.data?.token
-                            Log.i(TAG, "info success $token")
-                            cookie =
-                                "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
-                            fetchVideo(tvModel, cookie)
-                        } else {
-                            Log.e(TAG, "info status error")
-                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                                tvModel.retryTimes++
-                                fetchData(tvModel)
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Info>, t: Throwable) {
-                        Log.e(TAG, "info request error $t")
-                        if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                            tvModel.retryTimes++
-                            fetchData(tvModel)
-                        }
-                    }
-                })
+        if (tvModel.needToken) {
+            fetchVideo(tvModel)
         } else {
+            val cookie = "guid=1; vplatform=109"
             fetchVideo(tvModel, cookie)
         }
     }

@@ -23,6 +23,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     var retryMaxTimes: Int = 3
     var programUpdateTime: Long = 0
 
+    private val _errInfo = MutableLiveData<String>()
+    val errInfo: LiveData<String>
+        get() = _errInfo
+
     private val _programId = MutableLiveData<String>()
     val programId: LiveData<String>
         get() = _programId
@@ -70,6 +74,27 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var mMinimumLoadableRetryCount = 3
 
     var seq = 0
+
+    var needToken = false
+
+    private val channelsNeedToken = arrayOf(
+        "CCTV3 综艺",
+        "CCTV6 电影",
+        "CCTV8 电视剧",
+        "风云剧场",
+        "第一剧场",
+        "怀旧剧场",
+        "世界地理",
+        "风云音乐",
+        "兵器科技",
+        "风云足球",
+        "高尔夫网球",
+        "女性时尚",
+        "央视文化精品",
+        "央视台球",
+        "电视指南",
+        "卫生健康",
+    )
 
     fun addVideoUrl(url: String) {
         if (_videoUrl.value?.isNotEmpty() == true) {
@@ -121,6 +146,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _pid.value = tv.pid
         _sid.value = tv.sid
         _program.value = mutableListOf()
+
+        if (tv.title in channelsNeedToken) {
+            needToken = true
+        }
     }
 
     fun getRowPosition(): Int {
@@ -137,6 +166,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun setItemPosition(position: Int) {
         itemPosition = position
+    }
+
+    fun setErrInfo(info: String) {
+        _errInfo.value = info
     }
 
     fun update(t: TV) {

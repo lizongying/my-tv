@@ -35,6 +35,9 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var gestureDetector: GestureDetector
 
+    private val handler = Handler()
+    private val delay: Long = 3000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -86,11 +89,21 @@ class MainActivity : FragmentActivity() {
 
         if (mainFragment.isHidden) {
             transaction.show(mainFragment)
+            keepRunnable()
         } else {
             transaction.hide(mainFragment)
         }
 
         transaction.commit()
+    }
+
+    fun keepRunnable() {
+        handler.removeCallbacks(hideRunnable)
+        handler.postDelayed(hideRunnable, delay)
+    }
+
+    private val hideRunnable = Runnable {
+        supportFragmentManager.beginTransaction().hide(mainFragment).commit()
     }
 
     private fun mainFragmentIsHidden(): Boolean {
