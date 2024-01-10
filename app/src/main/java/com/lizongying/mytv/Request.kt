@@ -7,11 +7,9 @@ import android.util.Base64
 import android.util.Log
 import com.lizongying.mytv.Utils.getDateFormat
 import com.lizongying.mytv.api.ApiClient
-import com.lizongying.mytv.api.BtraceClient
 import com.lizongying.mytv.api.Info
 import com.lizongying.mytv.api.LiveInfo
 import com.lizongying.mytv.api.LiveInfoRequest
-import com.lizongying.mytv.api.ProtoClient
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.api.YSPApiService
 import com.lizongying.mytv.api.YSPBtraceService
@@ -31,8 +29,8 @@ import javax.crypto.spec.SecretKeySpec
 class Request {
     private var yspTokenService: YSPTokenService = ApiClient().yspTokenService
     private var yspApiService: YSPApiService = ApiClient().yspApiService
-    private var yspBtraceService: YSPBtraceService = BtraceClient().yspBtraceService
-    private var yspProtoService: YSPProtoService = ProtoClient().yspProtoService
+    private var yspBtraceService: YSPBtraceService = ApiClient().yspBtraceService
+    private var yspProtoService: YSPProtoService = ApiClient().yspProtoService
     private var ysp: YSP? = null
 
     // TODO onDestroy
@@ -62,7 +60,6 @@ class Request {
         "CGTN阿拉伯语频道" to "CGTN 阿拉伯语频道",
         "CGTN西班牙语频道" to "CGTN 西班牙语频道",
         "CGTN外语纪录频道" to "CGTN 纪录频道",
-
         "东方卫视" to "东方卫视",
         "湖南卫视" to "湖南卫视",
         "湖北卫视" to "湖北卫视",
@@ -137,8 +134,8 @@ class Request {
                                 }
                             }
                         } else {
-                            if (liveInfo?.data?.errinfo != null && liveInfo.data.errinfo != "success!") {
-                                Log.e(TAG, "$title url error ${liveInfo.data.errinfo}")
+                            if (liveInfo?.data?.errinfo != null && liveInfo.data.errinfo == "应版权方要求，暂停提供直播信号，请点击观看其他精彩节目") {
+                                Log.e(TAG, "$title error ${liveInfo.data.errinfo}")
                                 tvModel.setErrInfo(liveInfo.data.errinfo)
                             } else {
                                 Log.e(TAG, "$title url error $request $liveInfo")

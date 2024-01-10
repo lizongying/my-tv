@@ -70,6 +70,8 @@ class YSP(var context: Context) {
         defn = "fhd"
 
         randStr = getRand()
+
+        guid = newGuid()
         timeStr = getTimeStr()
 
 //        guid = "lq3oqitm_1e15dnzgjnb"
@@ -101,6 +103,15 @@ class YSP(var context: Context) {
                 putString("guid", guid)
                 apply()
             }
+        }
+        return guid
+    }
+
+    fun newGuid(): String {
+        guid = generateGuid()
+        with(sharedPref!!.edit()) {
+            putString("guid", guid)
+            apply()
         }
         return guid
     }
