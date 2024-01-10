@@ -6,6 +6,7 @@ plugins {
 android {
     namespace 'com.lizongying.mytv'
     compileSdk 33
+    buildToolsVersion "29.0.3"
 
     viewBinding {
         enabled = true
