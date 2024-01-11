@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.content.pm.SigningInfo
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -20,6 +21,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentActivity
 import com.lizongying.mytv.models.TVViewModel
 import java.security.MessageDigest
@@ -192,16 +194,24 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
+            KeyEvent.KEYCODE_SETTINGS -> {
+                Toast.makeText(this, "KEYCODE_SETTINGS", Toast.LENGTH_SHORT).show()
+            }
             KeyEvent.KEYCODE_MENU -> {
+                Toast.makeText(this, "KEYCODE_MENU", Toast.LENGTH_SHORT).show()
                 val versionName = getPackageInfo().versionName
 
                 val textView = TextView(this)
                 textView.text =
                     "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+                textView.setBackgroundColor(0xFF263238.toInt())
+                textView.setPadding(20, 50, 20, 20)
+
 
                 val imageView = ImageView(this)
                 val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
                 imageView.setImageDrawable(drawable)
+                imageView.setBackgroundColor(Color.WHITE)
 
                 val linearLayout = LinearLayout(this)
                 linearLayout.orientation = LinearLayout.VERTICAL
@@ -210,10 +220,14 @@ class MainActivity : FragmentActivity() {
 
                 val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                )
+                textView.layoutParams = layoutParams
+                val layoutParams2 = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                imageView.layoutParams = layoutParams
-                textView.layoutParams = layoutParams
+                imageView.layoutParams = layoutParams2
 
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder
