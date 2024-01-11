@@ -169,8 +169,7 @@ class Request {
             .enqueue(object : Callback<Info> {
                 override fun onResponse(call: Call<Info>, response: Response<Info>) {
                     if (response.isSuccessful) {
-                        val info = response.body()
-                        val token = info?.data?.token
+                        val token = response.body()?.data?.token
                         Log.i(TAG, "info success $token")
                         val cookie =
                             "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"

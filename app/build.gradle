@@ -100,10 +100,13 @@ dependencies {
     // For HLS playback support with ExoPlayer
     implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
 
+    // 21:2.9.0 17:2.6.4
+    def retrofit2_version = "2.9.0"
+
     implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-protobuf:2.9.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+    implementation "com.squareup.retrofit2:converter-protobuf:$retrofit2_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
     implementation 'androidx.core:core-ktx:1.11.0-beta02'
     implementation 'androidx.leanback:leanback:1.2.0-alpha02'

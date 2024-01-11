@@ -24,6 +24,7 @@ class PlayerFragment : Fragment() {
     private var _binding: PlayerBinding? = null
     private var playerView: PlayerView? = null
     private var tvViewModel: TVViewModel? = null
+    private val aspectRatio = 16f / 9f
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,10 +44,9 @@ class PlayerFragment : Fragment() {
                 playerView!!.player?.playWhenReady = true
                 playerView!!.player?.addListener(object : Player.Listener {
                     override fun onVideoSizeChanged(videoSize: VideoSize) {
-                        val aspectRatio = 16f / 9f
-                        val layoutParams = playerView?.layoutParams
                         val ratio = playerView?.measuredWidth?.div(playerView?.measuredHeight!!)
                         if (ratio != null) {
+                            val layoutParams = playerView?.layoutParams
                             if (ratio < aspectRatio) {
                                 layoutParams?.height =
                                     (playerView?.measuredWidth?.div(aspectRatio))?.toInt()
