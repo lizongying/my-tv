@@ -71,7 +71,10 @@ class YSP(var context: Context) {
 
         randStr = getRand()
 
-        guid = newGuid()
+        if (tvModel.retryTimes > 0) {
+            guid = newGuid()
+        }
+
         timeStr = getTimeStr()
 
 //        guid = "lq3oqitm_1e15dnzgjnb"
@@ -107,7 +110,7 @@ class YSP(var context: Context) {
         return guid
     }
 
-    fun newGuid(): String {
+    private fun newGuid(): String {
         guid = generateGuid()
         with(sharedPref!!.edit()) {
             putString("guid", guid)

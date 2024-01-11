@@ -87,7 +87,10 @@ class Request {
         ysp = YSP(context)
     }
 
+    var call: Call<LiveInfo>? = null
+
     fun fetchVideo(tvModel: TVViewModel, cookie: String) {
+        call?.cancel()
         if (::myRunnable.isInitialized) {
             handler.removeCallbacks(myRunnable)
         }
@@ -97,71 +100,71 @@ class Request {
         tvModel.seq = 0
         val data = ysp?.switch(tvModel)
         val request = data?.let { LiveInfoRequest(it) }
+        call = request?.let { yspApiService.getLiveInfo("guid=${ysp?.getGuid()}; $cookie", it) }
 
-        request?.let { yspApiService.getLiveInfo(cookie, it) }
-            ?.enqueue(object : Callback<LiveInfo> {
-                override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
-                    if (response.isSuccessful) {
-                        val liveInfo = response.body()
-                        if (liveInfo?.data?.playurl != null) {
-                            val chanll = liveInfo.data.chanll
-                            val decodedBytes = Base64.decode(
-                                chanll.substring(9, chanll.length - 3),
-                                Base64.DEFAULT
-                            )
-                            val decodedString = String(decodedBytes)
-                            val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
-                            val matchResult = regex.find(decodedString)
-                            if (matchResult != null) {
-                                val (key, iv) = matchResult.destructured
-                                val keyBytes = Base64.decode(key, Base64.DEFAULT)
-                                val ivBytes = Base64.decode(iv, Base64.DEFAULT)
-                                val url = liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
-                                    keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
-                                    ivBytes
-                                ).uppercase()
-                                Log.i(TAG, "$title url $url")
-                                tvModel.addVideoUrl(url)
-                                tvModel.allReady()
-                                tvModel.retryTimes = 0
-                                myRunnable = MyRunnable(tvModel)
-                                handler.post(myRunnable)
-                            } else {
-                                Log.e(TAG, "$title key error")
-                                if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                                    tvModel.retryTimes++
-                                    fetchVideo(tvModel, cookie)
-                                }
-                            }
+        call?.enqueue(object : Callback<LiveInfo> {
+            override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
+                if (response.isSuccessful) {
+                    val liveInfo = response.body()
+                    if (liveInfo?.data?.playurl != null) {
+                        val chanll = liveInfo.data.chanll
+                        val decodedBytes = Base64.decode(
+                            chanll.substring(9, chanll.length - 3),
+                            Base64.DEFAULT
+                        )
+                        val decodedString = String(decodedBytes)
+                        val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
+                        val matchResult = regex.find(decodedString)
+                        if (matchResult != null) {
+                            val (key, iv) = matchResult.destructured
+                            val keyBytes = Base64.decode(key, Base64.DEFAULT)
+                            val ivBytes = Base64.decode(iv, Base64.DEFAULT)
+                            val url = liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
+                                keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
+                                ivBytes
+                            ).uppercase()
+                            Log.i(TAG, "$title url $url")
+                            tvModel.addVideoUrl(url)
+                            tvModel.allReady()
+                            tvModel.retryTimes = 0
+                            myRunnable = MyRunnable(tvModel)
+                            handler.post(myRunnable)
                         } else {
-                            if (liveInfo?.data?.errinfo != null && liveInfo.data.errinfo == "应版权方要求，暂停提供直播信号，请点击观看其他精彩节目") {
-                                Log.e(TAG, "$title error ${liveInfo.data.errinfo}")
-                                tvModel.setErrInfo(liveInfo.data.errinfo)
-                            } else {
-                                Log.e(TAG, "$title url error $request $liveInfo")
-                                if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                                    tvModel.retryTimes++
-                                    fetchVideo(tvModel, cookie)
-                                }
+                            Log.e(TAG, "$title key error")
+                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                tvModel.retryTimes++
+                                fetchVideo(tvModel, cookie)
                             }
                         }
                     } else {
-                        Log.e(TAG, "$title status error")
-                        if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                            tvModel.retryTimes++
-                            fetchVideo(tvModel, cookie)
+                        if (liveInfo?.data?.errinfo != null && liveInfo.data.errinfo == "应版权方要求，暂停提供直播信号，请点击观看其他精彩节目") {
+                            Log.e(TAG, "$title error ${liveInfo.data.errinfo}")
+                            tvModel.setErrInfo(liveInfo.data.errinfo)
+                        } else {
+                            Log.e(TAG, "$title url error $request $liveInfo")
+                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                tvModel.retryTimes++
+                                fetchVideo(tvModel, cookie)
+                            }
                         }
                     }
-                }
-
-                override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
-                    Log.e(TAG, "$title request error")
+                } else {
+                    Log.e(TAG, "$title status error")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
                         fetchVideo(tvModel, cookie)
                     }
                 }
-            })
+            }
+
+            override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
+                Log.e(TAG, "$title request error")
+                if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                    tvModel.retryTimes++
+                    fetchVideo(tvModel, cookie)
+                }
+            }
+        })
     }
 
     fun fetchVideo(tvModel: TVViewModel) {
@@ -172,7 +175,7 @@ class Request {
                         val token = response.body()?.data?.token
                         Log.i(TAG, "info success $token")
                         val cookie =
-                            "guid=1; vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else {
                         Log.e(TAG, "info status error")
@@ -197,7 +200,7 @@ class Request {
         if (tvModel.needToken) {
             fetchVideo(tvModel)
         } else {
-            val cookie = "guid=1; vplatform=109"
+            val cookie = "vplatform=109"
             fetchVideo(tvModel, cookie)
         }
     }

@@ -5,6 +5,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.protobuf.ProtoConverterFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 
 class ApiClient {
@@ -13,9 +16,7 @@ class ApiClient {
     private val protoUrl = "https://capi.yangshipin.cn/"
     private val traceUrl = "https://btrace.yangshipin.cn/"
 
-    private var okHttpClient = OkHttpClient.Builder()
-        .dns(DnsCache())
-        .build()
+    private var okHttpClient = getUnsafeOkHttpClient()
 
     val yspApiService: YSPApiService by lazy {
         Retrofit.Builder()
@@ -47,5 +48,41 @@ class ApiClient {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(YSPBtraceService::class.java)
+    }
+
+    private fun getUnsafeOkHttpClient(): OkHttpClient {
+        try {
+            val trustAllCerts: Array<TrustManager> = arrayOf(
+                object : X509TrustManager {
+                    override fun checkClientTrusted(
+                        chain: Array<out java.security.cert.X509Certificate>?,
+                        authType: String?
+                    ) {
+                    }
+
+                    override fun checkServerTrusted(
+                        chain: Array<out java.security.cert.X509Certificate>?,
+                        authType: String?
+                    ) {
+                    }
+
+                    override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> {
+                        return emptyArray()
+                    }
+                }
+            )
+
+            val sslContext = SSLContext.getInstance("SSL")
+            sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+
+            return OkHttpClient.Builder()
+                .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+                .hostnameVerifier { _, _ -> true }
+                .dns(DnsCache())
+                .build()
+
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.content.pm.SigningInfo
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -36,7 +37,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var gestureDetector: GestureDetector
 
     private val handler = Handler()
-    private val delay: Long = 3000
+    private val delay: Long = 4000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,6 +171,40 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private fun showHelp() {
+        val versionName = getPackageInfo().versionName
+
+        val textView = TextView(this)
+        textView.text =
+            "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+        textView.setBackgroundColor(0xFF263238.toInt())
+        textView.setPadding(20, 50, 20, 20)
+
+        val imageView = ImageView(this)
+        val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
+        imageView.setImageDrawable(drawable)
+        imageView.setBackgroundColor(Color.WHITE)
+
+        val linearLayout = LinearLayout(this)
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.addView(textView)
+        linearLayout.addView(imageView)
+
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        imageView.layoutParams = layoutParams
+        textView.layoutParams = layoutParams
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setView(linearLayout)
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_BACK -> {
@@ -192,35 +227,13 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
+            KeyEvent.KEYCODE_SETTINGS -> {
+                showHelp()
+                return true
+            }
+
             KeyEvent.KEYCODE_MENU -> {
-                val versionName = getPackageInfo().versionName
-
-                val textView = TextView(this)
-                textView.text =
-                    "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
-
-                val imageView = ImageView(this)
-                val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
-                imageView.setImageDrawable(drawable)
-
-                val linearLayout = LinearLayout(this)
-                linearLayout.orientation = LinearLayout.VERTICAL
-                linearLayout.addView(textView)
-                linearLayout.addView(imageView)
-
-                val layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                imageView.layoutParams = layoutParams
-                textView.layoutParams = layoutParams
-
-                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder
-                    .setView(linearLayout)
-
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
+                showHelp()
                 return true
             }
 
