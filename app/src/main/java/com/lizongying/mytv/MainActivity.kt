@@ -64,7 +64,6 @@ class MainActivity : FragmentActivity() {
     }
 
     fun play(tvViewModel: TVViewModel) {
-        Log.i(TAG, "play: ${tvViewModel.getTV()}")
         playerFragment.play(tvViewModel)
         mainFragment.view?.requestFocus()
     }
