@@ -1,11 +1,25 @@
 <resources>
 
-
     <style name="CustomImageCardViewStyle" parent="Widget.Leanback.ImageCardViewStyle">
-        <item name="lbImageCardViewType">Title|Content</item>
+        <item name="cardType">infoUnder</item>
+        <item name="infoVisibility">always</item>
+        <!-- In order to keep backward compatibility we have to create an icon on right. -->
+        <item name="lbImageCardViewType">Title|Content|IconOnRight</item>
+        <!-- Deprecated. Use 'Widget.Leanback.ImageCardView.InfoAreaStyle' instead. -->
+        <item name="infoAreaBackground">@null</item>
+    </style>
+
+    <style name="CustomImageCardViewImageStyle" parent="Widget.Leanback.ImageCardView.ImageStyle">
+        <item name="android:layout_width">143dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:contentDescription">@null</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="layout_viewType">main</item>
     </style>
 
     <style name="CustomImageCardTheme" parent="Theme.Leanback">
         <item name="imageCardViewStyle">@style/CustomImageCardViewStyle</item>
+        <item name="imageCardViewImageStyle">@style/CustomImageCardViewImageStyle</item>
     </style>
 </resources>

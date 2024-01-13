@@ -101,7 +101,7 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
 
     // 21:2.9.0 17:2.6.4
-    def retrofit2_version = "2.9.0"
+    def retrofit2_version = "2.6.4"
 
     implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"

@@ -209,8 +209,8 @@ class MainFragment : BrowseSupportFragment() {
         itemPosition = sharedPref?.getInt("position", 0)!!
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
-            tvListViewModel.setItemPosition(itemPosition)
         }
+        tvListViewModel.setItemPosition(itemPosition)
     }
 
     fun fragmentReady() {

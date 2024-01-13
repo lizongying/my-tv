@@ -21,7 +21,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentActivity
 import com.lizongying.mytv.models.TVViewModel
 import java.security.MessageDigest
@@ -30,7 +29,7 @@ import java.security.MessageDigest
 class MainActivity : FragmentActivity() {
 
     var playerFragment = PlayerFragment()
-    private val mainFragment = MainFragment()
+    private val mainFragment = MainFragment2()
     private val infoFragment = InfoFragment()
 
     private var doubleBackToExitPressedOnce = false
@@ -38,7 +37,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var gestureDetector: GestureDetector
 
     private val handler = Handler()
-    private val delay: Long = 3000
+    private val delay: Long = 4000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,17 +78,18 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun prevSource() {
-        mainFragment.prevSource()
+//        mainFragment.prevSource()
     }
 
     private fun nextSource() {
-        mainFragment.nextSource()
+//        mainFragment.nextSource()
     }
 
     fun switchMainFragment() {
         val transaction = supportFragmentManager.beginTransaction()
 
         if (mainFragment.isHidden) {
+            mainFragment.setPosition()
             transaction.show(mainFragment)
             keepRunnable()
         } else {
