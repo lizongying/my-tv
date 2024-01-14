@@ -204,29 +204,63 @@ class MainActivity : FragmentActivity() {
         dialog.show()
     }
 
+    private fun channelUp() {
+        if (mainFragment.isHidden) {
+            prev()
+        } else {
+//                    if (mainFragment.selectedPosition == 0) {
+//                        mainFragment.setSelectedPosition(
+//                            mainFragment.tvListViewModel.maxNum.size - 1,
+//                            false
+//                        )
+//                    }
+        }
+    }
+
+    private fun channelDown() {
+        if (mainFragment.isHidden) {
+            next()
+        } else {
+//                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
+////                        mainFragment.setSelectedPosition(0, false)
+//                        hideMainFragment()
+//                        return false
+//                    }
+        }
+    }
+
+    private fun back() {
+        if (!mainFragmentIsHidden()) {
+            hideMainFragment()
+            return
+        }
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_BACK -> {
-                if (!mainFragmentIsHidden()) {
-                    hideMainFragment()
-                    return true
-                }
-
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed()
-                    return true
-                }
-
-                this.doubleBackToExitPressedOnce = true
-                Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show()
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    doubleBackToExitPressedOnce = false
-                }, 2000)
+                back()
                 return true
             }
 
             KeyEvent.KEYCODE_SETTINGS -> {
+                showHelp()
+                return true
+            }
+
+            KeyEvent.KEYCODE_HELP -> {
                 showHelp()
                 return true
             }
@@ -245,28 +279,19 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_DPAD_UP -> {
-                if (mainFragment.isHidden) {
-                    prev()
-                } else {
-//                    if (mainFragment.selectedPosition == 0) {
-//                        mainFragment.setSelectedPosition(
-//                            mainFragment.tvListViewModel.maxNum.size - 1,
-//                            false
-//                        )
-//                    }
-                }
+                channelUp()
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
-                if (mainFragment.isHidden) {
-                    next()
-                } else {
-//                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
-////                        mainFragment.setSelectedPosition(0, false)
-//                        hideMainFragment()
-//                        return false
-//                    }
-                }
+                channelDown()
+            }
+
+            KeyEvent.KEYCODE_CHANNEL_UP -> {
+                channelUp()
+            }
+
+            KeyEvent.KEYCODE_CHANNEL_DOWN -> {
+                channelDown()
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
