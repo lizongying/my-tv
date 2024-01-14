@@ -53,6 +53,7 @@ class MainActivity : FragmentActivity() {
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(infoFragment)
+                .hide(mainFragment)
                 .commit()
             mainFragment.view?.requestFocus()
         }
@@ -171,105 +172,132 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        when (keyCode) {
-            KeyEvent.KEYCODE_BACK -> {
-                if (!mainFragmentIsHidden()) {
-                    hideMainFragment()
-                    return true
-                }
+    private fun showHelp() {
+        val versionName = getPackageInfo().versionName
 
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed()
-                    return true
-                }
+        val textView = TextView(this)
+        textView.text =
+            "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+        textView.setBackgroundColor(0xFF263238.toInt())
+        textView.setPadding(20, 50, 20, 20)
 
-                this.doubleBackToExitPressedOnce = true
-                Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show()
+        val imageView = ImageView(this)
+        val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
+        imageView.setImageDrawable(drawable)
+        imageView.setBackgroundColor(Color.WHITE)
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    doubleBackToExitPressedOnce = false
-                }, 2000)
-                return true
-            }
+        val linearLayout = LinearLayout(this)
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.addView(textView)
+        linearLayout.addView(imageView)
 
-            KeyEvent.KEYCODE_SETTINGS -> {
-                Toast.makeText(this, "KEYCODE_SETTINGS", Toast.LENGTH_SHORT).show()
-            }
-            KeyEvent.KEYCODE_MENU -> {
-                Toast.makeText(this, "KEYCODE_MENU", Toast.LENGTH_SHORT).show()
-                val versionName = getPackageInfo().versionName
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        imageView.layoutParams = layoutParams
+        textView.layoutParams = layoutParams
 
-                val textView = TextView(this)
-                textView.text =
-                    "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
-                textView.setBackgroundColor(0xFF263238.toInt())
-                textView.setPadding(20, 50, 20, 20)
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setView(linearLayout)
 
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
 
-                val imageView = ImageView(this)
-                val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
-                imageView.setImageDrawable(drawable)
-                imageView.setBackgroundColor(Color.WHITE)
-
-                val linearLayout = LinearLayout(this)
-                linearLayout.orientation = LinearLayout.VERTICAL
-                linearLayout.addView(textView)
-                linearLayout.addView(imageView)
-
-                val layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                )
-                textView.layoutParams = layoutParams
-                val layoutParams2 = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                imageView.layoutParams = layoutParams2
-
-                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder
-                    .setView(linearLayout)
-
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
-                return true
-            }
-
-            KeyEvent.KEYCODE_ENTER -> {
-                Toast.makeText(this, "KEYCODE_ENTER", Toast.LENGTH_SHORT).show()
-                switchMainFragment()
-            }
-
-            KeyEvent.KEYCODE_DPAD_CENTER -> {
-                Toast.makeText(this, "KEYCODE_DPAD_CENTER", Toast.LENGTH_SHORT).show()
-                switchMainFragment()
-            }
-
-            KeyEvent.KEYCODE_DPAD_UP -> {
-                if (mainFragment.isHidden) {
-                    prev()
-                } else {
+    private fun channelUp() {
+        if (mainFragment.isHidden) {
+            prev()
+        } else {
 //                    if (mainFragment.selectedPosition == 0) {
 //                        mainFragment.setSelectedPosition(
 //                            mainFragment.tvListViewModel.maxNum.size - 1,
 //                            false
 //                        )
 //                    }
-                }
-            }
+        }
+    }
 
-            KeyEvent.KEYCODE_DPAD_DOWN -> {
-                if (mainFragment.isHidden) {
-                    next()
-                } else {
+    private fun channelDown() {
+        if (mainFragment.isHidden) {
+            next()
+        } else {
 //                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
 ////                        mainFragment.setSelectedPosition(0, false)
 //                        hideMainFragment()
 //                        return false
 //                    }
-                }
+        }
+    }
+
+    private fun back() {
+        if (!mainFragmentIsHidden()) {
+            hideMainFragment()
+            return
+        }
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+//        Toast.makeText(this, "keyCode ${keyCodeToString(keyCode)}", Toast.LENGTH_SHORT).show()
+        when (keyCode) {
+            KeyEvent.KEYCODE_ESCAPE -> {
+                back()
+                return true
+            }
+            KeyEvent.KEYCODE_BACK -> {
+                back()
+                return true
+            }
+
+            KeyEvent.KEYCODE_UNKNOWN -> {
+                showHelp()
+                return true
+            }
+            KeyEvent.KEYCODE_HELP -> {
+                showHelp()
+                return true
+            }
+            KeyEvent.KEYCODE_SETTINGS -> {
+                showHelp()
+                return true
+            }
+            KeyEvent.KEYCODE_MENU -> {
+                showHelp()
+                return true
+            }
+
+            KeyEvent.KEYCODE_ENTER -> {
+                switchMainFragment()
+            }
+            KeyEvent.KEYCODE_DPAD_CENTER -> {
+                switchMainFragment()
+            }
+
+            KeyEvent.KEYCODE_DPAD_UP -> {
+                channelUp()
+            }
+            KeyEvent.KEYCODE_CHANNEL_UP -> {
+                channelUp()
+            }
+
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                channelDown()
+            }
+            KeyEvent.KEYCODE_CHANNEL_DOWN -> {
+                channelDown()
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {

@@ -164,6 +164,11 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
     }
 
     override fun onItemClicked(tvViewModel: TVViewModel) {
+        if (this.isHidden) {
+            (activity as? MainActivity)?.switchMainFragment()
+            return
+        }
+
         if (itemPosition != tvViewModel.id.value!!) {
             itemPosition = tvViewModel.id.value!!
             tvListViewModel.setItemPosition(itemPosition)
@@ -211,7 +216,6 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
         if (ready == 3) {
 //            request.fetchPage()
             tvListViewModel.getTVViewModel(itemPosition)?.changed()
-            (activity as? MainActivity)?.switchMainFragment()
         }
     }
 

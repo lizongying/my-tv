@@ -98,9 +98,7 @@ class Request {
         val title = tvModel.title.value
 
         tvModel.seq = 0
-        Log.i(TAG, "test1")
         val data = ysp?.switch(tvModel)
-        Log.i(TAG, "test2")
         val request = data?.let { LiveInfoRequest(it) }
         call = request?.let { yspApiService.getLiveInfo("guid=${ysp?.getGuid()}; $cookie", it) }
 
