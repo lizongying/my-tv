@@ -64,7 +64,6 @@ class MainActivity : FragmentActivity() {
     }
 
     fun play(tvViewModel: TVViewModel) {
-        Log.i(TAG, "play: ${tvViewModel.getTV()}")
         playerFragment.play(tvViewModel)
         mainFragment.view?.requestFocus()
     }
@@ -238,8 +237,13 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
+            KeyEvent.KEYCODE_ENTER -> {
+                Toast.makeText(this, "KEYCODE_ENTER", Toast.LENGTH_SHORT).show()
+                switchMainFragment()
+            }
+
             KeyEvent.KEYCODE_DPAD_CENTER -> {
-                Log.i(TAG, "KEYCODE_DPAD_CENTER")
+                Toast.makeText(this, "KEYCODE_DPAD_CENTER", Toast.LENGTH_SHORT).show()
                 switchMainFragment()
             }
 
