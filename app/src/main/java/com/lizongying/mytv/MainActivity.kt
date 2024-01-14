@@ -236,8 +236,11 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
+            KeyEvent.KEYCODE_ENTER -> {
+                switchMainFragment()
+            }
+
             KeyEvent.KEYCODE_DPAD_CENTER -> {
-                Log.i(TAG, "KEYCODE_DPAD_CENTER")
                 switchMainFragment()
             }
 
