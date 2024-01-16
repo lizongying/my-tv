@@ -1,11 +1,11 @@
 package com.lizongying.mytv
 
-import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.content.pm.SigningInfo
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,11 +16,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.lizongying.mytv.models.TVViewModel
 import java.security.MessageDigest
@@ -38,6 +34,9 @@ class MainActivity : FragmentActivity() {
 
     private val handler = Handler()
     private val delay: Long = 4000
+
+    private lateinit var sharedPref: SharedPreferences
+    private var channelReversal = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +56,9 @@ class MainActivity : FragmentActivity() {
             mainFragment.view?.requestFocus()
         }
         gestureDetector = GestureDetector(this, GestureListener())
+
+        sharedPref = getPreferences(Context.MODE_PRIVATE)
+        channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, false)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -170,42 +172,30 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    fun saveChannelReversal(channelReversal: Boolean) {
+        with(sharedPref.edit()) {
+            putBoolean(CHANNEL_REVERSAL, channelReversal)
+            apply()
+        }
+        this.channelReversal = channelReversal
+    }
+
     private fun showHelp() {
+        if (!mainFragment.isHidden) {
+            return
+        }
+
         val versionName = getPackageInfo().versionName
-
-        val textView = TextView(this)
-        textView.text =
-            "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
-        textView.setBackgroundColor(0xFF263238.toInt())
-        textView.setPadding(20, 50, 20, 20)
-
-        val imageView = ImageView(this)
-        val drawable = ContextCompat.getDrawable(this, R.drawable.appreciate)
-        imageView.setImageDrawable(drawable)
-        imageView.setBackgroundColor(Color.WHITE)
-
-        val linearLayout = LinearLayout(this)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.addView(textView)
-        linearLayout.addView(imageView)
-
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        imageView.layoutParams = layoutParams
-        textView.layoutParams = layoutParams
-
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder
-            .setView(linearLayout)
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
+        val dialogFragment = MyDialogFragment(versionName, channelReversal)
+        dialogFragment.show(supportFragmentManager, "settings_dialog")
     }
 
     private fun channelUp() {
         if (mainFragment.isHidden) {
+            if (channelReversal) {
+                next()
+                return
+            }
             prev()
         } else {
 //                    if (mainFragment.selectedPosition == 0) {
@@ -219,6 +209,10 @@ class MainActivity : FragmentActivity() {
 
     private fun channelDown() {
         if (mainFragment.isHidden) {
+            if (channelReversal) {
+                prev()
+                return
+            }
             next()
         } else {
 //                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
@@ -250,17 +244,32 @@ class MainActivity : FragmentActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
+            KeyEvent.KEYCODE_ESCAPE -> {
+                back()
+                return true
+            }
+
             KeyEvent.KEYCODE_BACK -> {
                 back()
                 return true
             }
 
-            KeyEvent.KEYCODE_SETTINGS -> {
+            KeyEvent.KEYCODE_BOOKMARK -> {
+                showHelp()
+                return true
+            }
+
+            KeyEvent.KEYCODE_UNKNOWN -> {
                 showHelp()
                 return true
             }
 
             KeyEvent.KEYCODE_HELP -> {
+                showHelp()
+                return true
+            }
+
+            KeyEvent.KEYCODE_SETTINGS -> {
                 showHelp()
                 return true
             }
@@ -282,12 +291,12 @@ class MainActivity : FragmentActivity() {
                 channelUp()
             }
 
-            KeyEvent.KEYCODE_DPAD_DOWN -> {
-                channelDown()
-            }
-
             KeyEvent.KEYCODE_CHANNEL_UP -> {
                 channelUp()
+            }
+
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                channelDown()
             }
 
             KeyEvent.KEYCODE_CHANNEL_DOWN -> {
@@ -376,5 +385,6 @@ class MainActivity : FragmentActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+        private const val CHANNEL_REVERSAL = "channel_reversal"
     }
 }

@@ -1,6 +1,5 @@
 <resources>
 
-
     <style name="CustomImageCardViewStyle" parent="Widget.Leanback.ImageCardViewStyle">
         <item name="lbImageCardViewType">Title|Content</item>
     </style>
