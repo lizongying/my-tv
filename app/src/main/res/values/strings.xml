@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">我的电视</string>
-    <string name="logo">logo</string>
+    <string name="title_channel_reversal">频道反转</string>
 </resources>

@@ -97,7 +97,7 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
             mUpdateProgramRunnable = UpdateProgramRunnable()
             handler.post(mUpdateProgramRunnable)
 
-            itemPosition = sharedPref?.getInt("position", 0)!!
+            itemPosition = sharedPref?.getInt(POSITION, 0)!!
             if (itemPosition >= tvListViewModel.size()) {
                 itemPosition = 0
             }
@@ -108,7 +108,8 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
                     if (tvViewModel.errInfo.value != null
                         && tvViewModel.id.value == itemPosition
                     ) {
-                        Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
                 tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
@@ -213,9 +214,19 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 3) {
+        if (ready == 4) {
 //            request.fetchPage()
             tvListViewModel.getTVViewModel(itemPosition)?.changed()
+        }
+    }
+
+    fun play(itemPosition: Int) {
+        view?.post {
+            if (itemPosition < tvListViewModel.size()) {
+                this.itemPosition = itemPosition
+                tvListViewModel.setItemPosition(itemPosition)
+                tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            }
         }
     }
 
@@ -268,13 +279,26 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacks(mUpdateProgramRunnable)
+    override fun onStop() {
+        Log.i(TAG, "onStop")
+        super.onStop()
         with(sharedPref!!.edit()) {
-            putInt("position", itemPosition)
+            putInt(POSITION, itemPosition)
             apply()
         }
+        Log.i(TAG, "POSITION saved")
+    }
+
+    override fun onDestroy() {
+        Log.i(TAG, "onDestroy")
+        super.onDestroy()
+        handler.removeCallbacks(mUpdateProgramRunnable)
+    }
+
+    override fun onDestroyView() {
+        Log.i(TAG, "onDestroyView")
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {
@@ -284,5 +308,6 @@ class MainFragment2 : Fragment(), CardAdapter.ItemListener {
 
     companion object {
         private const val TAG = "MainFragment"
+        private const val POSITION = "position"
     }
 }

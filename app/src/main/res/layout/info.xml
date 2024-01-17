@@ -12,7 +12,6 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:contentDescription="@string/logo"
         android:padding="10dp" />
 
     <LinearLayout
