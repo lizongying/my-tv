@@ -105,7 +105,9 @@ class MainActivity : FragmentActivity() {
     }
 
     private val hideRunnable = Runnable {
-        supportFragmentManager.beginTransaction().hide(mainFragment).commit()
+        if (!mainFragment.isHidden) {
+            supportFragmentManager.beginTransaction().hide(mainFragment).commit()
+        }
     }
 
     private fun mainFragmentIsHidden(): Boolean {
