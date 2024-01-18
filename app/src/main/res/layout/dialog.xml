@@ -26,12 +26,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:text="当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
                 ></TextView>
             <Switch
-                android:id="@+id/switch_view"
+                android:id="@+id/switch_channel_reversal"
                 android:text="@string/title_channel_reversal"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Switch
+                android:id="@+id/switch_channel_num"
+                android:text="@string/title_channel_num"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

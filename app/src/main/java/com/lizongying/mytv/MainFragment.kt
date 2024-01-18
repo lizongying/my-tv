@@ -216,12 +216,22 @@ class MainFragment : BrowseSupportFragment() {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 3) {
+        if (ready == 4) {
 //            request.fetchPage()
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             tvViewModel?.changed()
 
             (activity as? MainActivity)?.switchMainFragment()
+        }
+    }
+
+    fun play(itemPosition: Int) {
+        view?.post {
+            if (itemPosition < tvListViewModel.size()) {
+                this.itemPosition = itemPosition
+                tvListViewModel.setItemPosition(itemPosition)
+                tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            }
         }
     }
 
@@ -232,9 +242,7 @@ class MainFragment : BrowseSupportFragment() {
                 itemPosition = tvListViewModel.size() - 1
             }
             tvListViewModel.setItemPosition(itemPosition)
-
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            tvViewModel?.changed()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
         }
     }
 
@@ -245,9 +253,7 @@ class MainFragment : BrowseSupportFragment() {
                 itemPosition = 0
             }
             tvListViewModel.setItemPosition(itemPosition)
-
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            tvViewModel?.changed()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
         }
     }
 
@@ -297,9 +303,7 @@ class MainFragment : BrowseSupportFragment() {
                 if (itemPosition != item.id.value!!) {
                     itemPosition = item.id.value!!
                     tvListViewModel.setItemPosition(itemPosition)
-
-                    val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-                    tvViewModel?.changed()
+                    tvListViewModel.getTVViewModel(itemPosition)?.changed()
                 }
                 (activity as? MainActivity)?.switchMainFragment()
             }

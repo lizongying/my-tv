@@ -27,6 +27,7 @@ class MainActivity : FragmentActivity() {
     var playerFragment = PlayerFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
+    private val channelFragment = ChannelFragment()
 
     private var doubleBackToExitPressedOnce = false
 
@@ -34,9 +35,14 @@ class MainActivity : FragmentActivity() {
 
     private val handler = Handler()
     private val delay: Long = 4000
+    private val delayHideHelp: Long = 10000
 
     private lateinit var sharedPref: SharedPreferences
     private var channelReversal = false
+    private var channelNum = true
+
+    private var versionName = ""
+    private lateinit var dialogFragment: MyDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,24 +56,37 @@ class MainActivity : FragmentActivity() {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
+                .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(infoFragment)
+                .hide(channelFragment)
                 .commit()
             mainFragment.view?.requestFocus()
         }
         gestureDetector = GestureDetector(this, GestureListener())
 
         sharedPref = getPreferences(Context.MODE_PRIVATE)
-        channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, false)
+        channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, channelReversal)
+        channelNum = sharedPref.getBoolean(CHANNEL_NUM, channelNum)
+
+        versionName = getPackageInfo().versionName
+        dialogFragment = MyDialogFragment(versionName, channelReversal, channelNum)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
         infoFragment.show(tvViewModel)
+        if (channelNum) {
+            channelFragment.show(tvViewModel)
+        }
     }
 
     fun play(tvViewModel: TVViewModel) {
         playerFragment.play(tvViewModel)
         mainFragment.view?.requestFocus()
+    }
+
+    fun play(itemPosition: Int) {
+        mainFragment.play(itemPosition)
     }
 
     fun prev() {
@@ -79,11 +98,11 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun prevSource() {
-        mainFragment.prevSource()
+//        mainFragment.prevSource()
     }
 
     private fun nextSource() {
-        mainFragment.nextSource()
+//        mainFragment.nextSource()
     }
 
     fun switchMainFragment() {
@@ -182,14 +201,34 @@ class MainActivity : FragmentActivity() {
         this.channelReversal = channelReversal
     }
 
+    fun saveChannelNum(channelNum: Boolean) {
+        with(sharedPref.edit()) {
+            putBoolean(CHANNEL_NUM, channelNum)
+            apply()
+        }
+        this.channelNum = channelNum
+    }
+
     private fun showHelp() {
         if (!mainFragment.isHidden) {
             return
         }
 
-        val versionName = getPackageInfo().versionName
-        val dialogFragment = MyDialogFragment(versionName, channelReversal)
-        dialogFragment.show(supportFragmentManager, "settings_dialog")
+        Log.i(TAG, "dialogFragment ${dialogFragment.isVisible}")
+        if (!dialogFragment.isVisible) {
+            dialogFragment.show(supportFragmentManager, "settings_dialog")
+            handler.removeCallbacks(hideHelp)
+            handler.postDelayed(hideHelp, delayHideHelp)
+        } else {
+            handler.removeCallbacks(hideHelp)
+            dialogFragment.dismiss()
+        }
+    }
+
+    private val hideHelp = Runnable {
+        if (dialogFragment.isVisible) {
+            dialogFragment.dismiss()
+        }
     }
 
     private fun channelUp() {
@@ -244,8 +283,72 @@ class MainActivity : FragmentActivity() {
         }, 2000)
     }
 
+    private fun showChannel(channel: String) {
+        if (!mainFragment.isHidden) {
+            return
+        }
+
+        if (dialogFragment.isVisible) {
+            return
+        }
+
+        if (channelNum) {
+            channelFragment.show(channel)
+        }
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
+            KeyEvent.KEYCODE_0 -> {
+                showChannel("0")
+                return true
+            }
+
+            KeyEvent.KEYCODE_1 -> {
+                showChannel("1")
+                return true
+            }
+
+            KeyEvent.KEYCODE_2 -> {
+                showChannel("2")
+                return true
+            }
+
+            KeyEvent.KEYCODE_3 -> {
+                showChannel("3")
+                return true
+            }
+
+            KeyEvent.KEYCODE_4 -> {
+                showChannel("4")
+                return true
+            }
+
+            KeyEvent.KEYCODE_5 -> {
+                showChannel("5")
+                return true
+            }
+
+            KeyEvent.KEYCODE_6 -> {
+                showChannel("6")
+                return true
+            }
+
+            KeyEvent.KEYCODE_7 -> {
+                showChannel("7")
+                return true
+            }
+
+            KeyEvent.KEYCODE_8 -> {
+                showChannel("8")
+                return true
+            }
+
+            KeyEvent.KEYCODE_9 -> {
+                showChannel("9")
+                return true
+            }
+
             KeyEvent.KEYCODE_ESCAPE -> {
                 back()
                 return true
@@ -388,5 +491,6 @@ class MainActivity : FragmentActivity() {
     companion object {
         private const val TAG = "MainActivity"
         private const val CHANNEL_REVERSAL = "channel_reversal"
+        private const val CHANNEL_NUM = "channel_num"
     }
 }
