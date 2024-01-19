@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">我的电视</string>
-    <string name="title_channel_reversal">频道反转</string>
+    <string name="title_channel_reversal">换台反转</string>
+    <string name="title_channel_num">数字选台</string>
 </resources>

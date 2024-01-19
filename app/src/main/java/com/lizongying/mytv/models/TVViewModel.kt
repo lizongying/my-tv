@@ -20,7 +20,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var itemPosition: Int = 0
 
     var retryTimes: Int = 0
-    var retryMaxTimes: Int = 5
+    var retryMaxTimes: Int = 8
     var programUpdateTime: Long = 0
 
     private val _errInfo = MutableLiveData<String>()

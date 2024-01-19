@@ -8,7 +8,10 @@ import androidx.fragment.app.DialogFragment
 import com.lizongying.mytv.databinding.DialogBinding
 
 
-class MyDialogFragment(private val versionName: String, private val channelReversal: Boolean) :
+class SettingFragment(private val versionName: String,
+                      private val channelReversal: Boolean,
+                      private val channelNum: Boolean,
+    ) :
     DialogFragment() {
 
     private var _binding: DialogBinding? = null
@@ -28,10 +31,16 @@ class MyDialogFragment(private val versionName: String, private val channelRever
         _binding?.version?.text =
             "当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
 
-        val switchView = _binding?.switchView
-        switchView?.isChecked = channelReversal
-        switchView?.setOnCheckedChangeListener { _, isChecked ->
+        val switchChannelReversal = _binding?.switchChannelReversal
+        switchChannelReversal?.isChecked = channelReversal
+        switchChannelReversal?.setOnCheckedChangeListener { _, isChecked ->
             (activity as MainActivity).saveChannelReversal(isChecked)
+        }
+
+        val switchChannelNum = _binding?.switchChannelNum
+        switchChannelNum?.isChecked = channelNum
+        switchChannelNum?.setOnCheckedChangeListener { _, isChecked ->
+            (activity as MainActivity).saveChannelNum(isChecked)
         }
 
         return binding.root
@@ -43,7 +52,7 @@ class MyDialogFragment(private val versionName: String, private val channelRever
     }
 
     companion object {
-        const val TAG = "MyDialogFragment"
+        const val TAG = "SettingFragment"
     }
 }
 

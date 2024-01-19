@@ -22,6 +22,7 @@ class ChannelFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = ChannelBinding.inflate(inflater, container, false)
+        _binding!!.root.visibility = View.GONE
         (activity as MainActivity).fragmentReady()
         return binding.root
     }
@@ -41,7 +42,6 @@ class ChannelFragment : Fragment() {
             handler.postDelayed(removeRunnable, delay)
         } else {
             val ch = "${binding.channelContent.text}$channel".toInt()
-            Log.i(TAG, "channel $ch")
             (activity as MainActivity).play(ch)
             binding.channelContent.text = ""
             view?.visibility = View.GONE
