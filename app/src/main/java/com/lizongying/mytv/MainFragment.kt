@@ -53,7 +53,6 @@ class MainFragment : BrowseSupportFragment() {
         super.onActivityCreated(savedInstanceState)
 
         activity?.let { request.initYSP(it) }
-
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
         loadRows()
@@ -100,7 +99,6 @@ class MainFragment : BrowseSupportFragment() {
                         if (check(tvViewModel)) {
                             (activity as? MainActivity)?.play(tvViewModel)
                             (activity as? MainActivity)?.showInfoFragment(tvViewModel)
-
                             setSelectedPosition(
                                 tvViewModel.getRowPosition(), true,
                                 SelectItemViewHolderTask(tvViewModel.getItemPosition())
@@ -112,58 +110,6 @@ class MainFragment : BrowseSupportFragment() {
         }
 
         fragmentReady()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacks(mUpdateProgramRunnable)
-        with(sharedPref!!.edit()) {
-            putInt("position", itemPosition)
-            apply()
-        }
-    }
-
-    fun updateProgram(tvViewModel: TVViewModel) {
-        val timestamp = getDateTimestamp()
-        if (timestamp - tvViewModel.programUpdateTime > 60) {
-            if (tvViewModel.program.value!!.isEmpty()) {
-                tvViewModel.programUpdateTime = timestamp
-                request.fetchProgram(tvViewModel)
-            } else {
-                if (timestamp - tvViewModel.program.value!!.last().et < 600) {
-                    tvViewModel.programUpdateTime = timestamp
-                    request.fetchProgram(tvViewModel)
-                }
-            }
-        }
-    }
-
-    inner class UpdateProgramRunnable : Runnable {
-        override fun run() {
-            tvListViewModel.getTVListViewModel().value?.filter { it.programId.value != null }
-                ?.forEach { tvViewModel ->
-                    updateProgram(
-                        tvViewModel
-                    )
-                }
-            handler.postDelayed(this, 60000)
-        }
-    }
-
-    fun check(tvViewModel: TVViewModel): Boolean {
-        val title = tvViewModel.title.value
-        val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
-        if (videoUrl == null || videoUrl == "") {
-            Log.e(TAG, "$title videoUrl is empty")
-            return false
-        }
-
-        if (videoUrl == lastVideoUrl) {
-            Log.e(TAG, "$title videoUrl is duplication")
-            return false
-        }
-
-        return true
     }
 
     fun toLastPosition() {
@@ -206,11 +152,27 @@ class MainFragment : BrowseSupportFragment() {
 
         adapter = rowsAdapter
 
-        itemPosition = sharedPref?.getInt("position", 0)!!
+        itemPosition = sharedPref?.getInt(POSITION, 0)!!
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
         }
         tvListViewModel.setItemPosition(itemPosition)
+    }
+
+    fun check(tvViewModel: TVViewModel): Boolean {
+        val title = tvViewModel.title.value
+        val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
+        if (videoUrl == null || videoUrl == "") {
+            Log.e(TAG, "$title videoUrl is empty")
+            return false
+        }
+
+        if (videoUrl == lastVideoUrl) {
+            Log.e(TAG, "$title videoUrl is duplication")
+            return false
+        }
+
+        return true
     }
 
     fun fragmentReady() {
@@ -218,10 +180,7 @@ class MainFragment : BrowseSupportFragment() {
         Log.i(TAG, "ready $ready")
         if (ready == 4) {
 //            request.fetchPage()
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            tvViewModel?.changed()
-
-            (activity as? MainActivity)?.switchMainFragment()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
         }
     }
 
@@ -322,12 +281,56 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
+    fun updateProgram(tvViewModel: TVViewModel) {
+        val timestamp = getDateTimestamp()
+        if (timestamp - tvViewModel.programUpdateTime > 60) {
+            if (tvViewModel.program.value!!.isEmpty()) {
+                tvViewModel.programUpdateTime = timestamp
+                request.fetchProgram(tvViewModel)
+            } else {
+                if (timestamp - tvViewModel.program.value!!.last().et < 600) {
+                    tvViewModel.programUpdateTime = timestamp
+                    request.fetchProgram(tvViewModel)
+                }
+            }
+        }
+    }
+
+    inner class UpdateProgramRunnable : Runnable {
+        override fun run() {
+            tvListViewModel.getTVListViewModel().value?.filter { it.programId.value != null }
+                ?.forEach { tvViewModel ->
+                    updateProgram(
+                        tvViewModel
+                    )
+                }
+            handler.postDelayed(this, 60000)
+        }
+    }
+
+    override fun onStop() {
+        Log.i(TAG, "onStop")
+        super.onStop()
+        with(sharedPref!!.edit()) {
+            putInt(POSITION, itemPosition)
+            apply()
+        }
+        Log.i(TAG, "POSITION saved")
+    }
+
+    override fun onDestroy() {
+        Log.i(TAG, "onDestroy")
+        super.onDestroy()
+        handler.removeCallbacks(mUpdateProgramRunnable)
+    }
+
     override fun onResume() {
         super.onResume()
-        view!!.requestFocus()
+        view?.post { view?.requestFocus() }
     }
 
     companion object {
         private const val TAG = "MainFragment"
+        private const val POSITION = "position"
     }
 }

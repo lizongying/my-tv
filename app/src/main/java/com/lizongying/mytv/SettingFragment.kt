@@ -8,9 +8,9 @@ import androidx.fragment.app.DialogFragment
 import com.lizongying.mytv.databinding.DialogBinding
 
 
-class MyDialogFragment(private val versionName: String,
-                       private val channelReversal: Boolean,
-                       private val channelNum: Boolean,
+class SettingFragment(private val versionName: String,
+                      private val channelReversal: Boolean,
+                      private val channelNum: Boolean,
     ) :
     DialogFragment() {
 
@@ -52,7 +52,7 @@ class MyDialogFragment(private val versionName: String,
     }
 
     companion object {
-        const val TAG = "MyDialogFragment"
+        const val TAG = "SettingFragment"
     }
 }
 

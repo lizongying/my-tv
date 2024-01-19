@@ -23,15 +23,9 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = InfoBinding.inflate(inflater, container, false)
+        _binding!!.root.visibility = View.GONE
         (activity as MainActivity).fragmentReady()
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        // Use a Handler to delay the fragment transaction
-        handler.postDelayed(removeRunnable, delay)
     }
 
     fun show(tvViewModel: TVViewModel) {
@@ -56,10 +50,13 @@ class InfoFragment : Fragment() {
         handler.postDelayed(removeRunnable, delay)
     }
 
+    override fun onResume() {
+        super.onResume()
+        handler.postDelayed(removeRunnable, delay)
+    }
+
     override fun onPause() {
         super.onPause()
-        Log.i(TAG, "onPause")
-        // Cancel the delayed task when the fragment is paused
         handler.removeCallbacks(removeRunnable)
     }
 
