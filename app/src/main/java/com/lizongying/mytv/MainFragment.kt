@@ -255,6 +255,8 @@ class MainFragment : BrowseSupportFragment() {
                 this.itemPosition = itemPosition
                 tvListViewModel.setItemPosition(itemPosition)
                 tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            } else {
+                Toast.makeText(context, "频道不存在", Toast.LENGTH_SHORT).show()
             }
         }
     }
