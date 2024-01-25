@@ -25,19 +25,19 @@ import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 class MainFragment : BrowseSupportFragment() {
-    var itemPosition: Int = 0
 
-    private var request: Request = Request()
+    private var itemPosition = 0
 
     private var rowsAdapter: ArrayObjectAdapter? = null
+
+    private var request = Request()
 
     var tvListViewModel = TVListViewModel()
 
     private var sharedPref: SharedPreferences? = null
 
-    private var lastVideoUrl: String = ""
+    private var lastVideoUrl = ""
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
@@ -159,63 +159,6 @@ class MainFragment : BrowseSupportFragment() {
         tvListViewModel.setItemPosition(itemPosition)
     }
 
-    fun check(tvViewModel: TVViewModel): Boolean {
-        val title = tvViewModel.title.value
-        val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
-        if (videoUrl == null || videoUrl == "") {
-            Log.e(TAG, "$title videoUrl is empty")
-            return false
-        }
-
-        if (videoUrl == lastVideoUrl) {
-            Log.e(TAG, "$title videoUrl is duplication")
-            return false
-        }
-
-        return true
-    }
-
-    fun fragmentReady() {
-        ready++
-        Log.i(TAG, "ready $ready")
-        if (ready == 4) {
-//            request.fetchPage()
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
-    }
-
-    fun play(itemPosition: Int) {
-        view?.post {
-            if (itemPosition < tvListViewModel.size()) {
-                this.itemPosition = itemPosition
-                tvListViewModel.setItemPosition(itemPosition)
-                tvListViewModel.getTVViewModel(itemPosition)?.changed()
-            }
-        }
-    }
-
-    fun prev() {
-        view?.post {
-            itemPosition--
-            if (itemPosition == -1) {
-                itemPosition = tvListViewModel.size() - 1
-            }
-            tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
-    }
-
-    fun next() {
-        view?.post {
-            itemPosition++
-            if (itemPosition == tvListViewModel.size()) {
-                itemPosition = 0
-            }
-            tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
-    }
-
     fun prevSource() {
         view?.post {
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
@@ -278,6 +221,63 @@ class MainFragment : BrowseSupportFragment() {
                 tvListViewModel.setItemPositionCurrent(item.id.value!!)
                 (activity as MainActivity).keepRunnable()
             }
+        }
+    }
+
+    fun check(tvViewModel: TVViewModel): Boolean {
+        val title = tvViewModel.title.value
+        val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
+        if (videoUrl == null || videoUrl == "") {
+            Log.e(TAG, "$title videoUrl is empty")
+            return false
+        }
+
+        if (videoUrl == lastVideoUrl) {
+            Log.e(TAG, "$title videoUrl is duplication")
+            return false
+        }
+
+        return true
+    }
+
+    fun fragmentReady() {
+        ready++
+        Log.i(TAG, "ready $ready")
+        if (ready == 4) {
+//            request.fetchPage()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+        }
+    }
+
+    fun play(itemPosition: Int) {
+        view?.post {
+            if (itemPosition < tvListViewModel.size()) {
+                this.itemPosition = itemPosition
+                tvListViewModel.setItemPosition(itemPosition)
+                tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            }
+        }
+    }
+
+    fun prev() {
+        view?.post {
+            itemPosition--
+            if (itemPosition == -1) {
+                itemPosition = tvListViewModel.size() - 1
+            }
+            tvListViewModel.setItemPosition(itemPosition)
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+        }
+    }
+
+    fun next() {
+        view?.post {
+            itemPosition++
+            if (itemPosition == tvListViewModel.size()) {
+                itemPosition = 0
+            }
+            tvListViewModel.setItemPosition(itemPosition)
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
         }
     }
 
