@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lizongying.mytv.Utils.dpToPx
+import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.databinding.RowBinding
 import com.lizongying.mytv.databinding.ShowBinding
 import com.lizongying.mytv.models.TVListViewModel
@@ -31,13 +32,13 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     private var _binding: ShowBinding? = null
     private val binding get() = _binding!!
 
-    private var request: Request = Request()
+    private var request = Request()
 
     var tvListViewModel = TVListViewModel()
 
     private var sharedPref: SharedPreferences? = null
 
-    private var lastVideoUrl: String = ""
+    private var lastVideoUrl = ""
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
@@ -226,6 +227,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 this.itemPosition = itemPosition
                 tvListViewModel.setItemPosition(itemPosition)
                 tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            } else {
+                Toast.makeText(context, "频道不存在", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -253,7 +256,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     fun updateProgram(tvViewModel: TVViewModel) {
-        val timestamp = Utils.getDateTimestamp()
+        val timestamp = getDateTimestamp()
         if (timestamp - tvViewModel.programUpdateTime > 60) {
             if (tvViewModel.program.value!!.isEmpty()) {
                 tvViewModel.programUpdateTime = timestamp

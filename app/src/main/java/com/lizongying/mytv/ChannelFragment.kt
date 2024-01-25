@@ -2,7 +2,6 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ class ChannelFragment : Fragment() {
 
     private val handler = Handler()
     private val delay: Long = 3000
+    private var channel = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,37 +28,39 @@ class ChannelFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
+        handler.removeCallbacks(hideRunnable)
+        handler.removeCallbacks(playRunnable)
         binding.channelContent.text = tvViewModel.id.value.toString()
-        handler.removeCallbacks(removeRunnable)
         view?.visibility = View.VISIBLE
-        handler.postDelayed(removeRunnable, delay)
+        handler.postDelayed(hideRunnable, delay)
     }
 
     fun show(channel: String) {
+        this.channel = "${binding.channelContent.text}$channel".toInt()
+        handler.removeCallbacks(hideRunnable)
+        handler.removeCallbacks(playRunnable)
         if (binding.channelContent.text == "") {
             binding.channelContent.text = channel
-            handler.removeCallbacks(removeRunnable)
             view?.visibility = View.VISIBLE
-            handler.postDelayed(removeRunnable, delay)
+            handler.postDelayed(playRunnable, delay)
         } else {
-            val ch = "${binding.channelContent.text}$channel".toInt()
-            (activity as MainActivity).play(ch)
-            binding.channelContent.text = ""
-            view?.visibility = View.GONE
+            handler.postDelayed(playRunnable, 0)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        handler.postDelayed(removeRunnable, delay)
     }
 
     override fun onPause() {
         super.onPause()
-        handler.removeCallbacks(removeRunnable)
+        handler.removeCallbacks(hideRunnable)
+        handler.removeCallbacks(playRunnable)
     }
 
-    private val removeRunnable = Runnable {
+    private val hideRunnable = Runnable {
+        binding.channelContent.text = ""
+        view?.visibility = View.GONE
+    }
+
+    private val playRunnable = Runnable {
+        (activity as MainActivity).play(channel)
         binding.channelContent.text = ""
         view?.visibility = View.GONE
     }
