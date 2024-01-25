@@ -74,10 +74,9 @@ class PlayerFragment : Fragment() {
     @OptIn(UnstableApi::class)
     fun play(tvViewModel: TVViewModel) {
         this.tvViewModel = tvViewModel
-        val videoUrlCurrent =
-            tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
+        val videoUrlCurrent = tvViewModel.getVideoUrlCurrent()
         playerView?.player?.run {
-            videoUrlCurrent?.let { setMediaItem(MediaItem.fromUri(it)) }
+            setMediaItem(MediaItem.fromUri(videoUrlCurrent))
             prepare()
         }
     }

@@ -222,16 +222,23 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         mMinimumLoadableRetryCount = minimumLoadableRetryCount
     }
 
+    /**
+     * (playerView?.player as ExoPlayer).setMediaSource(tvViewModel.buildSource())
+     */
     @OptIn(UnstableApi::class)
-    fun buildSource(videoUrl: String, mHeaders: Map<String, String>?): HlsMediaSource {
+    fun buildSource(): HlsMediaSource {
         val httpDataSource = DefaultHttpDataSource.Factory()
         mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
 
         return HlsMediaSource.Factory(httpDataSource).createMediaSource(
             MediaItem.fromUri(
-                Uri.parse(videoUrl)
+                Uri.parse(getVideoUrlCurrent())
             )
         )
+    }
+
+    fun getVideoUrlCurrent(): String {
+        return _videoUrl.value!![_videoIndex.value!!]
     }
 
     companion object {
