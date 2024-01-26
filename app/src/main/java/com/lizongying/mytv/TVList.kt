@@ -7,7 +7,7 @@ object TVList {
 
     private var mappingLogo = mapOf(
         "CCTV4K 超高清" to "https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp",
-        "CCTV8K 超高清" to "https://static.wikia.nocookie.net/logos/images/6/69/CCTV8K.png/revision/latest/scale-to-width-down/120?cb=20230104110835&path-prefix=vi",
+        "CCTV8K 超高清" to "",
         "CCTV1 综合" to "https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp",
         "CCTV2 财经" to "https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp",
         "CCTV3 综艺" to "https://resources.yangshipin.cn/assets/oms/image/202306/7b7a65c712450da3deb6ca66fbacf4f9aee00d3f20bd80eafb5ada01ec63eb3a.png?imageMogr2/format/webp",
@@ -66,6 +66,8 @@ object TVList {
         "四川卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/3276a414ae0eaa0f116f2045cd913367967d0c7c1e978e8621ac3879436c6ed7.png?imageMogr2/format/webp",
         "东南卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/3208fe6564a293c21b711333fb3edb05bb5b406cff840573c9a8d839680a1579.png?imageMogr2/format/webp",
         "海南卫视" to "https://resources.yangshipin.cn/assets/oms/image/202306/6e060391fde0469801fc3d84dbf204b4f8d650d251f17d7595a6964c0bb99e81.png?imageMogr2/format/webp",
+        "天津卫视" to "",
+        "新疆卫视" to "",
     )
     private var mappingEPG = mapOf(
         "CCTV4K 超高清" to "600002264",
@@ -128,6 +130,8 @@ object TVList {
         "四川卫视" to "600002516",
         "东南卫视" to "600002484",
         "海南卫视" to "600002506",
+        "天津卫视" to "600152137",
+        "新疆卫视" to "600152138",
     )
     private var mappingVideo = mapOf(
         "CCTV4K 超高清" to arrayOf("600002264", "2000266303"),
@@ -138,7 +142,7 @@ object TVList {
         "CCTV4 中文国际" to arrayOf("600001814", "2000204803"),
         "CCTV5 体育" to arrayOf("600001818", "2000205103"),
         "CCTV5+ 体育赛事" to arrayOf("600001817", "2000204503"),
-        "CCTV6 电影" to arrayOf("600001802", "2000203303"),
+        "CCTV6 电影" to arrayOf("600001802", "2013693901"),
         "CCTV7 国防军事" to arrayOf("600004092", "2000510003"),
         "CCTV8 电视剧" to arrayOf("600001803", "2000203903"),
         "CCTV9 记录" to arrayOf("600004078", "2000499403"),
@@ -190,6 +194,8 @@ object TVList {
         "四川卫视" to arrayOf("600002516", "2000295003"),
         "东南卫视" to arrayOf("600002484", "2000292503"),
         "海南卫视" to arrayOf("600002506", "2000291503"),
+        "天津卫视" to arrayOf("600152137", "2019927003"),
+        "新疆卫视" to arrayOf("600152138", "2019927403"),
     )
     private var count: Int = 0
 
@@ -201,7 +207,6 @@ CCTV2 财经,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226195/index
 CCTV3 综艺,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226397/index.m3u8
 CCTV4 中文国际,http://39.134.24.161/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226191/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226191/index.m3u8
 CCTV5 体育,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226395/index.m3u8
-CCTV5+ 体育赛事,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226221/index.m3u8
 CCTV6 电影,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226393/index.m3u8
 CCTV7 国防军事,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226192/index.m3u8
 CCTV8 电视剧,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226391/index.m3u8
@@ -214,6 +219,7 @@ CCTV14 少儿,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226193/inde
 CCTV15 音乐,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225785/index.m3u8
 CCTV16 奥林匹克,http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8
 CCTV17 农业农村,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226198/index.m3u8
+CCTV5+ 体育赛事,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226221/index.m3u8
 CCTV4K 超高清,
 CCTV8K 超高清,
 风云剧场,http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226950/index.m3u8
@@ -251,6 +257,8 @@ CCTV8K 超高清,
 四川卫视,http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8;http://39.134.24.166/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8
 东南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226341/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225766/index.m3u8
 海南卫视,http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226465/index.m3u8;http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225769/index.m3u8
+天津卫视,
+新疆卫视,
 国际频道
 CGTN,http://live.cgtn.com/1000/prog_index.m3u8
 CGTN 法语频道,https://livefr.cgtn.com/1000f/prog_index.m3u8

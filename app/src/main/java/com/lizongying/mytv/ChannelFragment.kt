@@ -30,7 +30,7 @@ class ChannelFragment : Fragment() {
     fun show(tvViewModel: TVViewModel) {
         handler.removeCallbacks(hideRunnable)
         handler.removeCallbacks(playRunnable)
-        binding.channelContent.text = tvViewModel.id.value.toString()
+        binding.channelContent.text = (tvViewModel.id.value?.plus(1)).toString()
         view?.visibility = View.VISIBLE
         handler.postDelayed(hideRunnable, delay)
     }
@@ -60,7 +60,7 @@ class ChannelFragment : Fragment() {
     }
 
     private val playRunnable = Runnable {
-        (activity as MainActivity).play(channel)
+        (activity as MainActivity).play(channel - 1)
         binding.channelContent.text = ""
         view?.visibility = View.GONE
     }

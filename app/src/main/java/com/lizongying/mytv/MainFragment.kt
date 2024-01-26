@@ -223,7 +223,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     fun play(itemPosition: Int) {
         view?.post {
-            if (itemPosition < tvListViewModel.size()) {
+            if (itemPosition > -1 && itemPosition < tvListViewModel.size()) {
                 this.itemPosition = itemPosition
                 tvListViewModel.setItemPosition(itemPosition)
                 tvListViewModel.getTVViewModel(itemPosition)?.changed()

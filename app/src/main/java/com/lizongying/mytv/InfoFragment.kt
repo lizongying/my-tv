@@ -2,7 +2,6 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,15 +29,25 @@ class InfoFragment : Fragment() {
 
     fun show(tvViewModel: TVViewModel) {
         binding.textView.text = tvViewModel.title.value
-        if (tvViewModel.title.value == "CCTV8K 超高清") {
-            Glide.with(this)
+
+        when (tvViewModel.title.value) {
+            "CCTV8K 超高清" -> Glide.with(this)
                 .load(R.drawable.cctv8k)
                 .into(binding.infoLogo)
-        } else {
-            Glide.with(this)
+
+            "天津卫视" -> Glide.with(this)
+                .load(R.drawable.tianjin)
+                .into(binding.infoLogo)
+
+            "新疆卫视" -> Glide.with(this)
+                .load(R.drawable.xinjiang)
+                .into(binding.infoLogo)
+
+            else -> Glide.with(this)
                 .load(tvViewModel.logo.value)
                 .into(binding.infoLogo)
         }
+
 
         val program = tvViewModel.getProgramOne()
         if (program != null) {
