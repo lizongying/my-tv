@@ -8,7 +8,9 @@ class TVListViewModel : ViewModel() {
 
     var maxNum = mutableListOf<Int>()
 
-    private val tvListViewModel = MutableLiveData<MutableList<TVViewModel>>()
+    private val _tvListViewModel = MutableLiveData<MutableList<TVViewModel>>()
+    val tvListViewModel: LiveData<MutableList<TVViewModel>>
+        get() = _tvListViewModel
 
     private val _itemPosition = MutableLiveData<Int>()
     val itemPosition: LiveData<Int>
@@ -18,22 +20,20 @@ class TVListViewModel : ViewModel() {
     val itemPositionCurrent: LiveData<Int>
         get() = _itemPositionCurrent
 
-    fun getTVListViewModel(): MutableLiveData<MutableList<TVViewModel>> {
-        return tvListViewModel
-    }
-
     fun addTVViewModel(tvViewModel: TVViewModel) {
-        val currentTVModelList = tvListViewModel.value ?: mutableListOf()
-        currentTVModelList.add(tvViewModel)
-        tvListViewModel.value = currentTVModelList
+        if (_tvListViewModel.value == null) {
+            _tvListViewModel.value = mutableListOf(tvViewModel)
+        } else {
+            _tvListViewModel.value?.add(tvViewModel)
+        }
     }
 
     fun getTVViewModel(id: Int): TVViewModel? {
-        return tvListViewModel.value?.get(id)
+        return _tvListViewModel.value?.get(id)
     }
 
     fun getTVViewModelCurrent(): TVViewModel? {
-        return _itemPositionCurrent.value?.let { tvListViewModel.value?.get(it) }
+        return _itemPositionCurrent.value?.let { _tvListViewModel.value?.get(it) }
     }
 
     fun setItemPosition(position: Int) {
@@ -46,6 +46,9 @@ class TVListViewModel : ViewModel() {
     }
 
     fun size(): Int {
-        return tvListViewModel.value!!.size
+        if (_tvListViewModel.value == null) {
+            return 0
+        }
+        return _tvListViewModel.value!!.size
     }
 }

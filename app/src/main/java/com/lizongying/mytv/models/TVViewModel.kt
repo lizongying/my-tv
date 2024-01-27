@@ -78,6 +78,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     var needToken = false
 
     private val channelsNeedToken = arrayOf(
+//        "CCTV4K 超高清",
         "CCTV3 综艺",
         "CCTV6 电影",
         "CCTV8 电视剧",

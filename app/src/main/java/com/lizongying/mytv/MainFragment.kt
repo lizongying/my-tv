@@ -62,7 +62,7 @@ class MainFragment : BrowseSupportFragment() {
         mUpdateProgramRunnable = UpdateProgramRunnable()
         handler.post(mUpdateProgramRunnable)
 
-        tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
+        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
             tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
                 if (tvViewModel.errInfo.value != null
                     && tvViewModel.id.value == itemPosition
@@ -251,7 +251,7 @@ class MainFragment : BrowseSupportFragment() {
 
     fun play(itemPosition: Int) {
         view?.post {
-            if (itemPosition < tvListViewModel.size()) {
+            if (itemPosition > -1 && itemPosition < tvListViewModel.size()) {
                 this.itemPosition = itemPosition
                 tvListViewModel.setItemPosition(itemPosition)
                 tvListViewModel.getTVViewModel(itemPosition)?.changed()
@@ -290,7 +290,7 @@ class MainFragment : BrowseSupportFragment() {
                 tvViewModel.programUpdateTime = timestamp
                 request.fetchProgram(tvViewModel)
             } else {
-                if (timestamp - tvViewModel.program.value!!.last().et < 600) {
+                if (tvViewModel.program.value!!.last().et - timestamp < 600) {
                     tvViewModel.programUpdateTime = timestamp
                     request.fetchProgram(tvViewModel)
                 }
@@ -300,7 +300,7 @@ class MainFragment : BrowseSupportFragment() {
 
     inner class UpdateProgramRunnable : Runnable {
         override fun run() {
-            tvListViewModel.getTVListViewModel().value?.filter { it.programId.value != null }
+            tvListViewModel.tvListViewModel.value?.filter { it.programId.value != null }
                 ?.forEach { tvViewModel ->
                     updateProgram(
                         tvViewModel

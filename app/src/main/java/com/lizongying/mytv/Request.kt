@@ -81,6 +81,8 @@ class Request {
         "四川卫视" to "四川卫视",
         "福建东南卫视" to "东南卫视",
         "海南卫视" to "海南卫视",
+        "天津卫视" to "天津卫视",
+        "新疆卫视" to "新疆卫视",
     )
 
     fun initYSP(context: Context) {
@@ -123,7 +125,7 @@ class Request {
                                 keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
                                 ivBytes
                             ).uppercase()
-                            Log.i(TAG, "$title url $url")
+                            Log.d(TAG, "$title url $url")
                             tvModel.addVideoUrl(url)
                             tvModel.allReady()
                             tvModel.retryTimes = 0
