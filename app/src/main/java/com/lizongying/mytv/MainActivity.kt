@@ -38,7 +38,7 @@ class MainActivity : FragmentActivity() {
     private val delay: Long = 4000
     private val delayHideHelp: Long = 10000
 
-    private lateinit var sharedPref: SharedPreferences
+    lateinit var sharedPref: SharedPreferences
     private var channelReversal = false
     private var channelNum = true
 
@@ -60,7 +60,6 @@ class MainActivity : FragmentActivity() {
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
                 .commit()
-            mainFragment.view?.requestFocus()
         }
         gestureDetector = GestureDetector(this, GestureListener())
 
@@ -477,7 +476,7 @@ class MainActivity : FragmentActivity() {
 
     private fun hashSignature(signature: Signature): String {
         return try {
-            val md = MessageDigest.getInstance("SHA-256")
+            val md = MessageDigest.getInstance("MD5")
             md.update(signature.toByteArray())
             val digest = md.digest()
             digest.let { it -> it.joinToString("") { "%02x".format(it) } }

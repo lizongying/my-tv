@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -35,7 +34,7 @@ class MainFragment : BrowseSupportFragment() {
 
     var tvListViewModel = TVListViewModel()
 
-    private var sharedPref: SharedPreferences? = null
+    private lateinit var sharedPref: SharedPreferences
 
     private var lastVideoUrl = ""
 
@@ -53,7 +52,7 @@ class MainFragment : BrowseSupportFragment() {
         super.onActivityCreated(savedInstanceState)
 
         activity?.let { request.initYSP(it) }
-        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        sharedPref = (activity as? MainActivity)?.sharedPref!!
 
         loadRows()
 
@@ -84,9 +83,8 @@ class MainFragment : BrowseSupportFragment() {
             tvViewModel.change.observe(viewLifecycleOwner) { _ ->
                 if (tvViewModel.change.value != null) {
                     val title = tvViewModel.title.value
-                    Log.i(TAG, "switch $title")
                     if (tvViewModel.pid.value != "") {
-                        Log.i(TAG, "request $title ${tvViewModel.pid.value}")
+                        Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
                             tvViewModel.let { request.fetchData(it) }
                         }
@@ -152,7 +150,7 @@ class MainFragment : BrowseSupportFragment() {
 
         adapter = rowsAdapter
 
-        itemPosition = sharedPref?.getInt(POSITION, 0)!!
+        itemPosition = sharedPref.getInt(POSITION, 0)
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
         }
@@ -313,7 +311,7 @@ class MainFragment : BrowseSupportFragment() {
     override fun onStop() {
         Log.i(TAG, "onStop")
         super.onStop()
-        with(sharedPref!!.edit()) {
+        with(sharedPref.edit()) {
             putInt(POSITION, itemPosition)
             apply()
         }

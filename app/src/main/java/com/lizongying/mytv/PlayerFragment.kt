@@ -74,23 +74,22 @@ class PlayerFragment : Fragment() {
     @OptIn(UnstableApi::class)
     fun play(tvViewModel: TVViewModel) {
         this.tvViewModel = tvViewModel
-        val videoUrlCurrent = tvViewModel.getVideoUrlCurrent()
         playerView?.player?.run {
-            setMediaItem(MediaItem.fromUri(videoUrlCurrent))
+            setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
             prepare()
         }
     }
 
     override fun onStart() {
         super.onStart()
-        if (playerView != null) {
+        if (playerView != null && playerView!!.player?.isPlaying == false) {
             playerView!!.player?.play()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (playerView != null) {
+        if (playerView != null && playerView!!.player?.isPlaying == true) {
             playerView!!.player?.stop()
         }
     }

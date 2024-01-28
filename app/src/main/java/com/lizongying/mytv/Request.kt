@@ -32,10 +32,12 @@ class Request {
     private var yspBtraceService: YSPBtraceService = ApiClient().yspBtraceService
     private var yspProtoService: YSPProtoService = ApiClient().yspProtoService
     private var ysp: YSP? = null
+    private var token = ""
 
     // TODO onDestroy
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var myRunnable: MyRunnable
+    private lateinit var btraceRunnable: BtraceRunnable
+    private var tokenRunnable: TokenRunnable = TokenRunnable()
 
     private var mapping = mapOf(
         "CCTV4K" to "CCTV4K 超高清",
@@ -85,6 +87,10 @@ class Request {
         "新疆卫视" to "新疆卫视",
     )
 
+    init {
+        handler.post(tokenRunnable)
+    }
+
     fun initYSP(context: Context) {
         ysp = YSP(context)
     }
@@ -93,8 +99,8 @@ class Request {
 
     fun fetchVideo(tvModel: TVViewModel, cookie: String) {
         call?.cancel()
-        if (::myRunnable.isInitialized) {
-            handler.removeCallbacks(myRunnable)
+        if (::btraceRunnable.isInitialized) {
+            handler.removeCallbacks(btraceRunnable)
         }
 
         val title = tvModel.title.value
@@ -129,13 +135,18 @@ class Request {
                             tvModel.addVideoUrl(url)
                             tvModel.allReady()
                             tvModel.retryTimes = 0
-                            myRunnable = MyRunnable(tvModel)
-                            handler.post(myRunnable)
+                            btraceRunnable = BtraceRunnable(tvModel)
+                            handler.post(btraceRunnable)
                         } else {
                             Log.e(TAG, "$title key error")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
-                                fetchVideo(tvModel, cookie)
+                                if (tvModel.needToken) {
+                                    token = ""
+                                    fetchVideo(tvModel)
+                                } else {
+                                    fetchVideo(tvModel, cookie)
+                                }
                             }
                         }
                     } else {
@@ -146,7 +157,12 @@ class Request {
                             Log.e(TAG, "$title url error $request $liveInfo")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
-                                fetchVideo(tvModel, cookie)
+                                if (tvModel.needToken) {
+                                    token = ""
+                                    fetchVideo(tvModel)
+                                } else {
+                                    fetchVideo(tvModel, cookie)
+                                }
                             }
                         }
                     }
@@ -154,7 +170,12 @@ class Request {
                     Log.e(TAG, "$title status error")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
-                        fetchVideo(tvModel, cookie)
+                        if (tvModel.needToken) {
+                            token = ""
+                            fetchVideo(tvModel)
+                        } else {
+                            fetchVideo(tvModel, cookie)
+                        }
                     }
                 }
             }
@@ -163,39 +184,50 @@ class Request {
                 Log.e(TAG, "$title request error")
                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                     tvModel.retryTimes++
-                    fetchVideo(tvModel, cookie)
+                    if (tvModel.needToken) {
+                        token = ""
+                        fetchVideo(tvModel)
+                    } else {
+                        fetchVideo(tvModel, cookie)
+                    }
                 }
             }
         })
     }
 
     fun fetchVideo(tvModel: TVViewModel) {
-        yspTokenService.getInfo()
-            .enqueue(object : Callback<Info> {
-                override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                    if (response.isSuccessful) {
-                        val token = response.body()?.data?.token
-                        Log.i(TAG, "info success $token")
-                        val cookie =
-                            "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
-                        fetchVideo(tvModel, cookie)
-                    } else {
-                        Log.e(TAG, "info status error")
+        if (token == "") {
+            yspTokenService.getInfo()
+                .enqueue(object : Callback<Info> {
+                    override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                        if (response.isSuccessful) {
+                            token = response.body()?.data?.token!!
+                            Log.i(TAG, "info success $token")
+                            val cookie =
+                                "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            fetchVideo(tvModel, cookie)
+                        } else {
+                            Log.e(TAG, "info status error")
+                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
+                                tvModel.retryTimes++
+                                fetchVideo(tvModel)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Info>, t: Throwable) {
+                        Log.e(TAG, "info request error $t")
                         if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                             tvModel.retryTimes++
                             fetchVideo(tvModel)
                         }
                     }
-                }
-
-                override fun onFailure(call: Call<Info>, t: Throwable) {
-                    Log.e(TAG, "info request error $t")
-                    if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                        tvModel.retryTimes++
-                        fetchVideo(tvModel)
-                    }
-                }
-            })
+                })
+        } else {
+            val cookie =
+                "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+            fetchVideo(tvModel, cookie)
+        }
     }
 
     fun fetchData(tvModel: TVViewModel) {
@@ -207,7 +239,32 @@ class Request {
         }
     }
 
-    inner class MyRunnable(private val tvModel: TVViewModel) : Runnable {
+    inner class TokenRunnable : Runnable {
+        override fun run() {
+            fetchToken()
+            handler.postDelayed(this, 600000)
+        }
+    }
+
+    fun fetchToken() {
+        yspTokenService.getInfo()
+            .enqueue(object : Callback<Info> {
+                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                    if (response.isSuccessful) {
+                        token = response.body()?.data?.token!!
+                        Log.i(TAG, "info success $token")
+                    } else {
+                        Log.e(TAG, "token status error")
+                    }
+                }
+
+                override fun onFailure(call: Call<Info>, t: Throwable) {
+                    Log.e(TAG, "token request error $t")
+                }
+            })
+    }
+
+    inner class BtraceRunnable(private val tvModel: TVViewModel) : Runnable {
         override fun run() {
             fetchBtrace(tvModel)
             handler.postDelayed(this, 60000)
@@ -306,6 +363,8 @@ class Request {
                             tvViewModel.addProgram(program.dataListList)
                             Log.i(TAG, "$title program ${program.dataListList.size}")
                         }
+                    } else {
+                        Log.w(TAG, "$title program error")
                     }
                 }
 

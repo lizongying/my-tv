@@ -277,9 +277,6 @@ CGTN 纪录频道,https://livedoc.cgtn.com/500d/prog_index.m3u8
             }
             if (!i.contains(",")) {
                 channel = i.trim()
-                if (channel == "移动专区") {
-                    break
-                }
                 continue
             }
             val p = i.split(",")
