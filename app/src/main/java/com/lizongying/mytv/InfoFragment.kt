@@ -48,7 +48,6 @@ class InfoFragment : Fragment() {
                 .into(binding.infoLogo)
         }
 
-
         val program = tvViewModel.getProgramOne()
         if (program != null) {
             binding.infoDesc.text = program.name

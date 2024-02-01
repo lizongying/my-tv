@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -36,7 +35,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     var tvListViewModel = TVListViewModel()
 
-    private var sharedPref: SharedPreferences? = null
+    private lateinit var sharedPref: SharedPreferences
 
     private var lastVideoUrl = ""
 
@@ -57,7 +56,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         super.onActivityCreated(savedInstanceState)
 
         activity?.let { request.initYSP(it) }
-        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        sharedPref = (activity as? MainActivity)?.sharedPref!!
 
         view?.post {
             val content = binding.content
@@ -98,13 +97,13 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             mUpdateProgramRunnable = UpdateProgramRunnable()
             handler.post(mUpdateProgramRunnable)
 
-            itemPosition = sharedPref?.getInt(POSITION, 0)!!
+            itemPosition = sharedPref.getInt(POSITION, 0)
             if (itemPosition >= tvListViewModel.size()) {
                 itemPosition = 0
             }
             tvListViewModel.setItemPosition(itemPosition)
             setPosition()
-            tvListViewModel.getTVListViewModel().value?.forEach { tvViewModel ->
+            tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
                 tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
                     if (tvViewModel.errInfo.value != null
                         && tvViewModel.id.value == itemPosition
@@ -262,7 +261,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 tvViewModel.programUpdateTime = timestamp
                 request.fetchProgram(tvViewModel)
             } else {
-                if (timestamp - tvViewModel.program.value!!.last().et < 600) {
+                if (tvViewModel.program.value!!.last().et - timestamp < 600) {
                     tvViewModel.programUpdateTime = timestamp
                     request.fetchProgram(tvViewModel)
                 }
@@ -272,7 +271,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     inner class UpdateProgramRunnable : Runnable {
         override fun run() {
-            tvListViewModel.getTVListViewModel().value?.filter { it.programId.value != null }
+            tvListViewModel.tvListViewModel.value?.filter { it.programId.value != null }
                 ?.forEach { tvViewModel ->
                     updateProgram(
                         tvViewModel
@@ -282,14 +281,19 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         }
     }
 
+    override fun onResume() {
+        Log.i(TAG, "onResume")
+        super.onResume()
+    }
+
     override fun onStop() {
         Log.i(TAG, "onStop")
         super.onStop()
-        with(sharedPref!!.edit()) {
+        with(sharedPref.edit()) {
             putInt(POSITION, itemPosition)
             apply()
         }
-        Log.i(TAG, "POSITION saved")
+        Log.i(TAG, "$POSITION saved")
     }
 
     override fun onDestroy() {
@@ -302,11 +306,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         Log.i(TAG, "onDestroyView")
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        view?.post { view?.requestFocus() }
     }
 
     companion object {

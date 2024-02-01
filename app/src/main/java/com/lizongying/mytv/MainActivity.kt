@@ -35,16 +35,17 @@ class MainActivity : FragmentActivity() {
     private lateinit var gestureDetector: GestureDetector
 
     private val handler = Handler()
-    private val delay: Long = 4000
-    private val delayHideHelp: Long = 10000
+    private val delayHideMain: Long = 5000
+    private val delayHideSetting: Long = 10000
 
-    private lateinit var sharedPref: SharedPreferences
+    lateinit var sharedPref: SharedPreferences
     private var channelReversal = false
     private var channelNum = true
 
     private var versionName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -60,7 +61,6 @@ class MainActivity : FragmentActivity() {
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
                 .commit()
-            mainFragment.view?.requestFocus()
         }
         gestureDetector = GestureDetector(this, GestureListener())
 
@@ -133,11 +133,11 @@ class MainActivity : FragmentActivity() {
     }
 
     fun keepRunnable() {
-        handler.removeCallbacks(hideRunnable)
-        handler.postDelayed(hideRunnable, delay)
+        handler.removeCallbacks(hideMain)
+        handler.postDelayed(hideMain, delayHideMain)
     }
 
-    private val hideRunnable = Runnable {
+    private val hideMain = Runnable {
         if (!mainFragment.isHidden) {
             supportFragmentManager.beginTransaction().hide(mainFragment).commit()
         }
@@ -223,7 +223,7 @@ class MainActivity : FragmentActivity() {
         this.channelNum = channelNum
     }
 
-    private fun showHelp() {
+    private fun showSetting() {
         if (!mainFragment.isHidden) {
             return
         }
@@ -231,15 +231,15 @@ class MainActivity : FragmentActivity() {
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
             settingFragment.show(supportFragmentManager, "setting")
-            handler.removeCallbacks(hideHelp)
-            handler.postDelayed(hideHelp, delayHideHelp)
+            handler.removeCallbacks(hideSetting)
+            handler.postDelayed(hideSetting, delayHideSetting)
         } else {
-            handler.removeCallbacks(hideHelp)
+            handler.removeCallbacks(hideSetting)
             settingFragment.dismiss()
         }
     }
 
-    private val hideHelp = Runnable {
+    private val hideSetting = Runnable {
         if (settingFragment.isVisible) {
             settingFragment.dismiss()
         }
@@ -360,27 +360,27 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_BOOKMARK -> {
-                showHelp()
+                showSetting()
                 return true
             }
 
             KeyEvent.KEYCODE_UNKNOWN -> {
-                showHelp()
+                showSetting()
                 return true
             }
 
             KeyEvent.KEYCODE_HELP -> {
-                showHelp()
+                showSetting()
                 return true
             }
 
             KeyEvent.KEYCODE_SETTINGS -> {
-                showHelp()
+                showSetting()
                 return true
             }
 
             KeyEvent.KEYCODE_MENU -> {
-                showHelp()
+                showSetting()
                 return true
             }
 
@@ -478,7 +478,7 @@ class MainActivity : FragmentActivity() {
 
     private fun hashSignature(signature: Signature): String {
         return try {
-            val md = MessageDigest.getInstance("SHA-256")
+            val md = MessageDigest.getInstance("MD5")
             md.update(signature.toByteArray())
             val digest = md.digest()
             digest.let { it -> it.joinToString("") { "%02x".format(it) } }
@@ -486,6 +486,22 @@ class MainActivity : FragmentActivity() {
             Log.e(TAG, "Error hashing signature", e)
             ""
         }
+    }
+
+    override fun onStart() {
+        Log.i(TAG, "onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.i(TAG, "onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.i(TAG, "onPause")
+        super.onPause()
+        handler.removeCallbacks(hideMain)
     }
 
     companion object {

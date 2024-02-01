@@ -78,6 +78,20 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     var needToken = false
 
     private val channelsNeedToken = arrayOf(
+        "CCTV4K 超高清",
+        "CCTV2 财经",
+        "CCTV5 体育",
+        "CCTV5+ 体育赛事",
+        "CCTV7 国防军事",
+        "CCTV9 记录",
+        "CCTV10 科教",
+        "CCTV11 戏曲",
+        "CCTV12 社会与法",
+        "CCTV14 少儿",
+        "CCTV15 音乐",
+        "CCTV16 奥林匹克",
+        "CCTV17 农业农村",
+
         "CCTV3 综艺",
         "CCTV6 电影",
         "CCTV8 电视剧",
@@ -94,6 +108,30 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         "央视台球",
         "电视指南",
         "卫生健康",
+
+        "东方卫视",
+        "湖南卫视",
+        "湖北卫视",
+        "辽宁卫视",
+        "江苏卫视",
+        "江西卫视",
+        "山东卫视",
+        "广东卫视",
+        "广西卫视",
+        "重庆卫视",
+        "河南卫视",
+        "河北卫视",
+        "贵州卫视",
+        "北京卫视",
+        "黑龙江卫视",
+        "浙江卫视",
+        "安徽卫视",
+        "深圳卫视",
+        "四川卫视",
+        "东南卫视",
+        "海南卫视",
+        "天津卫视",
+        "新疆卫视",
     )
 
     fun addVideoUrl(url: String) {
