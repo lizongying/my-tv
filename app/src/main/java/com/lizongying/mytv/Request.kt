@@ -361,7 +361,7 @@ class Request {
                         val program = response.body()
                         if (program != null) {
                             tvViewModel.addProgram(program.dataListList)
-                            Log.i(TAG, "$title program ${program.dataListList.size}")
+                            Log.d(TAG, "$title program ${program.dataListList.size}")
                         }
                     } else {
                         Log.w(TAG, "$title program error")

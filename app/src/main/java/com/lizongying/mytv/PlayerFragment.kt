@@ -81,14 +81,23 @@ class PlayerFragment : Fragment() {
     }
 
     override fun onStart() {
+        Log.i(TAG, "onStart")
         super.onStart()
         if (playerView != null && playerView!!.player?.isPlaying == false) {
-            playerView!!.player?.play()
+            Log.i(TAG, "replay")
+            playerView!!.player?.prepare()
+        } else {
+            Log.i(TAG, "playing")
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onResume() {
+        Log.i(TAG, "onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
         if (playerView != null && playerView!!.player?.isPlaying == true) {
             playerView!!.player?.stop()
         }

@@ -44,8 +44,14 @@ class MainFragment : BrowseSupportFragment() {
     private var ready = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
+    }
+
+    override fun onStart() {
+        Log.i(TAG, "onStart")
+        super.onStart()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -308,6 +314,11 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
+    override fun onResume() {
+        Log.i(TAG, "onResume")
+        super.onResume()
+    }
+
     override fun onStop() {
         Log.i(TAG, "onStop")
         super.onStop()
@@ -315,18 +326,13 @@ class MainFragment : BrowseSupportFragment() {
             putInt(POSITION, itemPosition)
             apply()
         }
-        Log.i(TAG, "POSITION saved")
+        Log.i(TAG, "$POSITION saved")
     }
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         super.onDestroy()
         handler.removeCallbacks(mUpdateProgramRunnable)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        view?.post { view?.requestFocus() }
     }
 
     companion object {
