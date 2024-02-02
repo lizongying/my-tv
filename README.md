@@ -90,6 +90,19 @@
 adb install my-tv.apk
 ```
 
+## TODO
+
+* 音量不同
+* 大湾区卫视、广东4k超高清、广东珠江
+* CETV教育频道
+* CHC高清三个电影频道
+* 地方频道
+* 收藏夹
+* 自定义源
+* 凤凰卫视、凤凰资讯台
+* 海外
+* 1.5.0 无法安装，1.5.1 可以安装
+
 ## 赞赏
 
 ![image](./screenshots/appreciate.jpeg)
