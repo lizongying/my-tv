@@ -19,8 +19,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var rowPosition: Int = 0
     private var itemPosition: Int = 0
 
-    var retryTimes: Int = 0
-    var retryMaxTimes: Int = 8
+    var retryTimes = 0
+    var tokenRetryTimes = 0
+    var retryMaxTimes = 8
+    var tokenRetryMaxTimes = 2
     var programUpdateTime: Long = 0
 
     private val _errInfo = MutableLiveData<String>()
@@ -76,6 +78,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     var seq = 0
 
     var needToken = false
+
+    var mustToken = false
 
     private val channelsNeedToken = arrayOf(
         "CCTV4K 超高清",
@@ -134,6 +138,25 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         "新疆卫视",
     )
 
+    private val channelsMustToken = arrayOf(
+        "CCTV3 综艺",
+        "CCTV6 电影",
+        "CCTV8 电视剧",
+        "风云剧场",
+        "第一剧场",
+        "怀旧剧场",
+        "世界地理",
+        "风云音乐",
+        "兵器科技",
+        "风云足球",
+        "高尔夫网球",
+        "女性时尚",
+        "央视文化精品",
+        "央视台球",
+        "电视指南",
+        "卫生健康",
+    )
+
     fun addVideoUrl(url: String) {
         if (_videoUrl.value?.isNotEmpty() == true) {
             if (_videoUrl.value!!.last().contains("cctv.cn")) {
@@ -187,6 +210,9 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
         if (tv.title in channelsNeedToken) {
             needToken = true
+        }
+        if (tv.title in channelsMustToken) {
+            mustToken = true
         }
     }
 

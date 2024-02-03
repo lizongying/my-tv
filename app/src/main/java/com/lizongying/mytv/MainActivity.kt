@@ -496,6 +496,9 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
+        if (!mainFragment.isHidden){
+            handler.postDelayed(hideMain, delayHideMain)
+        }
     }
 
     override fun onPause() {
