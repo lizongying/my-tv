@@ -39,6 +39,8 @@ class Request {
     private lateinit var btraceRunnable: BtraceRunnable
     private var tokenRunnable: TokenRunnable = TokenRunnable()
 
+    private val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
+
     private var mapping = mapOf(
         "CCTV4K" to "CCTV4K 超高清",
         "CCTV1" to "CCTV1 综合",
@@ -121,7 +123,6 @@ class Request {
                             Base64.DEFAULT
                         )
                         val decodedString = String(decodedBytes)
-                        val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
                         val matchResult = regex.find(decodedString)
                         if (matchResult != null) {
                             val (key, iv) = matchResult.destructured
@@ -142,8 +143,14 @@ class Request {
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
                                 if (tvModel.needToken) {
-                                    token = ""
-                                    fetchVideo(tvModel)
+                                    if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
+                                        if (!tvModel.mustToken) {
+                                            fetchVideo(tvModel, cookie)
+                                        }
+                                    } else {
+                                        token = ""
+                                        fetchVideo(tvModel)
+                                    }
                                 } else {
                                     fetchVideo(tvModel, cookie)
                                 }
@@ -158,8 +165,14 @@ class Request {
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
                                 if (tvModel.needToken) {
-                                    token = ""
-                                    fetchVideo(tvModel)
+                                    if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
+                                        if (!tvModel.mustToken) {
+                                            fetchVideo(tvModel, cookie)
+                                        }
+                                    } else {
+                                        token = ""
+                                        fetchVideo(tvModel)
+                                    }
                                 } else {
                                     fetchVideo(tvModel, cookie)
                                 }
@@ -171,8 +184,14 @@ class Request {
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
                         if (tvModel.needToken) {
-                            token = ""
-                            fetchVideo(tvModel)
+                            if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
+                                if (!tvModel.mustToken) {
+                                    fetchVideo(tvModel, cookie)
+                                }
+                            } else {
+                                token = ""
+                                fetchVideo(tvModel)
+                            }
                         } else {
                             fetchVideo(tvModel, cookie)
                         }
@@ -185,8 +204,14 @@ class Request {
                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                     tvModel.retryTimes++
                     if (tvModel.needToken) {
-                        token = ""
-                        fetchVideo(tvModel)
+                        if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
+                            if (!tvModel.mustToken) {
+                                fetchVideo(tvModel, cookie)
+                            }
+                        } else {
+                            token = ""
+                            fetchVideo(tvModel)
+                        }
                     } else {
                         fetchVideo(tvModel, cookie)
                     }
@@ -208,18 +233,28 @@ class Request {
                             fetchVideo(tvModel, cookie)
                         } else {
                             Log.e(TAG, "info status error")
-                            if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                                tvModel.retryTimes++
+                            if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
+                                tvModel.tokenRetryTimes++
                                 fetchVideo(tvModel)
+                            } else {
+                                if (!tvModel.mustToken) {
+                                    val cookie = "vplatform=109"
+                                    fetchVideo(tvModel, cookie)
+                                }
                             }
                         }
                     }
 
                     override fun onFailure(call: Call<Info>, t: Throwable) {
                         Log.e(TAG, "info request error $t")
-                        if (tvModel.retryTimes < tvModel.retryMaxTimes) {
-                            tvModel.retryTimes++
+                        if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
+                            tvModel.tokenRetryTimes++
                             fetchVideo(tvModel)
+                        } else {
+                            if (!tvModel.mustToken) {
+                                val cookie = "vplatform=109"
+                                fetchVideo(tvModel, cookie)
+                            }
                         }
                     }
                 })

@@ -54,7 +54,6 @@ class MainActivity : FragmentActivity() {
         window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
         if (savedInstanceState == null) {
-            Log.i(TAG, "beginTransaction begin")
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
@@ -62,9 +61,6 @@ class MainActivity : FragmentActivity() {
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
                 .commit()
-            Log.i(TAG, "beginTransaction end")
-        } else {
-            Log.i(TAG, "savedInstanceState $savedInstanceState")
         }
         gestureDetector = GestureDetector(this, GestureListener())
 

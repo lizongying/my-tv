@@ -304,7 +304,7 @@ class MainFragment : BrowseSupportFragment() {
 
     inner class UpdateProgramRunnable : Runnable {
         override fun run() {
-            tvListViewModel.tvListViewModel.value?.filter { it.programId.value != null }
+            tvListViewModel.tvListViewModel.value?.filter { it.programId.value != null && it.programId.value != "" }
                 ?.forEach { tvViewModel ->
                     updateProgram(
                         tvViewModel
