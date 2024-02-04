@@ -95,6 +95,8 @@ class Request {
 
     fun initYSP(context: Context) {
         ysp = YSP(context)
+        //TODO 不确定在哪里初始化
+        TVList.init(context)
     }
 
     var call: Call<LiveInfo>? = null
