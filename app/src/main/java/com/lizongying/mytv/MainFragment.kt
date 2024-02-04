@@ -128,7 +128,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                         val title = tvViewModel.title.value
                         Log.i(TAG, "switch $title")
                         if (tvViewModel.pid.value != "") {
-                            Log.i(TAG, "request $title ${tvViewModel.pid.value}")
+                            Log.i(TAG, "request $title")
                             lifecycleScope.launch(Dispatchers.IO) {
                                 tvViewModel.let { request.fetchData(it) }
                             }
