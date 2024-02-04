@@ -144,9 +144,9 @@ class Request {
                             Log.e(TAG, "$title key error")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
-                                if (tvModel.needToken) {
+                                if (tvModel.getTV().needToken) {
                                     if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                                        if (!tvModel.mustToken) {
+                                        if (!tvModel.getTV().mustToken) {
                                             fetchVideo(tvModel, cookie)
                                         }
                                     } else {
@@ -166,9 +166,9 @@ class Request {
                             Log.e(TAG, "$title url error $request $liveInfo")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
-                                if (tvModel.needToken) {
+                                if (tvModel.getTV().needToken) {
                                     if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                                        if (!tvModel.mustToken) {
+                                        if (!tvModel.getTV().mustToken) {
                                             fetchVideo(tvModel, cookie)
                                         }
                                     } else {
@@ -185,9 +185,9 @@ class Request {
                     Log.e(TAG, "$title status error")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
-                        if (tvModel.needToken) {
+                        if (tvModel.getTV().needToken) {
                             if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                                if (!tvModel.mustToken) {
+                                if (!tvModel.getTV().mustToken) {
                                     fetchVideo(tvModel, cookie)
                                 }
                             } else {
@@ -205,9 +205,9 @@ class Request {
                 Log.e(TAG, "$title request error")
                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                     tvModel.retryTimes++
-                    if (tvModel.needToken) {
+                    if (tvModel.getTV().needToken) {
                         if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                            if (!tvModel.mustToken) {
+                            if (!tvModel.getTV().mustToken) {
                                 fetchVideo(tvModel, cookie)
                             }
                         } else {
@@ -231,7 +231,7 @@ class Request {
                             token = response.body()?.data?.token!!
                             Log.i(TAG, "info success $token")
                             val cookie =
-                                "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
                             fetchVideo(tvModel, cookie)
                         } else {
                             Log.e(TAG, "info status error")
@@ -239,8 +239,9 @@ class Request {
                                 tvModel.tokenRetryTimes++
                                 fetchVideo(tvModel)
                             } else {
-                                if (!tvModel.mustToken) {
-                                    val cookie = "vplatform=109"
+                                if (!tvModel.getTV().mustToken) {
+                                    val cookie =
+                                        "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109"
                                     fetchVideo(tvModel, cookie)
                                 }
                             }
@@ -253,8 +254,9 @@ class Request {
                             tvModel.tokenRetryTimes++
                             fetchVideo(tvModel)
                         } else {
-                            if (!tvModel.mustToken) {
-                                val cookie = "vplatform=109"
+                            if (!tvModel.getTV().mustToken) {
+                                val cookie =
+                                    "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109"
                                 fetchVideo(tvModel, cookie)
                             }
                         }
@@ -262,16 +264,17 @@ class Request {
                 })
         } else {
             val cookie =
-                "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
             fetchVideo(tvModel, cookie)
         }
     }
 
     fun fetchData(tvModel: TVViewModel) {
-        if (tvModel.needToken) {
+        if (tvModel.getTV().needToken) {
             fetchVideo(tvModel)
         } else {
-            val cookie = "vplatform=109"
+            val cookie =
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109"
             fetchVideo(tvModel, cookie)
         }
     }

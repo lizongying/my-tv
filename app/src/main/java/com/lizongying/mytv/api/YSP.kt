@@ -2,7 +2,6 @@ package com.lizongying.mytv.api
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.lizongying.mytv.Encryptor
 import com.lizongying.mytv.MainActivity
 import com.lizongying.mytv.Utils.getDateTimestamp
