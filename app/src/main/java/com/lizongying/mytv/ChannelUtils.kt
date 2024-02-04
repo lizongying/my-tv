@@ -89,6 +89,7 @@ object ChannelUtils {
     suspend fun getLocalVersion(context: Context): Int {
         return withContext(Dispatchers.IO) {
             val file = File(getAppDirectory(context), "channels")
+            //检查本地是否已经有保存的channels.json,若无保存的Channel.json则从读取assert中文件
             val savedVersion =
                 context.getSharedPreferences("saved_version", Context.MODE_PRIVATE).getInt("version", Integer.MIN_VALUE)
             if (!file.exists() || savedVersion == Integer.MIN_VALUE) {
