@@ -9,7 +9,15 @@ object TVList {
     lateinit var list: Map<String, List<TV>>
 
     fun init(context: Context){
-        setupTV(context)
+        if(::list.isInitialized){
+            return
+        }
+        synchronized(this){
+            if(::list.isInitialized){
+                return
+            }
+            list = setupTV(context)
+        }
     }
 
 
