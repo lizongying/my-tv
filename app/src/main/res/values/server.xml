@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="local_channel_version">1</integer>
+    <string name="server_version_url">http://localhost:8080</string>
     <string name="server_url">http://localhost:8080</string>
 </resources>
