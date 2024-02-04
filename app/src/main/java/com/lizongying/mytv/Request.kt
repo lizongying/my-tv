@@ -142,9 +142,9 @@ class Request {
                             Log.e(TAG, "$title key error")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
-                                if (tvModel.needToken) {
+                                if (tvModel.getTV().needToken) {
                                     if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                                        if (!tvModel.mustToken) {
+                                        if (!tvModel.getTV().mustToken) {
                                             fetchVideo(tvModel, cookie)
                                         }
                                     } else {
@@ -164,9 +164,9 @@ class Request {
                             Log.e(TAG, "$title url error $request $liveInfo")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                                 tvModel.retryTimes++
-                                if (tvModel.needToken) {
+                                if (tvModel.getTV().needToken) {
                                     if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                                        if (!tvModel.mustToken) {
+                                        if (!tvModel.getTV().mustToken) {
                                             fetchVideo(tvModel, cookie)
                                         }
                                     } else {
@@ -183,9 +183,9 @@ class Request {
                     Log.e(TAG, "$title status error")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
-                        if (tvModel.needToken) {
+                        if (tvModel.getTV().needToken) {
                             if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                                if (!tvModel.mustToken) {
+                                if (!tvModel.getTV().mustToken) {
                                     fetchVideo(tvModel, cookie)
                                 }
                             } else {
@@ -203,9 +203,9 @@ class Request {
                 Log.e(TAG, "$title request error")
                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                     tvModel.retryTimes++
-                    if (tvModel.needToken) {
+                    if (tvModel.getTV().needToken) {
                         if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
-                            if (!tvModel.mustToken) {
+                            if (!tvModel.getTV().mustToken) {
                                 fetchVideo(tvModel, cookie)
                             }
                         } else {
@@ -237,7 +237,7 @@ class Request {
                                 tvModel.tokenRetryTimes++
                                 fetchVideo(tvModel)
                             } else {
-                                if (!tvModel.mustToken) {
+                                if (!tvModel.getTV().mustToken) {
                                     val cookie = "vplatform=109"
                                     fetchVideo(tvModel, cookie)
                                 }
@@ -251,7 +251,7 @@ class Request {
                             tvModel.tokenRetryTimes++
                             fetchVideo(tvModel)
                         } else {
-                            if (!tvModel.mustToken) {
+                            if (!tvModel.getTV().mustToken) {
                                 val cookie = "vplatform=109"
                                 fetchVideo(tvModel, cookie)
                             }
@@ -266,7 +266,7 @@ class Request {
     }
 
     fun fetchData(tvModel: TVViewModel) {
-        if (tvModel.needToken) {
+        if (tvModel.getTV().needToken) {
             fetchVideo(tvModel)
         } else {
             val cookie = "vplatform=109"
