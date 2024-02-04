@@ -70,7 +70,7 @@ object Utils {
      * @param context 应用环境信息
      * @return 服务器地址
      */
-    fun getServerUrl(context: Context): String {
+    private fun getServerUrl(context: Context): String {
         return context.resources.getString(R.string.server_url)
     }
 }

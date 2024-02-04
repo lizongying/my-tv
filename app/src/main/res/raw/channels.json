@@ -22,7 +22,7 @@
     "pid": "600001800",
     "sid": "2000203603",
     "programId": "600001800",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV2 财经",
     "videoUrl": [
@@ -37,8 +37,8 @@
     "pid": "600001801",
     "sid": "2000203803",
     "programId": "600001801",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "CCTV3 综艺",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226397/index.m3u8"
@@ -68,7 +68,7 @@
     "pid": "600001818",
     "sid": "2000205103",
     "programId": "600001818",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV5 体育",
     "videoUrl": [
@@ -83,8 +83,8 @@
     "pid": "600001802",
     "sid": "2013693901",
     "programId": "600001802",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "CCTV6 电影",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226393/index.m3u8"
@@ -98,7 +98,7 @@
     "pid": "600004092",
     "sid": "2000510003",
     "programId": "600004092",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV7 国防军事",
     "videoUrl": [
@@ -113,8 +113,8 @@
     "pid": "600001803",
     "sid": "2000203903",
     "programId": "600001803",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "CCTV8 电视剧",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226391/index.m3u8"
@@ -128,7 +128,7 @@
     "pid": "600004078",
     "sid": "2000499403",
     "programId": "600004078",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV9 记录",
     "videoUrl": [
@@ -143,7 +143,7 @@
     "pid": "600001805",
     "sid": "2000203503",
     "programId": "600001805",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV10 科教",
     "videoUrl": [
@@ -158,7 +158,7 @@
     "pid": "600001806",
     "sid": "2000204103",
     "programId": "600001806",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV11 戏曲",
     "videoUrl": [
@@ -173,7 +173,7 @@
     "pid": "600001807",
     "sid": "2000202603",
     "programId": "600001807",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV12 社会与法",
     "videoUrl": [
@@ -204,7 +204,7 @@
     "pid": "600001809",
     "sid": "2000204403",
     "programId": "600001809",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV14 少儿",
     "videoUrl": [
@@ -219,7 +219,7 @@
     "pid": "600001815",
     "sid": "2000205003",
     "programId": "600001815",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV15 音乐",
     "videoUrl": [
@@ -234,7 +234,7 @@
     "pid": "600098637",
     "sid": "2012375003",
     "programId": "600098637",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV16 奥林匹克",
     "videoUrl": [
@@ -250,7 +250,7 @@
     "pid": "600001810",
     "sid": "2000204203",
     "programId": "600001810",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV17 农业农村",
     "videoUrl": [
@@ -265,7 +265,7 @@
     "pid": "600001817",
     "sid": "2000204503",
     "programId": "600001817",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV5+ 体育赛事",
     "videoUrl": [
@@ -280,7 +280,7 @@
     "pid": "600002264",
     "sid": "2000266303",
     "programId": "600002264",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "CCTV4K 超高清",
     "videoUrl": [
@@ -310,8 +310,8 @@
     "pid": "600099658",
     "sid": "2012513603",
     "programId": "600099658",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "风云剧场",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226950/index.m3u8"
@@ -325,8 +325,8 @@
     "pid": "600099655",
     "sid": "2012514403",
     "programId": "600099655",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "第一剧场",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226959/index.m3u8"
@@ -340,8 +340,8 @@
     "pid": "600099620",
     "sid": "2012511203",
     "programId": "600099620",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "怀旧剧场",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226972/index.m3u8"
@@ -355,8 +355,8 @@
     "pid": "600099637",
     "sid": "2012513303",
     "programId": "600099637",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "世界地理",
     "videoUrl": [
       ""
@@ -370,8 +370,8 @@
     "pid": "600099660",
     "sid": "2012514103",
     "programId": "600099660",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "风云音乐",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226953/index.m3u8"
@@ -385,8 +385,8 @@
     "pid": "600099649",
     "sid": "2012513403",
     "programId": "600099649",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "兵器科技",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226975/index.m3u8"
@@ -400,8 +400,8 @@
     "pid": "600099636",
     "sid": "2012514203",
     "programId": "600099636",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "风云足球",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226984/index.m3u8"
@@ -415,8 +415,8 @@
     "pid": "600099659",
     "sid": "2012512503",
     "programId": "600099659",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "高尔夫网球",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226978/index.m3u8"
@@ -430,8 +430,8 @@
     "pid": "600099650",
     "sid": "2012513903",
     "programId": "600099650",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "女性时尚",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226969/index.m3u8"
@@ -445,8 +445,8 @@
     "pid": "600099653",
     "sid": "2012513803",
     "programId": "600099653",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "央视文化精品",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226981/index.m3u8"
@@ -460,8 +460,8 @@
     "pid": "600099652",
     "sid": "2012513703",
     "programId": "600099652",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "央视台球",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226956/index.m3u8"
@@ -475,8 +475,8 @@
     "pid": "600099656",
     "sid": "2012514003",
     "programId": "600099656",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "电视指南",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226987/index.m3u8"
@@ -490,8 +490,8 @@
     "pid": "600099651",
     "sid": "2012513503",
     "programId": "600099651",
-    "needToken": false,
-    "mustToken": false,
+    "needToken": true,
+    "mustToken": true,
     "title": "卫生健康",
     "videoUrl": [
       ""
@@ -505,7 +505,7 @@
     "pid": "600002483",
     "sid": "2000292403",
     "programId": "600002483",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "东方卫视",
     "videoUrl": [
@@ -520,7 +520,7 @@
     "pid": "600002475",
     "sid": "2000296203",
     "programId": "600002475",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "湖南卫视",
     "videoUrl": [
@@ -536,7 +536,7 @@
     "pid": "600002508",
     "sid": "2000294503",
     "programId": "600002508",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "湖北卫视",
     "videoUrl": [
@@ -552,7 +552,7 @@
     "pid": "600002505",
     "sid": "2000281303",
     "programId": "600002505",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "辽宁卫视",
     "videoUrl": [
@@ -568,7 +568,7 @@
     "pid": "600002521",
     "sid": "2000295603",
     "programId": "600002521",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "江苏卫视",
     "videoUrl": [
@@ -584,7 +584,7 @@
     "pid": "600002503",
     "sid": "2000294103",
     "programId": "600002503",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "江西卫视",
     "videoUrl": [
@@ -600,7 +600,7 @@
     "pid": "600002513",
     "sid": "2000294803",
     "programId": "600002513",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "山东卫视",
     "videoUrl": [
@@ -615,7 +615,7 @@
     "pid": "600002485",
     "sid": "2000292703",
     "programId": "600002485",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "广东卫视",
     "videoUrl": [
@@ -630,7 +630,7 @@
     "pid": "600002509",
     "sid": "2000294203",
     "programId": "600002509",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "广西卫视",
     "videoUrl": [
@@ -646,7 +646,7 @@
     "pid": "600002531",
     "sid": "2000297803",
     "programId": "600002531",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "重庆卫视",
     "videoUrl": [
@@ -662,7 +662,7 @@
     "pid": "600002525",
     "sid": "2000296103",
     "programId": "600002525",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "河南卫视",
     "videoUrl": [
@@ -678,7 +678,7 @@
     "pid": "600002493",
     "sid": "2000293403",
     "programId": "600002493",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "河北卫视",
     "videoUrl": [
@@ -694,7 +694,7 @@
     "pid": "600002490",
     "sid": "2000293303",
     "programId": "600002490",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "贵州卫视",
     "videoUrl": [
@@ -710,7 +710,7 @@
     "pid": "600002309",
     "sid": "2000272103",
     "programId": "600002309",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "北京卫视",
     "videoUrl": [
@@ -726,7 +726,7 @@
     "pid": "600002498",
     "sid": "2000293903",
     "programId": "600002498",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "黑龙江卫视",
     "videoUrl": [
@@ -742,7 +742,7 @@
     "pid": "600002520",
     "sid": "2000295503",
     "programId": "600002520",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "浙江卫视",
     "videoUrl": [
@@ -758,7 +758,7 @@
     "pid": "600002532",
     "sid": "2000298003",
     "programId": "600002532",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "安徽卫视",
     "videoUrl": [
@@ -774,7 +774,7 @@
     "pid": "600002481",
     "sid": "2000292203",
     "programId": "600002481",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "深圳卫视",
     "videoUrl": [
@@ -790,7 +790,7 @@
     "pid": "600002516",
     "sid": "2000295003",
     "programId": "600002516",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "四川卫视",
     "videoUrl": [
@@ -806,7 +806,7 @@
     "pid": "600002484",
     "sid": "2000292503",
     "programId": "600002484",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "东南卫视",
     "videoUrl": [
@@ -822,7 +822,7 @@
     "pid": "600002506",
     "sid": "2000291503",
     "programId": "600002506",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "海南卫视",
     "videoUrl": [
@@ -838,7 +838,7 @@
     "pid": "600152137",
     "sid": "2019927003",
     "programId": "",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "天津卫视",
     "videoUrl": [
@@ -853,7 +853,7 @@
     "pid": "600152138",
     "sid": "2019927403",
     "programId": "",
-    "needToken": false,
+    "needToken": true,
     "mustToken": false,
     "title": "新疆卫视",
     "videoUrl": [
@@ -941,9 +941,9 @@
     "videoIndex": 0,
     "channel": "国际频道",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
-    "pid": "",
-    "sid": "",
-    "programId": "",
+    "pid": "600084781",
+    "sid": "2010155403",
+    "programId": "600084781",
     "needToken": false,
     "mustToken": false,
     "title": "CGTN 纪录频道",

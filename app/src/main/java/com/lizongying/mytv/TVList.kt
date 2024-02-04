@@ -7,13 +7,14 @@ import java.io.File
 
 object TVList {
     lateinit var list: Map<String, List<TV>>
+    private val channels = "channels.json"
 
-    fun init(context: Context){
-        if(::list.isInitialized){
+    fun init(context: Context) {
+        if (::list.isInitialized) {
             return
         }
-        synchronized(this){
-            if(::list.isInitialized){
+        synchronized(this) {
+            if (::list.isInitialized) {
                 return
             }
             list = setupTV(context)
@@ -21,17 +22,16 @@ object TVList {
     }
 
 
-    private fun setupTV(context:Context): Map<String, List<TV>> {
+    private fun setupTV(context: Context): Map<String, List<TV>> {
         val map: MutableMap<String, MutableList<TV>> = mutableMapOf()
         val appDirectory = Utils.getAppDirectory(context)
 
         //检查当前目录下是否存在channels.json
-        var file = File(appDirectory, "channels.json")
+        val file = File(appDirectory, channels)
         if (!file.exists()) {
             //不存在则从assets中拷贝
-            file = File(appDirectory, "channels.json")
             file.createNewFile()
-            context.assets.open("channels.json").use { input ->
+            context.resources.openRawResource(R.raw.channels).use { input ->
                 file.outputStream().use { output ->
                     input.copyTo(output)
                 }
@@ -42,7 +42,7 @@ object TVList {
         val json = file.readText()
         //防止类型擦除
         val type = object : TypeToken<Array<TV>>() {}.type
-        Gson().fromJson<Array<TV>>(json, type).forEach {
+        Gson().fromJson<Array<TV>>(json, type)?.forEach {
             if (map.containsKey(it.channel)) {
                 map[it.channel]?.add(it)
             } else {

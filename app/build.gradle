@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.lizongying.mytv'
-    compileSdk 33
+    compileSdk 34
 
     viewBinding {
         enabled = true
@@ -90,7 +90,7 @@ static def VersionName() {
 }
 
 dependencies {
-    def media3_version = "1.1.1"
+    def media3_version = "1.2.1"
 
     implementation "androidx.media3:media3-ui:$media3_version"
 
