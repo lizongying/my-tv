@@ -95,8 +95,6 @@ class Request {
 
     fun initYSP(context: Context) {
         ysp = YSP(context)
-        //TODO 不确定在哪里初始化
-        TVList.init(context)
     }
 
     var call: Call<LiveInfo>? = null
@@ -369,7 +367,7 @@ class Request {
                                 continue
                             }
                             val tv =
-                                TVList.list[channelType]?.find { it.title == mapping[item.channelName] }
+                                TVList.list?.get(channelType)?.find { it.title == mapping[item.channelName] }
                             if (tv != null) {
                                 tv.logo = item.tvLogo
                                 tv.pid = item.pid
