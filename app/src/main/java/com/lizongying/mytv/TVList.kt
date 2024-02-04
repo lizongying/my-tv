@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlin.math.log
 
 object TVList {
     @Volatile
@@ -45,7 +46,7 @@ object TVList {
                 val url = ChannelUtils.getServerUrl(context)
                 //是否从服务器更新
                 updateFromServer = true
-
+                Log.i("TVList", "从服务器获取频道信息")
                 try {
                     ChannelUtils.getServerChannel(url)
                 } catch (e: IOException) {
@@ -54,6 +55,7 @@ object TVList {
                     ChannelUtils.getLocalChannel(context)
                 }
             } else {
+                Log.i("TVList", "从本地获取频道信息")
                 //获取本地频道
                 ChannelUtils.getLocalChannel(context)
             }
