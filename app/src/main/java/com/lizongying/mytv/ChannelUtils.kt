@@ -19,7 +19,7 @@ object ChannelUtils {
      */
     suspend fun getServerVersion(context: Context): Int {
         return withContext(Dispatchers.IO) {
-            val client = okhttp3.OkHttpClient.Builder().connectTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+            val client = okhttp3.OkHttpClient.Builder().connectTimeout(500, java.util.concurrent.TimeUnit.MILLISECONDS)
                 .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS).build()
             client.newCall(okhttp3.Request.Builder().url(getServerVersionUrl(context)).build()).execute()
                 .use { response ->
@@ -41,7 +41,7 @@ object ChannelUtils {
      */
     suspend fun getServerChannel(url: String): List<TV> {
         val result = withContext(Dispatchers.IO) {
-            val client = okhttp3.OkHttpClient.Builder().connectTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+            val client = okhttp3.OkHttpClient.Builder().connectTimeout(500, java.util.concurrent.TimeUnit.MILLISECONDS)
                 .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS).build()
             val request = okhttp3.Request.Builder().url(url).build()
             client.newCall(request).execute().use { response ->
@@ -120,7 +120,7 @@ object ChannelUtils {
      * @return Array<TV> 本地channel
      */
     suspend fun getLocalChannel(context: Context): List<TV> {
-        var str = withContext(Dispatchers.IO) {
+        val str = withContext(Dispatchers.IO) {
             if (File(getAppDirectory(context), "channels").exists()) {
                 File(getAppDirectory(context), "channels").readText()
             } else {
