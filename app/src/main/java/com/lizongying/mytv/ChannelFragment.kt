@@ -48,6 +48,13 @@ class ChannelFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (view?.visibility == View.VISIBLE) {
+            handler.postDelayed(hideRunnable, delay)
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         handler.removeCallbacks(hideRunnable)
