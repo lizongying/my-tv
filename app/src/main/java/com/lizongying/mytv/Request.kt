@@ -40,6 +40,8 @@ class Request {
     private var tokenRunnable: TokenRunnable = TokenRunnable()
 
     private val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
+    private val input =
+        """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,AppleM1Pro,OpenGL4.1)"}""".toByteArray()
 
     private var mapping = mapOf(
         "CCTV4K" to "CCTV4K 超高清",
@@ -132,7 +134,7 @@ class Request {
                                 keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
                                 ivBytes
                             ).uppercase()
-                            Log.d(TAG, "$title url $url")
+//                            Log.d(TAG, "$title url $url")
                             tvModel.addVideoUrl(url)
                             tvModel.allReady()
                             tvModel.retryTimes = 0
@@ -200,7 +202,7 @@ class Request {
             }
 
             override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
-                Log.e(TAG, "$title request error")
+                Log.e(TAG, "$title request error $t")
                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                     tvModel.retryTimes++
                     if (tvModel.getTV().needToken) {
@@ -229,7 +231,7 @@ class Request {
                             token = response.body()?.data?.token!!
                             Log.i(TAG, "info success $token")
                             val cookie =
-                                "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
                             fetchVideo(tvModel, cookie)
                         } else {
                             Log.e(TAG, "info status error")
@@ -238,7 +240,8 @@ class Request {
                                 fetchVideo(tvModel)
                             } else {
                                 if (!tvModel.getTV().mustToken) {
-                                    val cookie = "vplatform=109"
+                                    val cookie =
+                                        "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109"
                                     fetchVideo(tvModel, cookie)
                                 }
                             }
@@ -252,7 +255,8 @@ class Request {
                             fetchVideo(tvModel)
                         } else {
                             if (!tvModel.getTV().mustToken) {
-                                val cookie = "vplatform=109"
+                                val cookie =
+                                    "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109"
                                 fetchVideo(tvModel, cookie)
                             }
                         }
@@ -260,7 +264,7 @@ class Request {
                 })
         } else {
             val cookie =
-                "vplatform=109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
             fetchVideo(tvModel, cookie)
         }
     }
@@ -269,7 +273,8 @@ class Request {
         if (tvModel.getTV().needToken) {
             fetchVideo(tvModel)
         } else {
-            val cookie = "vplatform=109"
+            val cookie =
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; yspappid=519748109"
             fetchVideo(tvModel, cookie)
         }
     }
@@ -410,15 +415,12 @@ class Request {
     }
 
     private fun encryptTripleDES(key: ByteArray, iv: ByteArray): String {
-        val plaintext =
-            """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,AppleM1Pro,OpenGL4.1)"}"""
         return try {
             val keySpec = SecretKeySpec(key, "DESede")
             val ivSpec = IvParameterSpec(iv)
             val cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding")
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec)
-            val encryptedBytes = cipher.doFinal(plaintext.toByteArray())
-            return encryptedBytes.let { it -> it.joinToString("") { "%02x".format(it) } }
+            return cipher.doFinal(input).let { it -> it.joinToString("") { "%02x".format(it) } }
         } catch (e: Exception) {
             e.printStackTrace()
             ""

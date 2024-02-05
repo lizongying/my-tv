@@ -175,7 +175,7 @@ class MainActivity : FragmentActivity() {
         }
 
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
@@ -496,6 +496,9 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
+        if (!mainFragment.isHidden){
+            handler.postDelayed(hideMain, delayHideMain)
+        }
     }
 
     override fun onPause() {
