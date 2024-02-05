@@ -19,13 +19,14 @@ object ChannelUtils {
      */
     suspend fun getServerVersion(context: Context): Int {
         return withContext(Dispatchers.IO) {
-            val client = okhttp3.OkHttpClient()
-            val request = okhttp3.Request.Builder().url(getServerVersionUrl(context)).build()
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) throw java.io.IOException("Unexpected code $response")
-                val body = response.body()
-                body?.string()?.toInt() ?: 0
-            }
+            val client = okhttp3.OkHttpClient.Builder().connectTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS).build()
+            client.newCall(okhttp3.Request.Builder().url(getServerVersionUrl(context)).build()).execute()
+                .use { response ->
+                    if (!response.isSuccessful) throw java.io.IOException("Unexpected code $response")
+                    val body = response.body()
+                    body?.string()?.toInt() ?: 0
+                }
         }
     }
 
@@ -40,7 +41,8 @@ object ChannelUtils {
      */
     suspend fun getServerChannel(url: String): List<TV> {
         val result = withContext(Dispatchers.IO) {
-            val client = okhttp3.OkHttpClient()
+            val client = okhttp3.OkHttpClient.Builder().connectTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS).build()
             val request = okhttp3.Request.Builder().url(url).build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw java.io.IOException("Unexpected code $response")
@@ -49,7 +51,7 @@ object ChannelUtils {
             }
         }
         return withContext(Dispatchers.Default) {
-            val type = object : com.google.gson.reflect.TypeToken<List <TV>>() {}.type
+            val type = object : com.google.gson.reflect.TypeToken<List<TV>>() {}.type
             com.google.gson.Gson().fromJson(result, type)
         }
     }
