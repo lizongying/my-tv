@@ -1,54 +1,81 @@
 package com.lizongying.mytv
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.File
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.IOException
+import kotlin.math.log
 
 object TVList {
-    lateinit var list: Map<String, List<TV>>
-    private val channels = "channels.json"
-
-    fun init(context: Context) {
-        if (::list.isInitialized) {
-            return
-        }
-        synchronized(this) {
-            if (::list.isInitialized) {
-                return
+    @Volatile
+    var list: Map<String, List<TV>>? = null
+        get():Map<String, List<TV>>? {
+            //等待初始化完成
+            while (this.list === null) {
+                Thread.sleep(10)
             }
-            list = setupTV(context)
+            return this.list
         }
-    }
 
 
-    private fun setupTV(context: Context): Map<String, List<TV>> {
-        val map: MutableMap<String, MutableList<TV>> = mutableMapOf()
-        val appDirectory = Utils.getAppDirectory(context)
-
-        //检查当前目录下是否存在channels.json
-        val file = File(appDirectory, channels)
-        if (!file.exists()) {
-            //不存在则从assets中拷贝
-            file.createNewFile()
-            context.resources.openRawResource(R.raw.channels).use { input ->
-                file.outputStream().use { output ->
-                    input.copyTo(output)
+    /**
+     * 初始化
+     *
+     * @param context Context
+     */
+    fun init(context: Context) {
+        CoroutineScope(Dispatchers.Default).launch {
+            //获取本地版本号
+            val localVersion = ChannelUtils.getLocalVersion(context)
+            //获取服务器版本号
+            val serverVersion = try {
+                ChannelUtils.getServerVersion(context)
+            } catch (e: IOException) {
+                Log.e("TVList", "无法从服务器获取版本信息", e)
+                Integer.MIN_VALUE
+            }
+            //频道列表
+            val channelTVMap: MutableMap<String, MutableList<TV>> = mutableMapOf()
+            //是否从服务器更新
+            var updateFromServer = false
+            //获取频道列表
+            val tvList: List<TV> = if (localVersion < serverVersion) {
+                //获取服务器地址
+                val url = ChannelUtils.getServerUrl(context)
+                //是否从服务器更新
+                updateFromServer = true
+                Log.i("TVList", "从服务器获取频道信息")
+                try {
+                    ChannelUtils.getServerChannel(url)
+                } catch (e: IOException) {
+                    Log.e("TVList", "无法从服务器获取频道信息", e)
+                    updateFromServer = false
+                    ChannelUtils.getLocalChannel(context)
+                }
+            } else {
+                Log.i("TVList", "从本地获取频道信息")
+                //获取本地频道
+                ChannelUtils.getLocalChannel(context)
+            }
+            //按频道分类
+            for (tv in tvList) {
+                val key = tv.channel
+                if (channelTVMap.containsKey(key)) {
+                    val list = channelTVMap[key]!!
+                    list.add(tv)
+                    channelTVMap[key] = list
+                } else {
+                    channelTVMap[key] = mutableListOf(tv)
                 }
             }
-        }
-
-        //读取channels.json，并转换为Map<String,LIst<TV>>
-        val json = file.readText()
-        //防止类型擦除
-        val type = object : TypeToken<Array<TV>>() {}.type
-        Gson().fromJson<Array<TV>>(json, type)?.forEach {
-            if (map.containsKey(it.channel)) {
-                map[it.channel]?.add(it)
-            } else {
-                map[it.channel] = mutableListOf(it)
+            //保存频道列表
+            list = channelTVMap
+            //保存版本号
+            if (updateFromServer) {
+                ChannelUtils.updateLocalChannel(context, serverVersion, tvList)
             }
         }
-        return map
     }
 }

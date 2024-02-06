@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="server_url">http://localhost:8080</string>
+    <integer name="local_channel_version">1</integer>
+    <string name="server_version_url">https://raw.githubusercontent.com/LeGend-wLw/my-tv-json-utils/main/version.txt</string>
+    <string name="server_url">https://github.com/LeGend-wLw/my-tv-json-utils/raw/main/channels.json</string>
 </resources>
