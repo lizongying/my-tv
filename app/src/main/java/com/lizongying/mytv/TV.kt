@@ -5,6 +5,7 @@ import java.io.Serializable
 data class TV(
     var id: Int = 0,
     var title: String,
+    var alias: String = "",
     var videoUrl: List<String>,
     var videoIndex: Int = 0,
     var channel: String = "",
@@ -12,10 +13,10 @@ data class TV(
     var pid: String = "",
     var sid: String = "",
     var programId: String = "",
-    var needToken:Boolean=false,
-    var mustToken:Boolean=false,
+    var needToken: Boolean = false,
+    var mustToken: Boolean = false,
 
-) : Serializable {
+    ) : Serializable {
 
     override fun toString(): String {
         return "TV{" +

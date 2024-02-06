@@ -13,12 +13,13 @@ object TVList {
             TV(
                 0,
                 "CCTV1 综合",
+                "CCTV1",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226231/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp",
                 "600001859",
-                "2000210103",
+                "2022576801",
                 "600001859",
                 false,
                 mustToken = false
@@ -26,12 +27,13 @@ object TVList {
             TV(
                 1,
                 "CCTV2 财经",
+                "CCTV2",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226195/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp",
                 "600001800",
-                "2000203603",
+                "2022576701",
                 "600001800",
                 true,
                 mustToken = false
@@ -39,12 +41,13 @@ object TVList {
             TV(
                 2,
                 "CCTV3 综艺",
+                "CCTV3",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226397/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/7b7a65c712450da3deb6ca66fbacf4f9aee00d3f20bd80eafb5ada01ec63eb3a.png?imageMogr2/format/webp",
                 "600001801",
-                "2000203803",
+                "2022576501",
                 "600001801",
                 true,
                 mustToken = true
@@ -52,6 +55,7 @@ object TVList {
             TV(
                 3,
                 "CCTV4 中文国际",
+                "CCTV4",
                 listOf(
                     "http://39.134.24.161/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226191/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226191/index.m3u8"
@@ -60,7 +64,7 @@ object TVList {
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/f357e58fdbcc076a3d65e1f958c942b2e14f14342c60736ceed98b092d35356a.png?imageMogr2/format/webp",
                 "600001814",
-                "2000204803",
+                "2022576601",
                 "600001814",
                 false,
                 mustToken = false
@@ -68,12 +72,13 @@ object TVList {
             TV(
                 4,
                 "CCTV5 体育",
+                "CCTV5",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226395/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/0a6a7138952675983a3d854df7688557b286d59aa06166edae51506f9204d655.png?imageMogr2/format/webp",
                 "600001818",
-                "2000205103",
+                "2022576401",
                 "600001818",
                 true,
                 mustToken = false
@@ -81,12 +86,13 @@ object TVList {
             TV(
                 5,
                 "CCTV6 电影",
+                "CCTV6",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226393/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/741515efda91f03f455df8a7da4ee11fa9329139c276435cf0a9e2af398d5bf2.png?imageMogr2/format/webp",
                 "600001802",
-                "2013693901",
+                "2022574301",
                 "600001802",
                 true,
                 mustToken = true
@@ -94,12 +100,13 @@ object TVList {
             TV(
                 6,
                 "CCTV7 国防军事",
+                "CCTV7",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226192/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/b29af94e295ebdf646cefb68122c429b9cd921f498ca20d2d8070252536f9ff9.png?imageMogr2/format/webp",
                 "600004092",
-                "2000510003",
+                "2022576201",
                 "600004092",
                 true,
                 mustToken = false
@@ -107,12 +114,13 @@ object TVList {
             TV(
                 7,
                 "CCTV8 电视剧",
+                "CCTV8",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226391/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/ad51de94426a0ba039e6dd6a8534ea98ecc813a6176bde87b4f18cc34d6d7590.png?imageMogr2/format/webp",
                 "600001803",
-                "2000203903",
+                "2022576101",
                 "600001803",
                 true,
                 mustToken = true
@@ -120,12 +128,13 @@ object TVList {
             TV(
                 8,
                 "CCTV9 记录",
+                "CCTV9",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226197/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/2ed1b4deeca179d5db806bb941790f82eb92a1b7299c1c38fe027f95a5caee5e.png?imageMogr2/format/webp",
                 "600004078",
-                "2000499403",
+                "2022576001",
                 "600004078",
                 true,
                 mustToken = false
@@ -133,12 +142,13 @@ object TVList {
             TV(
                 9,
                 "CCTV10 科教",
+                "CCTV10",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226189/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/aa6157ec65188cd41826e5a2f088c3d6d153205f5f6428258d12c59999e221aa.png?imageMogr2/format/webp",
                 "600001805",
-                "2000203503",
+                "2022573001",
                 "600001805",
                 true,
                 mustToken = false
@@ -146,12 +156,13 @@ object TVList {
             TV(
                 10,
                 "CCTV11 戏曲",
+                "CCTV11",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226240/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/ed12ed7c7a1034dae4350011fe039284c5d5a836506b28c9e32e3c75299625c0.png?imageMogr2/format/webp",
                 "600001806",
-                "2000204103",
+                "2022575901",
                 "600001806",
                 true,
                 mustToken = false
@@ -159,12 +170,13 @@ object TVList {
             TV(
                 11,
                 "CCTV12 社会与法",
+                "CCTV12",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226190/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/484083cffaa40df7e659565e8cb4d1cc740158a185512114167aa21fa0c59240.png?imageMogr2/format/webp",
                 "600001807",
-                "2000202603",
+                "2022575801",
                 "600001807",
                 true,
                 mustToken = false
@@ -172,6 +184,7 @@ object TVList {
             TV(
                 12,
                 "CCTV13 新闻",
+                "CCTV13",
                 listOf(
                     "https://live-play.cctvnews.cctv.com/cctv/merge_cctv13.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226233/index.m3u8"
@@ -180,7 +193,7 @@ object TVList {
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/266da7b43c03e2312186b4a999e0f060e8f15b10d2cc2c9aa32171819254cf1a.png?imageMogr2/format/webp",
                 "600001811",
-                "2000204603",
+                "2022575701",
                 "600001811",
                 false,
                 mustToken = false
@@ -188,12 +201,13 @@ object TVList {
             TV(
                 13,
                 "CCTV14 少儿",
+                "CCTV14",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226193/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/af6b603896938dc346fbb16abfc63c12cba54b0ec9d18770a15d347d115f12d5.png?imageMogr2/format/webp",
                 "600001809",
-                "2000204403",
+                "2022575601",
                 "600001809",
                 true,
                 mustToken = false
@@ -201,12 +215,13 @@ object TVList {
             TV(
                 14,
                 "CCTV15 音乐",
+                "CCTV15",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225785/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/2ceee92188ef684efe0d8b90839c4f3ad450d179dc64d59beff417059453af47.png?imageMogr2/format/webp",
                 "600001815",
-                "2000205003",
+                "2022575501",
                 "600001815",
                 true,
                 mustToken = false
@@ -214,6 +229,7 @@ object TVList {
             TV(
                 15,
                 "CCTV16 奥林匹克",
+                "CCTV16-HD",
                 listOf(
                     "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8"
@@ -222,7 +238,7 @@ object TVList {
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/53793fa7bacd3a93ff6dc5d2758418985e1f952a316c335d663b572d8bdcd74d.png?imageMogr2/format/webp",
                 "600098637",
-                "2012375003",
+                "2022575401",
                 "600098637",
                 true,
                 mustToken = false
@@ -230,12 +246,13 @@ object TVList {
             TV(
                 16,
                 "CCTV17 农业农村",
+                "CCTV17",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226198/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/ddef563072f8bad2bea5b9e52674cb7b4ed50efb20c26e61994dfbdf05c1e3c0.png?imageMogr2/format/webp",
                 "600001810",
-                "2000204203",
+                "2022575301",
                 "600001810",
                 true,
                 mustToken = false
@@ -243,12 +260,13 @@ object TVList {
             TV(
                 17,
                 "CCTV5+ 体育赛事",
+                "CCTV5+",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226221/index.m3u8"),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/649ad76a90bfef55b05db9fe52e006487280f619089099d5dc971e387fc6eff0.png?imageMogr2/format/webp",
                 "600001817",
-                "2000204503",
+                "2022576301",
                 "600001817",
                 true,
                 mustToken = false
@@ -256,12 +274,13 @@ object TVList {
             TV(
                 18,
                 "CCTV4K 超高清",
+                "CCTV4K",
                 listOf(),
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp",
                 "600002264",
-                "2000266303",
+                "2022575201",
                 "600002264",
                 true,
                 mustToken = false
@@ -269,6 +288,7 @@ object TVList {
             TV(
                 19,
                 "CCTV8K 超高清",
+                "CCTV8K",
                 listOf(),
                 0,
                 "央视频道",
@@ -282,6 +302,7 @@ object TVList {
             TV(
                 20,
                 "风云剧场",
+                "CCTV风云剧场频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226950/index.m3u8"),
                 0,
                 "央视频道",
@@ -295,6 +316,7 @@ object TVList {
             TV(
                 21,
                 "第一剧场",
+                "CCTV第一剧场频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226959/index.m3u8"),
                 0,
                 "央视频道",
@@ -308,6 +330,7 @@ object TVList {
             TV(
                 22,
                 "怀旧剧场",
+                "CCTV怀旧剧场频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226972/index.m3u8"),
                 0,
                 "央视频道",
@@ -321,6 +344,7 @@ object TVList {
             TV(
                 23,
                 "世界地理",
+                "CCTV世界地理频道",
                 listOf(),
                 0,
                 "央视频道",
@@ -334,6 +358,7 @@ object TVList {
             TV(
                 24,
                 "风云音乐",
+                "CCTV风云音乐频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226953/index.m3u8"),
                 0,
                 "央视频道",
@@ -347,6 +372,7 @@ object TVList {
             TV(
                 25,
                 "兵器科技",
+                "CCTV兵器科技频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226975/index.m3u8"),
                 0,
                 "央视频道",
@@ -360,6 +386,7 @@ object TVList {
             TV(
                 26,
                 "风云足球",
+                "CCTV风云足球频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226984/index.m3u8"),
                 0,
                 "央视频道",
@@ -373,6 +400,7 @@ object TVList {
             TV(
                 27,
                 "高尔夫网球",
+                "CCTV高尔夫·网球频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226978/index.m3u8"),
                 0,
                 "央视频道",
@@ -386,6 +414,7 @@ object TVList {
             TV(
                 28,
                 "女性时尚",
+                "CCTV女性时尚频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226969/index.m3u8"),
                 0,
                 "央视频道",
@@ -399,6 +428,7 @@ object TVList {
             TV(
                 29,
                 "央视文化精品",
+                "CCTV央视文化精品频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226981/index.m3u8"),
                 0,
                 "央视频道",
@@ -412,6 +442,7 @@ object TVList {
             TV(
                 30,
                 "央视台球",
+                "CCTV央视台球频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226956/index.m3u8"),
                 0,
                 "央视频道",
@@ -425,6 +456,7 @@ object TVList {
             TV(
                 31,
                 "电视指南",
+                "CCTV电视指南频道",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226987/index.m3u8"),
                 0,
                 "央视频道",
@@ -438,6 +470,7 @@ object TVList {
             TV(
                 32,
                 "卫生健康",
+                "CCTV卫生健康频道",
                 listOf(),
                 0,
                 "央视频道",
@@ -453,6 +486,7 @@ object TVList {
             TV(
                 33,
                 "东方卫视",
+                "东方卫视",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226217/index.m3u8"),
                 0,
                 "地方频道",
@@ -465,6 +499,7 @@ object TVList {
             ),
             TV(
                 34,
+                "湖南卫视",
                 "湖南卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226307/index.m3u8",
@@ -482,6 +517,7 @@ object TVList {
             TV(
                 35,
                 "湖北卫视",
+                "湖北卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226477/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226194/index.m3u8"
@@ -497,6 +533,7 @@ object TVList {
             ),
             TV(
                 36,
+                "辽宁卫视",
                 "辽宁卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226546/index.m3u8",
@@ -514,6 +551,7 @@ object TVList {
             TV(
                 37,
                 "江苏卫视",
+                "江苏卫视",
                 listOf(
                     "http://39.134.24.166/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226200/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226200/index.m3u8"
@@ -529,6 +567,7 @@ object TVList {
             ),
             TV(
                 38,
+                "江西卫视",
                 "江西卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226344/index.m3u8",
@@ -546,6 +585,7 @@ object TVList {
             TV(
                 39,
                 "山东卫视",
+                "山东卫视",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226209/index.m3u8"),
                 0,
                 "地方频道",
@@ -559,6 +599,7 @@ object TVList {
             TV(
                 40,
                 "广东卫视",
+                "广东卫视",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226216/index.m3u8"),
                 0,
                 "地方频道",
@@ -571,6 +612,7 @@ object TVList {
             ),
             TV(
                 41,
+                "广西卫视",
                 "广西卫视",
                 listOf(
                     "http://live.gxrb.com.cn/tv/gxtvlive03/index.m3u8",
@@ -588,6 +630,7 @@ object TVList {
             TV(
                 42,
                 "重庆卫视",
+                "重庆卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226409/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226202/index.m3u8"
@@ -603,6 +646,7 @@ object TVList {
             ),
             TV(
                 43,
+                "河南卫视",
                 "河南卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226480/index.m3u8",
@@ -620,6 +664,7 @@ object TVList {
             TV(
                 44,
                 "河北卫视",
+                "河北卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226406/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225750/index.m3u8"
@@ -635,6 +680,7 @@ object TVList {
             ),
             TV(
                 45,
+                "贵州卫视",
                 "贵州卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226474/index.m3u8",
@@ -652,6 +698,7 @@ object TVList {
             TV(
                 46,
                 "北京卫视",
+                "北京卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225728/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226222/index.m3u8"
@@ -667,6 +714,7 @@ object TVList {
             ),
             TV(
                 47,
+                "黑龙江卫视",
                 "黑龙江卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226327/index.m3u8",
@@ -684,6 +732,7 @@ object TVList {
             TV(
                 48,
                 "浙江卫视",
+                "浙江卫视",
                 listOf(
                     "http://hw-m-l.cztv.com/channels/lantian/channel01/1080p.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226199/index.m3u8"
@@ -699,6 +748,7 @@ object TVList {
             ),
             TV(
                 49,
+                "安徽卫视",
                 "安徽卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226391/index.m3u8",
@@ -716,6 +766,7 @@ object TVList {
             TV(
                 50,
                 "深圳卫视",
+                "深圳卫视",
                 listOf(
                     "http://39.134.24.166/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226205/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226205/index.m3u8"
@@ -731,6 +782,7 @@ object TVList {
             ),
             TV(
                 51,
+                "四川卫视",
                 "四川卫视",
                 listOf(
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8",
@@ -748,6 +800,7 @@ object TVList {
             TV(
                 52,
                 "东南卫视",
+                "福建东南卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226341/index.m3u8",
                     "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225766/index.m3u8"
@@ -763,6 +816,7 @@ object TVList {
             ),
             TV(
                 53,
+                "海南卫视",
                 "海南卫视",
                 listOf(
                     "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226465/index.m3u8",
@@ -780,6 +834,7 @@ object TVList {
             TV(
                 54,
                 "天津卫视",
+                "天津卫视",
                 listOf(),
                 0,
                 "地方频道",
@@ -792,6 +847,7 @@ object TVList {
             ),
             TV(
                 55,
+                "新疆卫视",
                 "新疆卫视",
                 listOf(),
                 0,
@@ -808,12 +864,13 @@ object TVList {
             TV(
                 56,
                 "CGTN",
+                "CGTN",
                 listOf("http://live.cgtn.com/1000/prog_index.m3u8"),
                 0,
                 "国际频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/a72dff758ca1c17cd0ecc8cedc11b893d208f409d5e6302faa0e9d298848abc3.png?imageMogr2/format/webp",
                 "600014550",
-                "2001656803",
+                "2022575001",
                 "600014550",
                 false,
                 mustToken = false
@@ -821,12 +878,13 @@ object TVList {
             TV(
                 57,
                 "CGTN 法语频道",
+                "CGTN法语频道",
                 listOf("https://livefr.cgtn.com/1000f/prog_index.m3u8"),
                 0,
                 "国际频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/a8d0046a47433d952bf6ed17062deb8bd2184ba9aec0f7781df6bf9487a3ffcf.png?imageMogr2/format/webp",
                 "600084704",
-                "2010153503",
+                "2022574901",
                 "600084704",
                 false,
                 mustToken = false
@@ -834,12 +892,13 @@ object TVList {
             TV(
                 58,
                 "CGTN 俄语频道",
+                "CGTN俄语频道",
                 listOf("http://liveru.cgtn.com/1000r/prog_index.m3u8"),
                 0,
                 "国际频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/bf0a820893cbaf20dd0333e27042e1ef9c8806e5b602b6a8c95af399db0bc77a.png?imageMogr2/format/webp",
                 "600084758",
-                "2010152603",
+                "2022574801",
                 "600084758",
                 false,
                 mustToken = false
@@ -847,12 +906,13 @@ object TVList {
             TV(
                 59,
                 "CGTN 阿拉伯语频道",
+                "CGTN阿拉伯语频道",
                 listOf("http://livear.cgtn.com/1000a/prog_index.m3u8"),
                 0,
                 "国际频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/2e44e2aa3e7a1cedf07fd0ae59fe69e86a60a2632660a006e3e9e7397b2d107e.png?imageMogr2/format/webp",
                 "600084782",
-                "2010155203",
+                "2022574601",
                 "600084782",
                 false,
                 mustToken = false
@@ -860,6 +920,7 @@ object TVList {
             TV(
                 60,
                 "CGTN 西班牙语频道",
+                "CGTN西班牙语频道",
                 listOf(
                     "http://livees.cgtn.com/500e/prog_index.m3u8",
                     "http://livees.cgtn.com/1000e/prog_index.m3u8"
@@ -868,7 +929,7 @@ object TVList {
                 "国际频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
                 "600084744",
-                "2010152503",
+                "2022571701",
                 "600084744",
                 false,
                 mustToken = false
@@ -876,12 +937,13 @@ object TVList {
             TV(
                 61,
                 "CGTN 纪录频道",
+                "CGTN外语纪录频道",
                 listOf("https://livedoc.cgtn.com/500d/prog_index.m3u8"),
                 0,
                 "国际频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
                 "600084781",
-                "2010155403",
+                "2022574701",
                 "600084781",
                 false,
                 mustToken = false

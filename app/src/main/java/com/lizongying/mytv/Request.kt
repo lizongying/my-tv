@@ -41,7 +41,7 @@ class Request {
 
     private val regex = Regex("""des_key = "([^"]+).+var des_iv = "([^"]+)""")
     private val input =
-        """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,AppleM1Pro,OpenGL4.1)"}""".toByteArray()
+        """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,ANGLEMetalRenderer:AppleM1Pro,UnspecifiedVersion)"}""".toByteArray()
 
     private var mapping = mapOf(
         "CCTV4K" to "CCTV4K 超高清",
@@ -118,6 +118,7 @@ class Request {
             override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
                 if (response.isSuccessful) {
                     val liveInfo = response.body()
+
                     if (liveInfo?.data?.playurl != null) {
                         val chanll = liveInfo.data.chanll
                         val decodedBytes = Base64.decode(
@@ -133,8 +134,8 @@ class Request {
                             val url = liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
                                 keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
                                 ivBytes
-                            ).uppercase()
-//                            Log.d(TAG, "$title url $url")
+                            ).uppercase() + liveInfo.data.extended_param
+                            Log.d(TAG, "$title url $url")
                             tvModel.addVideoUrl(url)
                             tvModel.allReady()
                             tvModel.retryTimes = 0
@@ -354,29 +355,21 @@ class Request {
             ) {
                 if (response.isSuccessful) {
                     val body = response.body()
-
                     if (body?.data?.feedModuleListCount == 1) {
                         for (item in body.data?.feedModuleListList!![0]?.dataTvChannelListList!!) {
-                            if (item.isVip && !item.isLimitedFree) {
-                                continue
-                            }
-                            Log.i(
+                            Log.d(
                                 TAG,
                                 "${item.channelName},${item.pid},${item.streamId}"
                             )
-                            var channelType = "央视频道"
-                            if (item?.channelType === "weishi") {
-                                channelType = "地方频道"
-                            }
-                            if (!mapping.containsKey(item.channelName)) {
-                                continue
-                            }
-                            val tv =
-                                TVList.list?.get(channelType)?.find { it.title == mapping[item.channelName] }
-                            if (tv != null) {
-                                tv.logo = item.tvLogo
-                                tv.pid = item.pid
-                                tv.sid = item.streamId
+
+                            for ((_, v) in TVList.list) {
+                                for (v2 in v) {
+                                    Log.i(TAG, "$v2")
+                                    if (v2.title == item.channelName || v2.alias == item.channelName) {
+                                        v2.pid = item.pid
+                                        v2.sid = item.streamId
+                                    }
+                                }
                             }
                         }
                     }
