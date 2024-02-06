@@ -62,7 +62,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             val content = binding.content
 
             var idx: Long = 0
-            context?.let { TVList.init(it) }
             for ((k, v) in TVList.list) {
                 val itemBinding: RowBinding =
                     RowBinding.inflate(layoutInflater, content, false)

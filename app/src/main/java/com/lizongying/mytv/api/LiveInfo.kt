@@ -13,6 +13,7 @@ data class LiveInfo(
 )
 
 data class LiveInfoData(
+    val extended_param: String,
     val chanll: String,
     val playurl: String,
     val errinfo: String,

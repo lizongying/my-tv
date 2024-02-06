@@ -127,7 +127,6 @@ class YSP(var context: Context) {
     private fun getSignature(): String {
         val e =
             "adjust=${adjust}&appVer=${appVer}&app_version=$appVersion&cKey=$cKey&channel=$channel&cmd=$cmd&cnlid=$cnlid&defn=${defn}&devid=${devid}&dtype=${dtype}&encryptVer=${encryptVer}&guid=${guid}&livepid=${livepid}&otype=${otype}&platform=${platform}&rand_str=${randStr}&sphttps=${sphttps}&stream=${stream}".toByteArray()
-
         val hashedData = encryptor?.hash(e) ?: return ""
         return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
     }
