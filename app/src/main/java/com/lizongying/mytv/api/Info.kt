@@ -11,7 +11,7 @@ data class InfoData(
 )
 
 data class TimeResponse(
-    val api: String, val v: String, val ret: List<String>, val data: Time
+    val data: Time
 ) {
     data class Time(
         val t: String

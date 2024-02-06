@@ -46,7 +46,6 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
-        TVList.init(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

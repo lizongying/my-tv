@@ -139,7 +139,7 @@ class MainFragment : BrowseSupportFragment() {
         val cardPresenter = CardPresenter(viewLifecycleOwner)
 
         var idx: Long = 0
-        for ((k, v) in TVList.list!!) {
+        for ((k, v) in TVList.list) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
             for ((idx2, v1) in v.withIndex()) {
                 val tvViewModel = TVViewModel(v1)
