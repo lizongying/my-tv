@@ -43,6 +43,10 @@ class InfoFragment : Fragment() {
                 .load(R.drawable.xinjiang)
                 .into(binding.infoLogo)
 
+            "兵团卫视" -> Glide.with(this)
+                .load(R.drawable.bingtuan)
+                .into(binding.infoLogo)
+
             else -> Glide.with(this)
                 .load(tvViewModel.logo.value)
                 .into(binding.infoLogo)

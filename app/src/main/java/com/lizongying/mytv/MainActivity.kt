@@ -84,8 +84,14 @@ class MainActivity : FragmentActivity() {
         channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, channelReversal)
         channelNum = sharedPref.getBoolean(CHANNEL_NUM, channelNum)
 
-        versionName = getPackageInfo().versionName
-        settingFragment = SettingFragment(versionName, channelReversal, channelNum)
+        val packageInfo = getPackageInfo()
+        versionName = packageInfo.versionName
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode.toLong()
+        }
+        settingFragment = SettingFragment(versionName, versionCode, channelReversal, channelNum)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {

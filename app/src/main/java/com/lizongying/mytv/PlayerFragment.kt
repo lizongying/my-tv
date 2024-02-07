@@ -62,6 +62,7 @@ class PlayerFragment : Fragment() {
                         super.onPlayerError(error)
 
                         Log.e(TAG, "PlaybackException $error")
+                        tvViewModel?.changed()
                     }
                 })
             }

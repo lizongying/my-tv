@@ -1,21 +1,27 @@
 package com.lizongying.mytv
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.lizongying.mytv.databinding.DialogBinding
 
 
-class SettingFragment(private val versionName: String,
-                      private val channelReversal: Boolean,
-                      private val channelNum: Boolean,
-    ) :
+class SettingFragment(
+    private val versionName: String,
+    private val versionCode: Long,
+    private val channelReversal: Boolean,
+    private val channelNum: Boolean,
+) :
     DialogFragment() {
 
     private var _binding: DialogBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var updateManager: UpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +49,31 @@ class SettingFragment(private val versionName: String,
             (activity as MainActivity).saveChannelNum(isChecked)
         }
 
+        updateManager = UpdateManager(context, this, versionCode)
+        _binding?.checkVersion?.setOnClickListener(OnClickListenerCheckVersion(updateManager))
+
         return binding.root
+    }
+
+    fun setVersionName(versionName: String) {
+        binding.versionName.text = versionName
+    }
+
+    internal class OnClickListenerCheckVersion(private val updateManager: UpdateManager) :
+        View.OnClickListener {
+        override fun onClick(view: View?) {
+            updateManager.checkAndUpdate()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        updateManager.destroy()
     }
 
     companion object {

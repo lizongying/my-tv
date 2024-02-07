@@ -10,7 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import com.lizongying.mytv.api.Release
 import com.lizongying.mytv.requests.MyRequest
 import kotlinx.coroutines.CoroutineScope
@@ -19,34 +19,50 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-class UpdateManager(private var context: Context?) {
+class UpdateManager(
+    private var context: Context?,
+    private var settingFragment: SettingFragment,
+    private var versionCode: Long
+) :
+    ConfirmationDialogFragment.ConfirmationDialogListener {
 
     private var myRequest = MyRequest()
+    private var release: Release? = null
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private var downloadReceiver: DownloadReceiver? = null
+
     fun checkAndUpdate() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                val release = myRequest.getRelease()
-                // 在主线程中更新 UI
+                release = myRequest.getRelease()
                 updateUI(release)
-                if (release?.data?.versionCode!! > 0) {
-                    startDownload(release)
+                Log.i(TAG, "versionCode $versionCode ${release?.data?.versionCode}")
+                if (release != null) {
+                    if (release?.data?.versionCode!! >= versionCode) {
+                        val dialog = ConfirmationDialogFragment(this@UpdateManager)
+                        dialog.show(settingFragment.fragmentManager, "ConfirmationDialogFragment")
+                    } else {
+                        Toast.makeText(context, "不需要更新", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             } catch (e: Exception) {
-                // 处理异常情况
                 Log.e(TAG, "Error occurred: ${e.message}", e)
             }
         }
     }
 
     private fun updateUI(release: Release?) {
+        if (release?.data?.versionName.isNullOrEmpty()) {
+            settingFragment.setVersionName("版本获取失败")
+        } else {
+            settingFragment.setVersionName("最新版本：${release?.data?.versionName!!}")
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startDownload(release: Release) {
         val apkFileName = "my-tv-${release.data.versionName}.apk"
-
+        Log.i(TAG, "apkFileName $apkFileName")
         val downloadManager =
             context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request = Request(Uri.parse(release.data.downloadUrl))
@@ -57,13 +73,21 @@ class UpdateManager(private var context: Context?) {
         // 获取下载任务的引用
         val downloadReference = downloadManager.enqueue(request)
 
-        // 注册广播接收器，监听下载完成事件
-        context!!.registerReceiver(
-            DownloadReceiver(context!!, apkFileName, downloadReference),
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED
-        )
-    }
+        downloadReceiver = DownloadReceiver(context!!, apkFileName, downloadReference)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context!!.registerReceiver(
+                downloadReceiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                Context.RECEIVER_NOT_EXPORTED,
+            )
+        } else {
+            context!!.registerReceiver(
+                downloadReceiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            )
+        }
+    }
 
     private class DownloadReceiver(
         private val context: Context,
@@ -72,6 +96,9 @@ class UpdateManager(private var context: Context?) {
     ) : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            Log.i(TAG, "reference $reference")
+            val progress = intent.getIntExtra("progress", 0)
+            Log.i(TAG, "progress $progress")
 
             // 检查是否是我们发起的下载
             if (reference == downloadReference) {
@@ -94,8 +121,23 @@ class UpdateManager(private var context: Context?) {
         }
     }
 
-
     companion object {
         private const val TAG = "UpdateManager"
+    }
+
+    override fun onConfirm() {
+        Log.i(TAG, "onConfirm $release")
+        release?.let { startDownload(it) }
+    }
+
+    override fun onCancel() {
+    }
+
+
+    fun destroy() {
+        if (downloadReceiver != null) {
+            context!!.unregisterReceiver(downloadReceiver)
+            Log.i(TAG, "destroy downloadReceiver")
+        }
     }
 }

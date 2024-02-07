@@ -11,7 +11,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class MyRequest {
-    private var releaseService = ApiClient().ReleaseService
+    private var releaseService = ApiClient().releaseService
 
     suspend fun getRelease(): Release? {
         return withContext(Dispatchers.IO) {
