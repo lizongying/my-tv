@@ -34,6 +34,14 @@ class ApiClient {
             .build().create(YSPTokenService::class.java)
     }
 
+    val ReleaseService by lazy {
+        Retrofit.Builder()
+            .baseUrl(myUrl)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(ReleaseService::class.java)
+    }
+
     val yspProtoService: YSPProtoService by lazy {
         Retrofit.Builder()
             .baseUrl(protoUrl)

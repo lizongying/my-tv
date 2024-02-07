@@ -32,7 +32,6 @@ class PlayerFragment : Fragment() {
     ): View {
         _binding = PlayerBinding.inflate(inflater, container, false)
         playerView = _binding!!.playerView
-        (activity as MainActivity).playerFragment = this
         playerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -86,6 +85,7 @@ class PlayerFragment : Fragment() {
         if (playerView != null && playerView!!.player?.isPlaying == false) {
             Log.i(TAG, "replay")
             playerView!!.player?.prepare()
+            playerView!!.player?.play()
         } else {
             Log.i(TAG, "playing")
         }

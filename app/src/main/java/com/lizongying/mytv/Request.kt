@@ -364,7 +364,6 @@ class Request {
 
                             for ((_, v) in TVList.list) {
                                 for (v2 in v) {
-                                    Log.i(TAG, "$v2")
                                     if (v2.title == item.channelName || v2.alias == item.channelName) {
                                         v2.pid = item.pid
                                         v2.sid = item.streamId

@@ -42,8 +42,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
 
-    private var ready = 0
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -149,7 +147,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 }
             }
 
-            fragmentReady()
+            (activity as MainActivity).fragmentReady()
         }
     }
 
@@ -180,6 +178,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     fun setPosition() {
         val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
+        Log.i(TAG, "tvViewModel $tvViewModel")
+        Log.i(TAG, "rowList ${rowList.size}")
         rowList[tvViewModel!!.getRowPosition()].post {
             ((rowList[tvViewModel.getRowPosition()] as RecyclerView).layoutManager as LinearLayoutManager).findViewByPosition(
                 tvViewModel.getItemPosition()
@@ -212,12 +212,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     fun fragmentReady() {
-        ready++
-        Log.i(TAG, "ready $ready")
-        if (ready == 4) {
 //            request.fetchPage()
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
+        tvListViewModel.getTVViewModel(itemPosition)?.changed()
     }
 
     fun play(itemPosition: Int) {
@@ -299,7 +295,9 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         super.onDestroy()
-        handler.removeCallbacks(mUpdateProgramRunnable)
+        if (::mUpdateProgramRunnable.isInitialized) {
+            handler.removeCallbacks(mUpdateProgramRunnable)
+        }
     }
 
     override fun onDestroyView() {
