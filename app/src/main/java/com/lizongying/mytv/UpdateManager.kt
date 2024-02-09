@@ -6,9 +6,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.lizongying.mytv.api.Release
@@ -66,6 +69,7 @@ class UpdateManager(
         val downloadManager =
             context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request = Request(Uri.parse(release.data.downloadUrl))
+        Log.i(TAG, "url ${Uri.parse(release.data.downloadUrl)}")
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, apkFileName)
         request.setTitle("New Version Download")
         request.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -87,6 +91,48 @@ class UpdateManager(
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
             )
         }
+
+        getDownloadProgress(context!!, downloadReference) { progress ->
+            println("Download progress: $progress%")
+        }
+    }
+
+    private fun getDownloadProgress(context: Context, downloadId: Long, progressListener: (Int) -> Unit) {
+        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val handler = Handler(Looper.getMainLooper())
+        val intervalMillis: Long = 1000
+
+        handler.post(object : Runnable {
+            override fun run() {
+                Log.i(TAG, "search")
+                val query = DownloadManager.Query().setFilterById(downloadId)
+                val cursor: Cursor = downloadManager.query(query)
+                cursor.use {
+                    if (it.moveToFirst()) {
+                        val bytesDownloadedIndex =
+                            it.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+                        val bytesTotalIndex =
+                            it.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+
+                        // 检查列名是否存在
+                        if (bytesDownloadedIndex != -1 && bytesTotalIndex != -1) {
+                            val bytesDownloaded = it.getInt(bytesDownloadedIndex)
+                            val bytesTotal = it.getInt(bytesTotalIndex)
+
+                            if (bytesTotal != -1) {
+                                val progress = (bytesDownloaded * 100L / bytesTotal).toInt()
+                                progressListener(progress)
+                                if (progress == 100) {
+                                    return
+                                }
+                            }
+                        }
+                    }
+                }
+
+//                handler.postDelayed(this, intervalMillis)
+            }
+        })
     }
 
     private class DownloadReceiver(
