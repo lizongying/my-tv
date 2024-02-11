@@ -91,8 +91,8 @@ object TVList {
                 0,
                 "央视频道",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/741515efda91f03f455df8a7da4ee11fa9329139c276435cf0a9e2af398d5bf2.png?imageMogr2/format/webp",
-                "600001802",
-                "2022574301",
+                "600108442",
+                "2013693901",
                 "600001802",
                 true,
                 mustToken = true
