@@ -74,7 +74,7 @@ class Request {
                         Log.i(TAG, "token ${liveInfo.data.token}")
                         ysp?.token = liveInfo.data.token
                         fetchVideo(tvModel, cookie)
-                    }  else {
+                    } else {
                         Log.e(TAG, "$title token error")
                         if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                             tvModel.retryTimes++
@@ -144,7 +144,13 @@ class Request {
         tvModel.seq = 0
         val data = ysp?.switch(tvModel)
         val request = data?.let { LiveInfoRequest(it) }
-        call = request?.let { yspApiService.getLiveInfo("guid=${ysp?.getGuid()}; $cookie", ysp!!.token, it) }
+        call = request?.let {
+            yspApiService.getLiveInfo(
+                "guid=${ysp?.getGuid()}; $cookie",
+                ysp!!.token,
+                it
+            )
+        }
 
         call?.enqueue(object : Callback<LiveInfo> {
             override fun onResponse(call: Call<LiveInfo>, response: Response<LiveInfo>) {
@@ -307,7 +313,7 @@ class Request {
             yspTokenService.getInfo()
                 .enqueue(object : Callback<Info> {
                     override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                        if (response.isSuccessful) {
+                        if (response.isSuccessful && response.body()?.data?.token != null) {
                             token = response.body()?.data?.token!!
                             Log.i(TAG, "info success $token")
                             val cookie =
