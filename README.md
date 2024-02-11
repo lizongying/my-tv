@@ -112,4 +112,4 @@ adb install my-tv.apk
 
 ## 赞赏
 
-![image](./screenshots/zfb.jpg)
+![image](./screenshots/appreciate.jpeg)
