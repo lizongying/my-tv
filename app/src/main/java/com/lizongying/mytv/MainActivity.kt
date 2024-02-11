@@ -41,6 +41,7 @@ class MainActivity : FragmentActivity() {
     lateinit var sharedPref: SharedPreferences
     private var channelReversal = false
     private var channelNum = true
+    private var bootStartup = true
 
     private var versionName = ""
 
@@ -67,9 +68,10 @@ class MainActivity : FragmentActivity() {
         sharedPref = getPreferences(Context.MODE_PRIVATE)
         channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, channelReversal)
         channelNum = sharedPref.getBoolean(CHANNEL_NUM, channelNum)
+        bootStartup = sharedPref.getBoolean(BOOT_STARTUP, bootStartup)
 
         versionName = getPackageInfo().versionName
-        settingFragment = SettingFragment(versionName, channelReversal, channelNum)
+        settingFragment = SettingFragment(versionName, channelReversal, channelNum, bootStartup)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -220,6 +222,14 @@ class MainActivity : FragmentActivity() {
             apply()
         }
         this.channelNum = channelNum
+    }
+
+    fun saveBootStartup(bootStartup: Boolean) {
+        with(sharedPref.edit()) {
+            putBoolean(CHANNEL_NUM, channelNum)
+            apply()
+        }
+        this.bootStartup = bootStartup
     }
 
     private fun showSetting() {
@@ -510,5 +520,6 @@ class MainActivity : FragmentActivity() {
         private const val TAG = "MainActivity"
         private const val CHANNEL_REVERSAL = "channel_reversal"
         private const val CHANNEL_NUM = "channel_num"
+        const val BOOT_STARTUP = "boot_startup"
     }
 }
