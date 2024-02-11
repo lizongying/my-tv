@@ -180,7 +180,7 @@ class Request {
             yspTokenService.getInfo()
                 .enqueue(object : Callback<Info> {
                     override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                        if (response.isSuccessful) {
+                        if (response.isSuccessful && response.body()?.data?.token != null) {
                             token = response.body()?.data?.token!!
                             Log.i(TAG, "info success $token")
                             val cookie =
@@ -243,7 +243,7 @@ class Request {
         yspTokenService.getInfo()
             .enqueue(object : Callback<Info> {
                 override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful && response.body()?.data?.token != null) {
                         token = response.body()?.data?.token!!
                         Log.i(TAG, "info success $token")
                     } else {
