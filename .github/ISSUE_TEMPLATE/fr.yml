@@ -1,0 +1,36 @@
+name: 功能(新频道)请求
+description: 提出一个建议
+labels: [ "enhancement" ]
+title: "[FR] "
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 检查清单
+      description: 确保我们的错误报告表单适合您。
+      options:
+        - label: 之前没有人提交过类似或相同的功能请求。
+          required: true
+        - label: 这个建议不会背离 LibChecker 的初衷。
+          required: true
+  - type: textarea
+    id: propose
+    attributes:
+      label: 改进目的
+      description: 改进有什么用
+      placeholder: |
+        Show your idea here.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 解决方案
+      description: 你会怎么完成这个改进？
+      placeholder: |
+        How to do it on your opinion? Or left this blank
+  - type: textarea
+    id: addition
+    attributes:
+      label: 额外信息
+      description: 任何你觉得值得说的。

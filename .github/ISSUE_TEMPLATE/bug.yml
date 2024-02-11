@@ -1,0 +1,83 @@
+name: Bug 反馈
+description: 反馈一个 Bug
+labels: [ "bug" ]
+title: "[BUG] "
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 检查清单
+      description: 确保我们的错误报告表单适合您。
+      options:
+        - label: 之前没有人提交过类似或相同的 bug report。
+          required: true
+        - label: 我正在使用本软件的最新版本。
+          required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: my-ty 版本
+      description: 请选择正在使用的版本
+      options:
+        - 最新稳定版
+        - 最新 CI 版
+    validations:
+      required: true
+  - type: textarea
+    id: bug
+    attributes:
+      label: Bug 描述
+      description: 请描述 bug 详情
+      placeholder: |
+        e.g. Crashed when generating snapshot.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 你预期会发生什么？
+      placeholder: |
+        e.g. A New snapshot!
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 反而发生了什么？
+      placeholder: |
+        e.g. Crashed.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 如何复现这个 bug。
+      placeholder: |
+        1. Open the app
+        2. Crashed
+
+        What an app.
+  - type: input
+    id: ui
+    attributes:
+      label: UI / OS
+      description: 你的电视系统 UI 或 OS 或 品牌
+      placeholder: TCL / XIAOMI / PHONE / etc.
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android 版本
+      description: 你的 Android 版本
+      placeholder: "12"
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: 额外信息
+      description: 任何你觉得值得说的。
