@@ -11,6 +11,7 @@ import com.lizongying.mytv.databinding.DialogBinding
 class SettingFragment(private val versionName: String,
                       private val channelReversal: Boolean,
                       private val channelNum: Boolean,
+                      private val bootStartup: Boolean,
     ) :
     DialogFragment() {
 
@@ -41,6 +42,12 @@ class SettingFragment(private val versionName: String,
         switchChannelNum?.isChecked = channelNum
         switchChannelNum?.setOnCheckedChangeListener { _, isChecked ->
             (activity as MainActivity).saveChannelNum(isChecked)
+        }
+
+        val switchBootStartup = _binding?.switchBootStartup
+        switchBootStartup?.isChecked = bootStartup
+        switchBootStartup?.setOnCheckedChangeListener { _, isChecked ->
+            (activity as MainActivity).saveBootStartup(isChecked)
         }
 
         return binding.root
