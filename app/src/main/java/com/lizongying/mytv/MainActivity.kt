@@ -47,6 +47,7 @@ class MainActivity : FragmentActivity() {
     private var channelReversal = false
     private var channelNum = true
     private var bootStartup = true
+    private var selectedProvince = "湖南"
 
     private var versionName = ""
 
@@ -84,9 +85,10 @@ class MainActivity : FragmentActivity() {
         channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, channelReversal)
         channelNum = sharedPref.getBoolean(CHANNEL_NUM, channelNum)
         bootStartup = sharedPref.getBoolean(BOOT_STARTUP, bootStartup)
+        selectedProvince = sharedPref.getString(SELECTED_PROVINCE, selectedProvince)
 
         versionName = getPackageInfo().versionName
-        settingFragment = SettingFragment(versionName, channelReversal, channelNum, bootStartup)
+        settingFragment = SettingFragment(versionName, channelReversal, channelNum, bootStartup, selectedProvince)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -241,10 +243,18 @@ class MainActivity : FragmentActivity() {
 
     fun saveBootStartup(bootStartup: Boolean) {
         with(sharedPref.edit()) {
-            putBoolean(CHANNEL_NUM, channelNum)
+            putBoolean(BOOT_STARTUP, bootStartup)
             apply()
         }
         this.bootStartup = bootStartup
+    }
+
+    fun saveSelectedProvince(selectedProvince: Sring) {
+        with(sharedPref.edit()) {
+            putString(SELECTED_PROVINCE, selectedProvince)
+            apply()
+        }
+        this.selectedProvince = selectedProvince
     }
 
     private fun showSetting() {
@@ -536,5 +546,6 @@ class MainActivity : FragmentActivity() {
         private const val CHANNEL_REVERSAL = "channel_reversal"
         private const val CHANNEL_NUM = "channel_num"
         const val BOOT_STARTUP = "boot_startup"
+        const val SELECTED_PROVINCE = "selected_province"
     }
 }
