@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.content.res.Resources
+import android.os.Build
 import android.util.TypedValue
 import com.google.gson.Gson
 import com.lizongying.mytv.api.TimeResponse
@@ -71,4 +72,6 @@ object Utils {
             TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), Resources.getSystem().displayMetrics
         ).toInt()
     }
+
+    fun isTmallDevice() = Build.MANUFACTURER.equals("Tmall", ignoreCase = true)
 }
