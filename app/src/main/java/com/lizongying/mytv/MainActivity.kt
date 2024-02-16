@@ -241,7 +241,7 @@ class MainActivity : FragmentActivity() {
 
     fun saveBootStartup(bootStartup: Boolean) {
         with(sharedPref.edit()) {
-            putBoolean(CHANNEL_NUM, channelNum)
+            putBoolean(BOOT_STARTUP, bootStartup)
             apply()
         }
         this.bootStartup = bootStartup
