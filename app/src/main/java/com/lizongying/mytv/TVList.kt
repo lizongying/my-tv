@@ -990,8 +990,19 @@ object TVList {
                 //获取本地频道
                 ChannelUtils.getLocalChannel(context)
             }
+            //获取定义的省份数据
+            val sp = context.getSharedPreferences("MainActivity", Context.MODE_PRIVATE)
             //按频道分类
             for (tv in tvList) {
+
+                // 如果是本地频道，则判断频道名称是否包含设置的省份，默认设置为湖南省，可遥控呼出菜单修改
+                if ( tv.channel == "本地频道" ) {
+                    if ( !tv.title.contains(sp.getString(MainActivity.SELECTED_PROVINCE, "湖南")) ) {
+                        Log.i("TVList", "跳过频道：${tv.title}")
+                        continue;
+                    }
+                }
+
                 val key = tv.channel
                 if (channelTVMap.containsKey(key)) {
                     val list = channelTVMap[key]!!
