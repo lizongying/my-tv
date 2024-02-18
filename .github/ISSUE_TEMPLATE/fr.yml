@@ -11,7 +11,7 @@ body:
       options:
         - label: 之前没有人提交过类似或相同的功能请求。
           required: true
-        - label: 这个建议不会背离 LibChecker 的初衷。
+        - label: 这个建议不会背离 my-tv 的初衷。
           required: true
   - type: textarea
     id: propose
