@@ -41,8 +41,6 @@ class MainFragment : BrowseSupportFragment() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
 
-    private var ready = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
@@ -89,6 +87,7 @@ class MainFragment : BrowseSupportFragment() {
             tvViewModel.change.observe(viewLifecycleOwner) { _ ->
                 if (tvViewModel.change.value != null) {
                     val title = tvViewModel.title.value
+                    Log.i(TAG, "switch $title")
                     if (tvViewModel.pid.value != "") {
                         Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
@@ -113,7 +112,7 @@ class MainFragment : BrowseSupportFragment() {
             }
         }
 
-        fragmentReady()
+        (activity as MainActivity).fragmentReady()
     }
 
     fun toLastPosition() {
@@ -245,12 +244,8 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     fun fragmentReady() {
-        ready++
-        Log.i(TAG, "ready $ready")
-        if (ready == 4) {
 //            request.fetchPage()
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
+        tvListViewModel.getTVViewModel(itemPosition)?.changed()
     }
 
     fun play(itemPosition: Int) {
@@ -332,7 +327,9 @@ class MainFragment : BrowseSupportFragment() {
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         super.onDestroy()
-        handler.removeCallbacks(mUpdateProgramRunnable)
+        if (::mUpdateProgramRunnable.isInitialized) {
+            handler.removeCallbacks(mUpdateProgramRunnable)
+        }
     }
 
     companion object {

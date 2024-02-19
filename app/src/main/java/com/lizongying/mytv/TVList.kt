@@ -859,10 +859,24 @@ object TVList {
                 true,
                 mustToken = false
             ),
+            TV(
+                56,
+                "兵团卫视",
+                "兵团卫视",
+                listOf(),
+                0,
+                "地方频道",
+                "",
+                "600170344",
+                "2022606701",
+                "",
+                true,
+                mustToken = false
+            ),
         ),
         "国际频道" to listOf(
             TV(
-                56,
+                57,
                 "CGTN",
                 "CGTN",
                 listOf("http://live.cgtn.com/1000/prog_index.m3u8"),
@@ -876,7 +890,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                57,
+                58,
                 "CGTN 法语频道",
                 "CGTN法语频道",
                 listOf("https://livefr.cgtn.com/1000f/prog_index.m3u8"),
@@ -890,7 +904,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                58,
+                59,
                 "CGTN 俄语频道",
                 "CGTN俄语频道",
                 listOf("http://liveru.cgtn.com/1000r/prog_index.m3u8"),
@@ -904,7 +918,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                59,
+                60,
                 "CGTN 阿拉伯语频道",
                 "CGTN阿拉伯语频道",
                 listOf("http://livear.cgtn.com/1000a/prog_index.m3u8"),
@@ -918,7 +932,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                60,
+                61,
                 "CGTN 西班牙语频道",
                 "CGTN西班牙语频道",
                 listOf(
@@ -935,7 +949,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                61,
+                62,
                 "CGTN 纪录频道",
                 "CGTN外语纪录频道",
                 listOf("https://livedoc.cgtn.com/500d/prog_index.m3u8"),

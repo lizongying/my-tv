@@ -50,6 +50,9 @@ class YSP(var context: Context) {
 
     private var signature = ""
 
+    private var appid = "ysp_pc"
+    var token = ""
+
     private var encryptor: Encryptor? = null
     private lateinit var sharedPref: SharedPreferences
 
@@ -81,6 +84,19 @@ class YSP(var context: Context) {
             encryptor!!.encrypt(cnlid, timeStr, appVer, guid, platform)
         signature = getSignature()
         return """{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","rand_str":"$randStr","channel":"$channel","defn":"$defn","signature":"$signature"}"""
+    }
+
+    fun getAuthData(tvModel: TVViewModel): String {
+        livepid = tvModel.pid.value!!
+
+        randStr = getRand()
+
+        if (tvModel.retryTimes > 0) {
+            guid = newGuid()
+        }
+
+        signature = getAuthSignature()
+        return """pid=$livepid&guid=$guid&appid=$appid&rand_str=$randStr&signature=$signature"""
     }
 
     private fun getTimeStr(): String {
@@ -128,6 +144,13 @@ class YSP(var context: Context) {
         val e =
             "adjust=${adjust}&appVer=${appVer}&app_version=$appVersion&cKey=$cKey&channel=$channel&cmd=$cmd&cnlid=$cnlid&defn=${defn}&devid=${devid}&dtype=${dtype}&encryptVer=${encryptVer}&guid=${guid}&livepid=${livepid}&otype=${otype}&platform=${platform}&rand_str=${randStr}&sphttps=${sphttps}&stream=${stream}".toByteArray()
         val hashedData = encryptor?.hash(e) ?: return ""
+        return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
+    }
+
+    private fun getAuthSignature(): String {
+        val e =
+            "appid=${appid}&guid=${guid}&pid=${livepid}&rand_str=${randStr}".toByteArray()
+        val hashedData = encryptor?.hash2(e) ?: return ""
         return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
     }
 

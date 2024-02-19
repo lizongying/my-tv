@@ -29,10 +29,11 @@ import java.security.MessageDigest
 
 class MainActivity : FragmentActivity() {
 
-    var playerFragment = PlayerFragment()
-    private val mainFragment = MainFragment()
-    private val infoFragment = InfoFragment()
-    private val channelFragment = ChannelFragment()
+    private var ready = 0
+    private var playerFragment = PlayerFragment()
+    private var mainFragment = MainFragment()
+    private var infoFragment = InfoFragment()
+    private var channelFragment = ChannelFragment()
     private lateinit var settingFragment: SettingFragment
 
     private var doubleBackToExitPressedOnce = false
@@ -85,8 +86,15 @@ class MainActivity : FragmentActivity() {
         channelNum = sharedPref.getBoolean(CHANNEL_NUM, channelNum)
         bootStartup = sharedPref.getBoolean(BOOT_STARTUP, bootStartup)
 
-        versionName = getPackageInfo().versionName
-        settingFragment = SettingFragment(versionName, channelReversal, channelNum, bootStartup)
+        val packageInfo = getPackageInfo()
+        versionName = packageInfo.versionName
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode.toLong()
+        }
+        settingFragment =
+            SettingFragment(versionName, versionCode, channelReversal, channelNum, bootStartup)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -172,7 +180,11 @@ class MainActivity : FragmentActivity() {
     }
 
     fun fragmentReady() {
-        mainFragment.fragmentReady()
+        ready++
+        Log.i(TAG, "ready $ready")
+        if (ready == 4) {
+            mainFragment.fragmentReady()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -520,7 +532,7 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
-        if (!mainFragment.isHidden){
+        if (!mainFragment.isHidden) {
             handler.postDelayed(hideMain, delayHideMain)
         }
     }
