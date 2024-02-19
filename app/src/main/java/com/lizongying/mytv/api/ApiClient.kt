@@ -17,7 +17,6 @@ class ApiClient {
     private val protoUrl = "https://capi.yangshipin.cn/"
     private val traceUrl = "https://btrace.yangshipin.cn/"
 
-
     private var okHttpClient = getUnsafeOkHttpClient()
 
     val yspApiService: YSPApiService by lazy {

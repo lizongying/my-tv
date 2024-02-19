@@ -15,6 +15,7 @@ class SettingFragment(
     private val versionCode: Long,
     private val channelReversal: Boolean,
     private val channelNum: Boolean,
+    private val bootStartup: Boolean,
 ) :
     DialogFragment() {
 
@@ -47,6 +48,12 @@ class SettingFragment(
         switchChannelNum?.isChecked = channelNum
         switchChannelNum?.setOnCheckedChangeListener { _, isChecked ->
             (activity as MainActivity).saveChannelNum(isChecked)
+        }
+
+        val switchBootStartup = _binding?.switchBootStartup
+        switchBootStartup?.isChecked = bootStartup
+        switchBootStartup?.setOnCheckedChangeListener { _, isChecked ->
+            (activity as MainActivity).saveBootStartup(isChecked)
         }
 
         updateManager = UpdateManager(context, this, versionCode)
