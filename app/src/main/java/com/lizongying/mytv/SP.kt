@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 object SP {
     // Name of the sp file TODO Should use a meaningful name and do migrations
     private const val SP_FILE_NAME = "MainActivity"
-    // if Change channel with up and down in reversed order or not
+    // If Change channel with up and down in reversed order or not
     private const val KEY_CHANNEL_REVERSAL = "channel_reversal"
     // If use channel num to select channel or not
     private const val KEY_CHANNEL_NUM = "channel_num"
@@ -16,7 +16,7 @@ object SP {
     private const val KEY_POSITION = "position"
     // guid
     private const val KEY_GUID = "guid"
-    // guid
+
     private lateinit var sp: SharedPreferences
 
     /**
