@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -34,8 +33,6 @@ class MainFragment : BrowseSupportFragment() {
 
     var tvListViewModel = TVListViewModel()
 
-    private lateinit var sharedPref: SharedPreferences
-
     private var lastVideoUrl = ""
 
     private val handler = Handler(Looper.getMainLooper())
@@ -58,7 +55,6 @@ class MainFragment : BrowseSupportFragment() {
         super.onActivityCreated(savedInstanceState)
 
         activity?.let { request.initYSP(it) }
-        sharedPref = (activity as? MainActivity)?.sharedPref!!
 
         loadRows()
 
@@ -156,7 +152,7 @@ class MainFragment : BrowseSupportFragment() {
 
         adapter = rowsAdapter
 
-        itemPosition = sharedPref.getInt(POSITION, 0)
+        itemPosition = SP.itemPosition
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
         }
@@ -322,11 +318,8 @@ class MainFragment : BrowseSupportFragment() {
     override fun onStop() {
         Log.i(TAG, "onStop")
         super.onStop()
-        with(sharedPref.edit()) {
-            putInt(POSITION, itemPosition)
-            apply()
-        }
-        Log.i(TAG, "$POSITION saved")
+        SP.itemPosition = itemPosition
+        Log.i(TAG, "position saved")
     }
 
     override fun onDestroy() {
@@ -337,6 +330,5 @@ class MainFragment : BrowseSupportFragment() {
 
     companion object {
         private const val TAG = "MainFragment"
-        private const val POSITION = "position"
     }
 }
