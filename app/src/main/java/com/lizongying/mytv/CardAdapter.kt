@@ -2,12 +2,14 @@ package com.lizongying.mytv
 
 import android.graphics.Color
 import android.view.ContextThemeWrapper
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import androidx.leanback.widget.ImageCardView
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lizongying.mytv.models.TVListViewModel
@@ -48,7 +50,7 @@ class CardAdapter(private val owner: LifecycleOwner, private var tvListViewModel
         val tvViewModel = item as TVViewModel
         val cardView = viewHolder.view as ImageCardView
 
-        cardView.setOnFocusChangeListener { _, hasFocus ->
+        val onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             listener?.onItemFocusChange(item, hasFocus)
             if (hasFocus) {
                 startScaleAnimation(cardView, 0.9f, 1.0f)
@@ -56,6 +58,8 @@ class CardAdapter(private val owner: LifecycleOwner, private var tvListViewModel
                 startScaleAnimation(cardView, 1.0f, 0.9f)
             }
         }
+
+        cardView.onFocusChangeListener = onFocusChangeListener
 
         cardView.setOnClickListener { _ ->
             listener?.onItemClicked(item)

@@ -1,11 +1,9 @@
 package com.lizongying.mytv
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.lizongying.mytv.databinding.DialogBinding
 

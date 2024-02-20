@@ -93,7 +93,8 @@ class MainActivity : FragmentActivity() {
         } else {
             packageInfo.versionCode.toLong()
         }
-        settingFragment = SettingFragment(versionName, versionCode, channelReversal, channelNum, bootStartup)
+        settingFragment =
+            SettingFragment(versionName, versionCode, channelReversal, channelNum, bootStartup)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -148,7 +149,7 @@ class MainActivity : FragmentActivity() {
         if (mainFragment.isHidden) {
             mainFragment.setPosition()
             transaction.show(mainFragment)
-            keepRunnable()
+            mainActive()
         } else {
             transaction.hide(mainFragment)
         }
@@ -156,7 +157,7 @@ class MainActivity : FragmentActivity() {
         transaction.commit()
     }
 
-    fun keepRunnable() {
+    fun mainActive() {
         handler.removeCallbacks(hideMain)
         handler.postDelayed(hideMain, delayHideMain)
     }

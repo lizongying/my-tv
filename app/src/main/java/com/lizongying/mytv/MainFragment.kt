@@ -84,6 +84,19 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 itemBinding.rowItems.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
+                itemBinding.rowItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                        super.onScrolled(recyclerView, dx, dy)
+//                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+//                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+//                        val firstVisibleViewHolder = recyclerView.findViewHolderForAdapterPosition(firstVisibleItemPosition)
+//                        if (firstVisibleViewHolder != null && !firstVisibleViewHolder.itemView.hasFocus()) {
+//                            firstVisibleViewHolder.itemView.requestFocus()
+//                        }
+                        (activity as MainActivity).mainActive()
+                    }
+                })
+
                 val layoutParams = itemBinding.row.layoutParams as ViewGroup.MarginLayoutParams
                 layoutParams.topMargin = dpToPx(11F)
                 itemBinding.row.layoutParams = layoutParams
@@ -158,7 +171,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean) {
         if (hasFocus) {
             tvListViewModel.setItemPositionCurrent(tvViewModel.id.value!!)
-            (activity as MainActivity).keepRunnable()
+            (activity as MainActivity).mainActive()
         }
     }
 

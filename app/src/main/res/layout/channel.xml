@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="0dp"
-        android:text="99"
         android:textColor="#FFEEEEEE"
         android:textStyle="bold"
         android:textSize="50sp" />
