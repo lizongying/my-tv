@@ -74,7 +74,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 }
                 tvListViewModel.maxNum.add(v.size)
 
-                val adapter = CardAdapter(viewLifecycleOwner, tvListViewModelCurrent)
+                val adapter =
+                    CardAdapter(itemBinding.rowItems, viewLifecycleOwner, tvListViewModelCurrent)
                 rowList.add(itemBinding.rowItems)
 
                 adapter.setItemListener(this)
@@ -86,13 +87,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
                 itemBinding.rowItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                        super.onScrolled(recyclerView, dx, dy)
-//                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-//                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-//                        val firstVisibleViewHolder = recyclerView.findViewHolderForAdapterPosition(firstVisibleItemPosition)
-//                        if (firstVisibleViewHolder != null && !firstVisibleViewHolder.itemView.hasFocus()) {
-//                            firstVisibleViewHolder.itemView.requestFocus()
-//                        }
+                        super.onScrolled(recyclerView, dx, dy)
                         (activity as MainActivity).mainActive()
                     }
                 })
