@@ -334,7 +334,6 @@ class Request {
                             Log.e(TAG, "info status error")
                             if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
                                 tvModel.tokenRetryTimes++
-                                if (needAuth)
                                 fetchVideo(tvModel)
                             } else {
                                 if (!tvModel.getTV().mustToken) {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,9 +59,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         sharedPref = (activity as? MainActivity)?.sharedPref!!
 
         itemPosition = sharedPref.getInt(POSITION, 0)
-        if (itemPosition >= tvListViewModel.size()) {
-            itemPosition = 0
-        }
 
         view?.post {
             val content = binding.content
@@ -85,7 +83,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                         itemBinding.rowItems,
                         viewLifecycleOwner,
                         tvListViewModelCurrent,
-                        itemPosition
                     )
                 rowList.add(itemBinding.rowItems)
 
@@ -97,7 +94,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 itemBinding.rowItems.layoutManager =
                     GridLayoutManager(context, 6)
                 itemBinding.rowItems.layoutParams.height =
-                    dpToPx(100 * ((tvListViewModelCurrent.size() + 6 - 1) / 6))
+                    dpToPx(92 * ((tvListViewModelCurrent.size() + 6 - 1) / 6))
 
                 itemBinding.rowItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -105,22 +102,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                         (activity as MainActivity).mainActive()
                     }
                 })
-
-                itemBinding.rowItems.setOnKeyListener { v, keyCode, event ->
-                    Log.i(TAG, "itemBinding.rowItems.setOnKeyListener ")
-                    false
-                }
-
-                itemBinding.row.setOnKeyListener { v, keyCode, event ->
-                    Log.i(TAG, "itemBinding.row.setOnKeyListener ")
-                    false
-                }
-
-                itemBinding.root.setOnKeyListener { v, keyCode, event ->
-                    Log.i(TAG, "itemBinding.root.setOnKeyListener ")
-                    false
-                }
-
 
                 val itemDecoration = context?.let { GrayOverlayItemDecoration(it) }
                 if (itemDecoration != null) {
@@ -137,6 +118,18 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
             mUpdateProgramRunnable = UpdateProgramRunnable()
             handler.post(mUpdateProgramRunnable)
+
+            if (itemPosition >= tvListViewModel.size()) {
+                itemPosition = 0
+            }
+
+            val tv = tvListViewModel.getTVViewModel(itemPosition)
+            for (i in rowList) {
+                if (i.tag as Int == tv?.getRowPosition()) {
+                    ((i as RecyclerView).adapter as CardAdapter).defaultFocus = itemPosition
+                    break
+                }
+            }
 
             tvListViewModel.setItemPosition(itemPosition)
             tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
@@ -192,10 +185,21 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onKey(keyCode: Int) {
+    override fun onKey(keyCode: Int): Boolean {
         if (this.isHidden) {
-            (activity as MainActivity).onKey(keyCode)
+            when (keyCode) {
+                KeyEvent.KEYCODE_DPAD_UP -> {
+                    (activity as MainActivity).onKey(keyCode)
+                    return true
+                }
+
+                KeyEvent.KEYCODE_DPAD_DOWN -> {
+                    (activity as MainActivity).onKey(keyCode)
+                    return true
+                }
+            }
         }
+        return false
     }
 
     override fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean) {
@@ -342,7 +346,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             putInt(POSITION, itemPosition)
             apply()
         }
-        Log.i(TAG, "$POSITION saved")
+        Log.i(TAG, "$POSITION $itemPosition saved")
     }
 
     override fun onDestroy() {

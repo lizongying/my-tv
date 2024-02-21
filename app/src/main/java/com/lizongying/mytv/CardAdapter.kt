@@ -2,6 +2,7 @@ package com.lizongying.mytv
 
 import android.graphics.Color
 import android.view.ContextThemeWrapper
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.ScaleAnimation
@@ -18,13 +19,13 @@ class CardAdapter(
     private val recyclerView: RecyclerView,
     private val owner: LifecycleOwner,
     private var tvListViewModel: TVListViewModel,
-    var defaultFocus: Int,
 ) :
     RecyclerView.Adapter<CardAdapter.ViewHolder>() {
 
     private var listener: ItemListener? = null
     private var focused: View? = null
     private var defaultFocused = false
+    var defaultFocus: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cardView = object :
@@ -74,8 +75,14 @@ class CardAdapter(
 
         cardView.onFocusChangeListener = onFocusChangeListener
 
-        cardView.setOnKeyListener { v, keyCode, event ->
-            listener?.onKey(keyCode)
+        cardView.setOnClickListener { _ ->
+            listener?.onItemClicked(item)
+        }
+
+        cardView.setOnKeyListener { _, keyCode, event: KeyEvent? ->
+            if (event?.action == KeyEvent.ACTION_DOWN) {
+                return@setOnKeyListener listener?.onKey(keyCode) ?: false
+            }
             false
         }
 
@@ -128,7 +135,7 @@ class CardAdapter(
     interface ItemListener {
         fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean)
         fun onItemClicked(tvViewModel: TVViewModel)
-        fun onKey(keyCode: Int)
+        fun onKey(keyCode: Int): Boolean
     }
 
     fun setItemListener(listener: ItemListener) {

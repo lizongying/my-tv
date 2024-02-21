@@ -338,6 +338,7 @@ class MainActivity : FragmentActivity() {
 
 
     fun onKey(keyCode: Int): Boolean {
+        Log.i(TAG, "keyCode $keyCode")
         when (keyCode) {
             KeyEvent.KEYCODE_0 -> {
                 showChannel("0")
