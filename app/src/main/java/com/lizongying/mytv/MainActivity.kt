@@ -49,8 +49,6 @@ class MainActivity : FragmentActivity() {
     private var channelNum = true
     private var bootStartup = true
 
-    private var versionName = ""
-
     init {
         lifecycleScope.launch(Dispatchers.IO) {
             val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
@@ -87,7 +85,7 @@ class MainActivity : FragmentActivity() {
         bootStartup = sharedPref.getBoolean(BOOT_STARTUP, bootStartup)
 
         val packageInfo = getPackageInfo()
-        versionName = packageInfo.versionName
+        val versionName = packageInfo.versionName
         val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             packageInfo.longVersionCode
         } else {
@@ -160,6 +158,11 @@ class MainActivity : FragmentActivity() {
     fun mainActive() {
         handler.removeCallbacks(hideMain)
         handler.postDelayed(hideMain, delayHideMain)
+    }
+
+    fun settingActive() {
+        handler.removeCallbacks(hideSetting)
+        handler.postDelayed(hideSetting, delayHideSetting)
     }
 
     private val hideMain = Runnable {
@@ -268,8 +271,7 @@ class MainActivity : FragmentActivity() {
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
             settingFragment.show(supportFragmentManager, "setting")
-            handler.removeCallbacks(hideSetting)
-            handler.postDelayed(hideSetting, delayHideSetting)
+            settingActive()
         } else {
             handler.removeCallbacks(hideSetting)
             settingFragment.dismiss()
