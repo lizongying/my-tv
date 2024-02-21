@@ -188,17 +188,17 @@ class Request {
                                 if (tvModel.getTV().needToken) {
                                     if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
                                         if (!tvModel.getTV().mustToken) {
-//                                            fetchVideo(tvModel, cookie)
-                                            fetchAuth(tvModel, cookie)
+                                            fetchVideo(tvModel, cookie)
+//                                            fetchAuth(tvModel, cookie)
                                         }
                                     } else {
                                         token = ""
-//                                        fetchVideo(tvModel)
-                                        fetchAuth(tvModel)
+                                        fetchVideo(tvModel)
+//                                        fetchAuth(tvModel)
                                     }
                                 } else {
-//                                    fetchVideo(tvModel, cookie)
-                                    fetchAuth(tvModel, cookie)
+                                    fetchVideo(tvModel, cookie)
+//                                    fetchAuth(tvModel, cookie)
                                 }
                             }
                         }
@@ -213,17 +213,17 @@ class Request {
                                 if (tvModel.getTV().needToken) {
                                     if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
                                         if (!tvModel.getTV().mustToken) {
-//                                            fetchVideo(tvModel, cookie)
-                                            fetchAuth(tvModel, cookie)
+                                            fetchVideo(tvModel, cookie)
+//                                            fetchAuth(tvModel, cookie)
                                         }
                                     } else {
                                         token = ""
-//                                        fetchVideo(tvModel)
-                                        fetchAuth(tvModel)
+                                        fetchVideo(tvModel)
+//                                        fetchAuth(tvModel)
                                     }
                                 } else {
-//                                    fetchVideo(tvModel, cookie)
-                                    fetchAuth(tvModel, cookie)
+                                    fetchVideo(tvModel, cookie)
+//                                    fetchAuth(tvModel, cookie)
                                 }
                             }
                         }
@@ -235,24 +235,24 @@ class Request {
                         if (tvModel.getTV().needToken) {
                             if (tvModel.tokenRetryTimes == tvModel.tokenRetryMaxTimes) {
                                 if (!tvModel.getTV().mustToken) {
-//                                    fetchVideo(tvModel, cookie)
-                                    fetchAuth(tvModel, cookie)
+                                    fetchVideo(tvModel, cookie)
+//                                    fetchAuth(tvModel, cookie)
                                 }
                             } else {
                                 token = ""
-//                                fetchVideo(tvModel)
-                                fetchAuth(tvModel)
+                                fetchVideo(tvModel)
+//                                fetchAuth(tvModel)
                             }
                         } else {
-//                            fetchVideo(tvModel, cookie)
-                            fetchAuth(tvModel, cookie)
+                            fetchVideo(tvModel, cookie)
+//                            fetchAuth(tvModel, cookie)
                         }
                     }
                 }
             }
 
             override fun onFailure(call: Call<LiveInfo>, t: Throwable) {
-                Log.e(TAG, "$title request error $t")
+                Log.e(TAG, "$title fetchVideo request error $t")
                 if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                     tvModel.retryTimes++
                     if (tvModel.getTV().needToken) {
@@ -377,7 +377,6 @@ class Request {
         } else {
             val cookie =
                 "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205"
-
             if (needAuth) {
                 fetchAuth(tvModel, cookie)
             } else {

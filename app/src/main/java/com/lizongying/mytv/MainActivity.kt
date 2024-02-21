@@ -336,8 +336,8 @@ class MainActivity : FragmentActivity() {
         }, 2000)
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        Log.i(TAG, "keyCode $keyCode")
+
+    fun onKey(keyCode: Int): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_0 -> {
                 showChannel("0")
@@ -474,6 +474,13 @@ class MainActivity : FragmentActivity() {
 ////                    }
 //                }
             }
+        }
+        return false
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (onKey(keyCode)) {
+            return true
         }
 
         return super.onKeyDown(keyCode, event)

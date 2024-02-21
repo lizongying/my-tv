@@ -192,6 +192,12 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onKey(keyCode: Int) {
+        if (this.isHidden) {
+            (activity as MainActivity).onKey(keyCode)
+        }
+    }
+
     override fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean) {
         if (hasFocus) {
             tvListViewModel.setItemPositionCurrent(tvViewModel.id.value!!)

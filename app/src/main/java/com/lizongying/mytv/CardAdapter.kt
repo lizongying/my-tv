@@ -1,7 +1,6 @@
 package com.lizongying.mytv
 
 import android.graphics.Color
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
@@ -66,7 +65,6 @@ class CardAdapter(
         val onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             listener?.onItemFocusChange(item, hasFocus)
 
-            Log.i(TAG, "defaultFocus $defaultFocus ${item.id.value}")
 //            if (hasFocus && defaultFocus == item.id.value) {
             if (hasFocus) {
                 focused = cardView
@@ -76,8 +74,9 @@ class CardAdapter(
 
         cardView.onFocusChangeListener = onFocusChangeListener
 
-        cardView.setOnClickListener { _ ->
-            listener?.onItemClicked(item)
+        cardView.setOnKeyListener { v, keyCode, event ->
+            listener?.onKey(keyCode)
+            false
         }
 
         cardView.titleText = tvViewModel.title.value
@@ -129,6 +128,7 @@ class CardAdapter(
     interface ItemListener {
         fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean)
         fun onItemClicked(tvViewModel: TVViewModel)
+        fun onKey(keyCode: Int)
     }
 
     fun setItemListener(listener: ItemListener) {
