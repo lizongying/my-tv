@@ -263,7 +263,7 @@ class Request {
 
     fun fetchAuth(tvModel: TVViewModel) {
         if (token == "") {
-            yspTokenService.getInfo()
+            yspTokenService.getInfo("")
                 .enqueue(object : Callback<Info> {
                     override fun onResponse(call: Call<Info>, response: Response<Info>) {
                         if (response.isSuccessful) {
@@ -310,7 +310,7 @@ class Request {
 
     fun fetchVideo(tvModel: TVViewModel) {
         if (token == "") {
-            yspTokenService.getInfo()
+            yspTokenService.getInfo("")
                 .enqueue(object : Callback<Info> {
                     override fun onResponse(call: Call<Info>, response: Response<Info>) {
                         if (response.isSuccessful && response.body()?.data?.token != null) {
@@ -375,7 +375,7 @@ class Request {
     }
 
     fun fetchToken() {
-        yspTokenService.getInfo()
+        yspTokenService.getInfo(token)
             .enqueue(object : Callback<Info> {
                 override fun onResponse(call: Call<Info>, response: Response<Info>) {
                     if (response.isSuccessful) {

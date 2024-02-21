@@ -335,6 +335,7 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Log.i(TAG, "keyCode $keyCode")
         when (keyCode) {
             KeyEvent.KEYCODE_0 -> {
                 showChannel("0")
@@ -446,6 +447,7 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
+                channelUp()
 //                if (mainFragment.isHidden) {
 //                    prevSource()
 //                } else {
@@ -459,6 +461,7 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                channelDown()
 //                if (mainFragment.isHidden) {
 //                    nextSource()
 //                } else {

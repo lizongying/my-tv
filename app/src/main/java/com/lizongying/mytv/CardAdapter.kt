@@ -1,10 +1,10 @@
 package com.lizongying.mytv
 
 import android.graphics.Color
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import androidx.leanback.widget.ImageCardView
@@ -18,19 +18,26 @@ import com.lizongying.mytv.models.TVViewModel
 class CardAdapter(
     private val recyclerView: RecyclerView,
     private val owner: LifecycleOwner,
-    private var tvListViewModel: TVListViewModel
+    private var tvListViewModel: TVListViewModel,
+    var defaultFocus: Int,
 ) :
     RecyclerView.Adapter<CardAdapter.ViewHolder>() {
 
     private var listener: ItemListener? = null
+    private var focused: View? = null
+    private var defaultFocused = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cardView = object :
             ImageCardView(ContextThemeWrapper(parent.context, R.style.CustomImageCardTheme)) {}
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
-
         return ViewHolder(cardView)
+    }
+
+    fun clear() {
+        focused?.clearFocus()
+        recyclerView.invalidate()
     }
 
     private fun startScaleAnimation(view: View, fromScale: Float, toScale: Float, duration: Long) {
@@ -41,19 +48,7 @@ class CardAdapter(
             ScaleAnimation.RELATIVE_TO_SELF, 0.5f
         )
         scaleAnimation.duration = duration
-        scaleAnimation.fillAfter = true
-        scaleAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                view.tag = toScale
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-        })
-
+        scaleAnimation.fillAfter = false
         view.startAnimation(scaleAnimation)
     }
 
@@ -63,20 +58,19 @@ class CardAdapter(
         val tvViewModel = item as TVViewModel
         val cardView = viewHolder.view as ImageCardView
 
-        startScaleAnimation(cardView, 1.0f, 0.9f, 0)
+        if (!defaultFocused && item.id.value == defaultFocus) {
+            cardView.requestFocus()
+            defaultFocused = true
+        }
 
-        val onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+        val onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             listener?.onItemFocusChange(item, hasFocus)
 
+            Log.i(TAG, "defaultFocus $defaultFocus ${item.id.value}")
+//            if (hasFocus && defaultFocus == item.id.value) {
             if (hasFocus) {
+                focused = cardView
                 startScaleAnimation(cardView, 0.9f, 1.0f, 200)
-
-                for (i in 0 until recyclerView.childCount) {
-                    val v = recyclerView.getChildAt(i)
-                    if (v != view && v.tag != 0.9f) {
-                        startScaleAnimation(v, 1.0f, 0.9f, 200)
-                    }
-                }
             }
         }
 

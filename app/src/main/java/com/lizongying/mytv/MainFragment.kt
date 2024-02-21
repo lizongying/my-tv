@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lizongying.mytv.Utils.dpToPx
 import com.lizongying.mytv.Utils.getDateTimestamp
@@ -21,6 +21,7 @@ import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class MainFragment : Fragment(), CardAdapter.ItemListener {
 
@@ -56,6 +57,11 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         activity?.let { request.initYSP(it) }
         sharedPref = (activity as? MainActivity)?.sharedPref!!
 
+        itemPosition = sharedPref.getInt(POSITION, 0)
+        if (itemPosition >= tvListViewModel.size()) {
+            itemPosition = 0
+        }
+
         view?.post {
             val content = binding.content
 
@@ -75,15 +81,23 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 tvListViewModel.maxNum.add(v.size)
 
                 val adapter =
-                    CardAdapter(itemBinding.rowItems, viewLifecycleOwner, tvListViewModelCurrent)
+                    CardAdapter(
+                        itemBinding.rowItems,
+                        viewLifecycleOwner,
+                        tvListViewModelCurrent,
+                        itemPosition
+                    )
                 rowList.add(itemBinding.rowItems)
 
                 adapter.setItemListener(this)
 
                 itemBinding.rowHeader.text = k
+                itemBinding.rowItems.tag = idx.toInt()
                 itemBinding.rowItems.adapter = adapter
                 itemBinding.rowItems.layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    GridLayoutManager(context, 6)
+                itemBinding.rowItems.layoutParams.height =
+                    dpToPx(100 * ((tvListViewModelCurrent.size() + 6 - 1) / 6))
 
                 itemBinding.rowItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -91,6 +105,27 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                         (activity as MainActivity).mainActive()
                     }
                 })
+
+                itemBinding.rowItems.setOnKeyListener { v, keyCode, event ->
+                    Log.i(TAG, "itemBinding.rowItems.setOnKeyListener ")
+                    false
+                }
+
+                itemBinding.row.setOnKeyListener { v, keyCode, event ->
+                    Log.i(TAG, "itemBinding.row.setOnKeyListener ")
+                    false
+                }
+
+                itemBinding.root.setOnKeyListener { v, keyCode, event ->
+                    Log.i(TAG, "itemBinding.root.setOnKeyListener ")
+                    false
+                }
+
+
+                val itemDecoration = context?.let { GrayOverlayItemDecoration(it) }
+                if (itemDecoration != null) {
+                    itemBinding.rowItems.addItemDecoration(itemDecoration)
+                }
 
                 val layoutParams = itemBinding.row.layoutParams as ViewGroup.MarginLayoutParams
                 layoutParams.topMargin = dpToPx(11F)
@@ -103,12 +138,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             mUpdateProgramRunnable = UpdateProgramRunnable()
             handler.post(mUpdateProgramRunnable)
 
-            itemPosition = sharedPref.getInt(POSITION, 0)
-            if (itemPosition >= tvListViewModel.size()) {
-                itemPosition = 0
-            }
             tvListViewModel.setItemPosition(itemPosition)
-            setPosition()
             tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
                 tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
                     if (tvViewModel.errInfo.value != null
@@ -154,7 +184,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     }
                 }
             }
-
             (activity as MainActivity).fragmentReady()
         }
     }
@@ -166,11 +195,21 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean) {
         if (hasFocus) {
             tvListViewModel.setItemPositionCurrent(tvViewModel.id.value!!)
+
+            val row = tvViewModel.getRowPosition()
+
+            for (i in rowList) {
+                if (i.tag as Int != row) {
+                    ((i as RecyclerView).adapter as CardAdapter).clear()
+                }
+            }
+
             (activity as MainActivity).mainActive()
         }
     }
 
     override fun onItemClicked(tvViewModel: TVViewModel) {
+        Log.i(TAG, "onItemClicked")
         if (this.isHidden) {
             (activity as? MainActivity)?.switchMainFragment()
             return
@@ -186,10 +225,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     fun setPosition() {
         val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-        Log.i(TAG, "tvViewModel $tvViewModel")
-        Log.i(TAG, "rowList ${rowList.size}")
         rowList[tvViewModel!!.getRowPosition()].post {
-            ((rowList[tvViewModel.getRowPosition()] as RecyclerView).layoutManager as LinearLayoutManager).findViewByPosition(
+            ((rowList[tvViewModel.getRowPosition()] as RecyclerView).layoutManager as GridLayoutManager).findViewByPosition(
                 tvViewModel.getItemPosition()
             )?.requestFocus()
         }
@@ -197,10 +234,12 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     fun setPosition(rowPosition: Int, itemPosition: Int) {
         rowList[rowPosition].post {
-            ((rowList[rowPosition] as RecyclerView).layoutManager as LinearLayoutManager).findViewByPosition(
+            ((rowList[rowPosition] as RecyclerView).layoutManager as GridLayoutManager).findViewByPosition(
                 itemPosition
             )?.requestFocus()
         }
+
+        ((rowList[rowPosition] as RecyclerView).adapter as CardAdapter).defaultFocus = itemPosition
     }
 
     fun check(tvViewModel: TVViewModel): Boolean {
