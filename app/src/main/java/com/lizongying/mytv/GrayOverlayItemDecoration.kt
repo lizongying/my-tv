@@ -22,6 +22,7 @@ class GrayOverlayItemDecoration(private val context: Context) : RecyclerView.Ite
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             if (!child.hasFocus()) {
+//                child.alpha = 0.7f
                 // 计算遮罩层的大小
                 val overlayRect = Rect(
                     child.left,
@@ -31,6 +32,8 @@ class GrayOverlayItemDecoration(private val context: Context) : RecyclerView.Ite
                 )
                 // 绘制灰色遮罩层
                 c.drawRect(overlayRect, grayOverlayPaint)
+            } else {
+//                child.alpha = 1f
             }
         }
     }
