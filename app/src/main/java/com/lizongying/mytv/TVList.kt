@@ -874,14 +874,58 @@ object TVList {
                 mustToken = false
             ),
         ),
-        "国际频道" to listOf(
+        "港澳台" to listOf(
             TV(
                 57,
+                "凤凰卫视资讯台",
+                "",
+                listOf(),
+                0,
+                "港澳台",
+                "http://c1.fengshows-cdn.com/a/2021_22/79dcc3a9da358a3.png",
+                "7c96b084-60e1-40a9-89c5-682b994fb680",
+                "",
+                "",
+                false,
+                mustToken = false
+            ),
+            TV(
+                58,
+                "凤凰卫视中文台",
+                "",
+                listOf(),
+                0,
+                "港澳台",
+                "http://c1.fengshows-cdn.com/a/2021_22/ede3d9e09be28e5.png",
+                "f7f48462-9b13-485b-8101-7b54716411ec",
+                "",
+                "",
+                false,
+                mustToken = false
+            ),
+            TV(
+                59,
+                "凤凰卫视香港台",
+                "",
+                listOf(),
+                0,
+                "港澳台",
+                "http://c1.fengshows-cdn.com/a/2021_23/325d941090bee17.png",
+                "15e02d92-1698-416c-af2f-3e9a872b4d78",
+                "",
+                "",
+                false,
+                mustToken = false
+            ),
+        ),
+        "国际" to listOf(
+            TV(
+                60,
                 "CGTN",
                 "CGTN",
                 listOf("http://live.cgtn.com/1000/prog_index.m3u8"),
                 0,
-                "国际频道",
+                "国际",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/a72dff758ca1c17cd0ecc8cedc11b893d208f409d5e6302faa0e9d298848abc3.png?imageMogr2/format/webp",
                 "600014550",
                 "2022575001",
@@ -890,12 +934,12 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                58,
+                61,
                 "CGTN 法语频道",
                 "CGTN法语频道",
                 listOf("https://livefr.cgtn.com/1000f/prog_index.m3u8"),
                 0,
-                "国际频道",
+                "国际",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/a8d0046a47433d952bf6ed17062deb8bd2184ba9aec0f7781df6bf9487a3ffcf.png?imageMogr2/format/webp",
                 "600084704",
                 "2022574901",
@@ -904,12 +948,12 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                59,
+                62,
                 "CGTN 俄语频道",
                 "CGTN俄语频道",
                 listOf("http://liveru.cgtn.com/1000r/prog_index.m3u8"),
                 0,
-                "国际频道",
+                "国际",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/bf0a820893cbaf20dd0333e27042e1ef9c8806e5b602b6a8c95af399db0bc77a.png?imageMogr2/format/webp",
                 "600084758",
                 "2022574801",
@@ -918,12 +962,12 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                60,
+                63,
                 "CGTN 阿拉伯语频道",
                 "CGTN阿拉伯语频道",
                 listOf("http://livear.cgtn.com/1000a/prog_index.m3u8"),
                 0,
-                "国际频道",
+                "国际",
                 "https://resources.yangshipin.cn/assets/oms/image/202306/2e44e2aa3e7a1cedf07fd0ae59fe69e86a60a2632660a006e3e9e7397b2d107e.png?imageMogr2/format/webp",
                 "600084782",
                 "2022574601",
@@ -932,7 +976,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                61,
+                64,
                 "CGTN 西班牙语频道",
                 "CGTN西班牙语频道",
                 listOf(
@@ -940,7 +984,7 @@ object TVList {
                     "http://livees.cgtn.com/1000e/prog_index.m3u8"
                 ),
                 0,
-                "国际频道",
+                "国际",
                 "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
                 "600084744",
                 "2022571701",
@@ -949,12 +993,12 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                62,
+                65,
                 "CGTN 纪录频道",
                 "CGTN外语纪录频道",
                 listOf("https://livedoc.cgtn.com/500d/prog_index.m3u8"),
                 0,
-                "国际频道",
+                "国际",
                 "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
                 "600084781",
                 "2022574701",
