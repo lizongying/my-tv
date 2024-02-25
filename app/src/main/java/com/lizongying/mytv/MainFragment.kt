@@ -222,7 +222,7 @@ class MainFragment : BrowseSupportFragment() {
         ) {
             if (item is TVViewModel) {
                 tvListViewModel.setItemPositionCurrent(item.id.value!!)
-                (activity as MainActivity).keepRunnable()
+                (activity as MainActivity).mainActive()
             }
         }
     }
@@ -321,7 +321,7 @@ class MainFragment : BrowseSupportFragment() {
             putInt(POSITION, itemPosition)
             apply()
         }
-        Log.i(TAG, "$POSITION saved")
+        Log.i(TAG, "$POSITION $itemPosition saved")
     }
 
     override fun onDestroy() {
