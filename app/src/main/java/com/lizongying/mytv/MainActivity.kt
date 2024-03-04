@@ -27,10 +27,11 @@ import java.security.MessageDigest
 
 class MainActivity : FragmentActivity() {
 
-    var playerFragment = PlayerFragment()
-    private val mainFragment = MainFragment()
-    private val infoFragment = InfoFragment()
-    private val channelFragment = ChannelFragment()
+    private var ready = 0
+    private var playerFragment = PlayerFragment()
+    private var mainFragment = MainFragment()
+    private var infoFragment = InfoFragment()
+    private var channelFragment = ChannelFragment()
     private lateinit var settingFragment: SettingFragment
 
     private var doubleBackToExitPressedOnce = false
@@ -127,7 +128,7 @@ class MainActivity : FragmentActivity() {
 
         if (mainFragment.isHidden) {
             transaction.show(mainFragment)
-            keepRunnable()
+            mainActive()
         } else {
             transaction.hide(mainFragment)
         }
@@ -135,9 +136,14 @@ class MainActivity : FragmentActivity() {
         transaction.commit()
     }
 
-    fun keepRunnable() {
+    fun mainActive() {
         handler.removeCallbacks(hideMain)
         handler.postDelayed(hideMain, delayHideMain)
+    }
+
+    fun settingActive() {
+        handler.removeCallbacks(hideSetting)
+        handler.postDelayed(hideSetting, delayHideSetting)
     }
 
     private val hideMain = Runnable {
@@ -159,7 +165,11 @@ class MainActivity : FragmentActivity() {
     }
 
     fun fragmentReady() {
-        mainFragment.fragmentReady()
+        ready++
+        Log.i(TAG, "ready $ready")
+        if (ready == 4) {
+            mainFragment.fragmentReady()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -218,8 +228,7 @@ class MainActivity : FragmentActivity() {
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
             settingFragment.show(supportFragmentManager, "setting")
-            handler.removeCallbacks(hideSetting)
-            handler.postDelayed(hideSetting, delayHideSetting)
+            settingActive()
         } else {
             handler.removeCallbacks(hideSetting)
             settingFragment.dismiss()

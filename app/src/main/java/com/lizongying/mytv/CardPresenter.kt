@@ -47,6 +47,11 @@ class CardPresenter(
                 .centerInside()
                 .into(cardView.mainImageView)
 
+            "兵团卫视" -> Glide.with(viewHolder.view.context)
+                .load(R.drawable.bingtuan)
+                .centerInside()
+                .into(cardView.mainImageView)
+
             else -> Glide.with(viewHolder.view.context)
                 .load(tvViewModel.logo.value)
                 .centerInside()

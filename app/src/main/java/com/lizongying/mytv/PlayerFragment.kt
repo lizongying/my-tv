@@ -80,6 +80,7 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
                         super.onPlayerError(error)
 
                         Log.e(TAG, "PlaybackException $error")
+                        tvViewModel?.changed()
                     }
                 })
             }
@@ -107,10 +108,12 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
         if (playerView != null && playerView!!.player?.isPlaying == false) {
             Log.i(TAG, "replay")
             playerView!!.player?.prepare()
+            playerView!!.player?.play()
         }
         if (exoPlayer?.isPlaying == false) {
             Log.i(TAG, "replay")
             exoPlayer?.prepare()
+            exoPlayer?.play()
         }
     }
 
