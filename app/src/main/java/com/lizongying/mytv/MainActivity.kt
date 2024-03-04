@@ -42,8 +42,6 @@ class MainActivity : FragmentActivity() {
     private val delayHideMain: Long = 5000
     private val delayHideSetting: Long = 10000
 
-    private var versionName = ""
-
     init {
         lifecycleScope.launch(Dispatchers.IO) {
             val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
@@ -73,8 +71,14 @@ class MainActivity : FragmentActivity() {
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
-        versionName = getPackageInfo().versionName
-        settingFragment = SettingFragment(versionName, SP.channelReversal, SP.channelNum, SP.bootStartup)
+        val packageInfo = getPackageInfo()
+        val versionName = packageInfo.versionName
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode.toLong()
+        }
+        settingFragment = SettingFragment(versionName, versionCode, SP.channelReversal, SP.channelNum, SP.bootStartup)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
