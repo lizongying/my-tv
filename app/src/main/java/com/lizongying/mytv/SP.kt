@@ -35,8 +35,7 @@ object SP {
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUM, value).apply()
 
     var bootStartup: Boolean
-        // TODO It‘s more friendly to change the default value to false
-        get() = sp.getBoolean(KEY_BOOT_STARTUP, true)
+        get() = sp.getBoolean(KEY_BOOT_STARTUP, false)
         set(value) = sp.edit().putBoolean(KEY_BOOT_STARTUP, value).apply()
 
     var itemPosition: Int
