@@ -47,7 +47,7 @@ class MainActivity : FragmentActivity() {
     lateinit var sharedPref: SharedPreferences
     private var channelReversal = false
     private var channelNum = true
-    private var bootStartup = true
+    private var bootStartup = false
 
     init {
         lifecycleScope.launch(Dispatchers.IO) {

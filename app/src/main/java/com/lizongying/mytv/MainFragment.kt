@@ -167,6 +167,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                             )
                         } else {
                             if (check(tvViewModel)) {
+                                // TODO lastVideoUrl
                                 (activity as? MainActivity)?.play(tvViewModel)
                                 (activity as? MainActivity)?.showInfoFragment(tvViewModel)
                                 setPosition(
