@@ -38,5 +38,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <provider
+            android:name=".InitializerProvider"
+            android:authorities="${applicationId}.InitializerProvider"
+            android:exported="false"
+            android:initOrder="900" />
     </application>
 </manifest>
