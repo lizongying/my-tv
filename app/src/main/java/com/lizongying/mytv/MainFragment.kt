@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -37,8 +36,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     var tvListViewModel = TVListViewModel()
 
-    private lateinit var sharedPref: SharedPreferences
-
     private var lastVideoUrl = ""
 
     private val handler = Handler(Looper.getMainLooper())
@@ -56,9 +53,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         super.onActivityCreated(savedInstanceState)
 
         activity?.let { request.initYSP(it) }
-        sharedPref = (activity as? MainActivity)?.sharedPref!!
 
-        itemPosition = sharedPref.getInt(POSITION, 0)
+        itemPosition = SP.itemPosition
 
         view?.post {
             val content = binding.content
@@ -343,10 +339,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onStop() {
         Log.i(TAG, "onStop")
         super.onStop()
-        with(sharedPref.edit()) {
-            putInt(POSITION, itemPosition)
-            apply()
-        }
+        SP.itemPosition = itemPosition
         Log.i(TAG, "$POSITION $itemPosition saved")
     }
 

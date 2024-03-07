@@ -47,6 +47,10 @@ class InfoFragment : Fragment() {
                 .load(R.drawable.bingtuan)
                 .into(binding.infoLogo)
 
+            "CETV1" -> Glide.with(this)
+                .load(R.drawable.cetv1)
+                .into(binding.infoLogo)
+
             else -> Glide.with(this)
                 .load(tvViewModel.logo.value)
                 .into(binding.infoLogo)

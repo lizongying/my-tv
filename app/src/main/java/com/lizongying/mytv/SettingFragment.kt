@@ -39,21 +39,21 @@ class SettingFragment(
         val switchChannelReversal = _binding?.switchChannelReversal
         switchChannelReversal?.isChecked = channelReversal
         switchChannelReversal?.setOnCheckedChangeListener { _, isChecked ->
-            (activity as MainActivity).saveChannelReversal(isChecked)
+            SP.channelReversal = isChecked
             (activity as MainActivity).settingActive()
         }
 
         val switchChannelNum = _binding?.switchChannelNum
         switchChannelNum?.isChecked = channelNum
         switchChannelNum?.setOnCheckedChangeListener { _, isChecked ->
-            (activity as MainActivity).saveChannelNum(isChecked)
+            SP.channelNum = isChecked
             (activity as MainActivity).settingActive()
         }
 
         val switchBootStartup = _binding?.switchBootStartup
         switchBootStartup?.isChecked = bootStartup
         switchBootStartup?.setOnCheckedChangeListener { _, isChecked ->
-            (activity as MainActivity).saveBootStartup(isChecked)
+            SP.bootStartup = isChecked
             (activity as MainActivity).settingActive()
         }
 

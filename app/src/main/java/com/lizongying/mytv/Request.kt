@@ -9,6 +9,8 @@ import com.lizongying.mytv.Utils.getDateFormat
 import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.api.Auth
 import com.lizongying.mytv.api.AuthRequest
+import com.lizongying.mytv.api.FAuth
+import com.lizongying.mytv.api.FAuthService
 import com.lizongying.mytv.api.Info
 import com.lizongying.mytv.api.LiveInfo
 import com.lizongying.mytv.api.LiveInfoRequest
@@ -33,6 +35,7 @@ class Request {
     private var yspApiService: YSPApiService = ApiClient().yspApiService
     private var yspBtraceService: YSPBtraceService = ApiClient().yspBtraceService
     private var yspProtoService: YSPProtoService = ApiClient().yspProtoService
+    private var fAuthService: FAuthService = ApiClient().fAuthService
     private var ysp: YSP? = null
     private var token = ""
 
@@ -328,7 +331,7 @@ class Request {
                             token = response.body()?.data?.token!!
                             Log.i(TAG, "info success $token")
                             val cookie =
-                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
                             fetchVideo(tvModel, cookie)
                         } else {
                             Log.e(TAG, "info status error")
@@ -361,12 +364,53 @@ class Request {
                 })
         } else {
             val cookie =
-                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
             fetchVideo(tvModel, cookie)
         }
     }
 
+    private var fAuth: Call<FAuth>? = null
+    fun fetchFAuth(tvModel: TVViewModel) {
+        call?.cancel()
+        callAuth?.cancel()
+        fAuth?.cancel()
+
+        val title = tvModel.title.value
+
+        fAuth = fAuthService.getAuth(tvModel.getTV().pid, "HD")
+        fAuth?.enqueue(object : Callback<FAuth> {
+            override fun onResponse(call: Call<FAuth>, response: Response<FAuth>) {
+                if (response.isSuccessful && response.body()?.data?.live_url != null) {
+                    val url = response.body()?.data?.live_url!!
+//                    Log.d(TAG, "$title url $url")
+                    tvModel.addVideoUrl(url)
+                    tvModel.allReady()
+                    tvModel.retryTimes = 0
+                } else {
+                    Log.e(TAG, "auth status error")
+                    if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
+                        tvModel.tokenRetryTimes++
+                        fetchFAuth(tvModel)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<FAuth>, t: Throwable) {
+                Log.e(TAG, "auth request error $t")
+                if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
+                    tvModel.tokenRetryTimes++
+                    fetchFAuth(tvModel)
+                }
+            }
+        })
+    }
+
     fun fetchData(tvModel: TVViewModel) {
+        if (tvModel.getTV().channel == "港澳台") {
+            fetchFAuth(tvModel)
+            return
+        }
+
         if (tvModel.getTV().needToken) {
             if (needAuth) {
                 fetchAuth(tvModel)

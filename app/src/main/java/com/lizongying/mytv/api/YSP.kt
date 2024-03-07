@@ -1,9 +1,9 @@
 package com.lizongying.mytv.api
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.lizongying.mytv.Encryptor
 import com.lizongying.mytv.MainActivity
+import com.lizongying.mytv.SP
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel
 import kotlin.math.floor
@@ -54,14 +54,11 @@ class YSP(var context: Context) {
     var token = ""
 
     private var encryptor: Encryptor? = null
-    private lateinit var sharedPref: SharedPreferences
 
     init {
         if (context is MainActivity) {
             encryptor = Encryptor()
             encryptor!!.init(context)
-
-            sharedPref = (context as MainActivity).sharedPref
         }
 
         guid = getGuid()
@@ -110,23 +107,17 @@ class YSP(var context: Context) {
     }
 
     fun getGuid(): String {
-        var guid = sharedPref.getString("guid", "")
-        if (guid == null || guid.length < 18) {
+        var guid = SP.guid
+        if (guid.length < 18) {
             guid = generateGuid()
-            with(sharedPref.edit()) {
-                putString("guid", guid)
-                apply()
-            }
+            SP.guid = guid
         }
         return guid
     }
 
     private fun newGuid(): String {
         guid = generateGuid()
-        with(sharedPref.edit()) {
-            putString("guid", guid)
-            apply()
-        }
+        SP.guid = guid
         return guid
     }
 

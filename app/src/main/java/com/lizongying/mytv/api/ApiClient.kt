@@ -16,6 +16,7 @@ class ApiClient {
     private val devUrl = "http://10.0.2.2:8081/"
     private val protoUrl = "https://capi.yangshipin.cn/"
     private val traceUrl = "https://btrace.yangshipin.cn/"
+    private val fUrl = "https://m.fengshows.com/"
 
     private var okHttpClient = getUnsafeOkHttpClient()
 
@@ -57,6 +58,14 @@ class ApiClient {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(YSPBtraceService::class.java)
+    }
+
+    val fAuthService: FAuthService by lazy {
+        Retrofit.Builder()
+            .baseUrl(fUrl)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(FAuthService::class.java)
     }
 
     private fun getUnsafeOkHttpClient(): OkHttpClient {

@@ -1,7 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
@@ -44,11 +42,6 @@ class MainActivity : FragmentActivity() {
     private val delayHideMain: Long = 5000
     private val delayHideSetting: Long = 10000
 
-    lateinit var sharedPref: SharedPreferences
-    private var channelReversal = false
-    private var channelNum = true
-    private var bootStartup = false
-
     init {
         lifecycleScope.launch(Dispatchers.IO) {
             val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
@@ -78,12 +71,6 @@ class MainActivity : FragmentActivity() {
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
-
-        sharedPref = getPreferences(Context.MODE_PRIVATE)
-        channelReversal = sharedPref.getBoolean(CHANNEL_REVERSAL, channelReversal)
-        channelNum = sharedPref.getBoolean(CHANNEL_NUM, channelNum)
-        bootStartup = sharedPref.getBoolean(BOOT_STARTUP, bootStartup)
-
         val packageInfo = getPackageInfo()
         val versionName = packageInfo.versionName
         val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -91,13 +78,12 @@ class MainActivity : FragmentActivity() {
         } else {
             packageInfo.versionCode.toLong()
         }
-        settingFragment =
-            SettingFragment(versionName, versionCode, channelReversal, channelNum, bootStartup)
+        settingFragment = SettingFragment(versionName, versionCode, SP.channelReversal, SP.channelNum, SP.bootStartup)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
         infoFragment.show(tvViewModel)
-        if (channelNum) {
+        if (SP.channelNum) {
             channelFragment.show(tvViewModel)
         }
     }
@@ -111,7 +97,7 @@ class MainActivity : FragmentActivity() {
             return
         }
 
-        if (channelNum) {
+        if (SP.channelNum) {
             channelFragment.show(channel)
         }
     }
@@ -239,30 +225,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    fun saveChannelReversal(channelReversal: Boolean) {
-        with(sharedPref.edit()) {
-            putBoolean(CHANNEL_REVERSAL, channelReversal)
-            apply()
-        }
-        this.channelReversal = channelReversal
-    }
-
-    fun saveChannelNum(channelNum: Boolean) {
-        with(sharedPref.edit()) {
-            putBoolean(CHANNEL_NUM, channelNum)
-            apply()
-        }
-        this.channelNum = channelNum
-    }
-
-    fun saveBootStartup(bootStartup: Boolean) {
-        with(sharedPref.edit()) {
-            putBoolean(BOOT_STARTUP, bootStartup)
-            apply()
-        }
-        this.bootStartup = bootStartup
-    }
-
     private fun showSetting() {
         if (!mainFragment.isHidden) {
             return
@@ -286,7 +248,7 @@ class MainActivity : FragmentActivity() {
 
     private fun channelUp() {
         if (mainFragment.isHidden) {
-            if (channelReversal) {
+            if (SP.channelReversal) {
                 next()
                 return
             }
@@ -303,7 +265,7 @@ class MainActivity : FragmentActivity() {
 
     private fun channelDown() {
         if (mainFragment.isHidden) {
-            if (channelReversal) {
+            if (SP.channelReversal) {
                 prev()
                 return
             }
@@ -557,10 +519,7 @@ class MainActivity : FragmentActivity() {
         handler.removeCallbacks(hideMain)
     }
 
-    companion object {
-        private const val TAG = "MainActivity"
-        private const val CHANNEL_REVERSAL = "channel_reversal"
-        private const val CHANNEL_NUM = "channel_num"
-        const val BOOT_STARTUP = "boot_startup"
+    private companion object {
+        const val TAG = "MainActivity"
     }
 }
