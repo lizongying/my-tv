@@ -41,7 +41,6 @@
         <provider
             android:name=".InitializerProvider"
             android:authorities="${applicationId}.InitializerProvider"
-            android:exported="false"
-            android:initOrder="900" />
+            android:exported="false"/>
     </application>
 </manifest>

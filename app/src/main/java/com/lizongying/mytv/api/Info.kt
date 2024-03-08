@@ -1,6 +1,5 @@
 package com.lizongying.mytv.api
 
-
 data class Info(
     val code: Int?,
     val msg: String?,

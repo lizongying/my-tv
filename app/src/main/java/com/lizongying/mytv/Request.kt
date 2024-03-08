@@ -54,6 +54,10 @@ class Request {
         handler.post(tokenRunnable)
     }
 
+    fun onDestroy() {
+        handler.removeCallbacks(tokenRunnable)
+    }
+
     fun initYSP(context: Context) {
         ysp = YSP(context)
     }
