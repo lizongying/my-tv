@@ -14,6 +14,7 @@ import com.lizongying.mytv.api.FAuthService
 import com.lizongying.mytv.api.Info
 import com.lizongying.mytv.api.LiveInfo
 import com.lizongying.mytv.api.LiveInfoRequest
+import com.lizongying.mytv.api.Token
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.api.YSPApiService
 import com.lizongying.mytv.api.YSPBtraceService
@@ -28,6 +29,7 @@ import retrofit2.Response
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.math.max
 
 
 class Request {
@@ -435,24 +437,53 @@ class Request {
     inner class TokenRunnable : Runnable {
         override fun run() {
             fetchToken()
-            handler.postDelayed(this, 600000)
         }
     }
 
     fun fetchToken() {
-        yspTokenService.getInfo(token)
-            .enqueue(object : Callback<Info> {
-                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+        yspTokenService.getToken(token)
+            .enqueue(object : Callback<Token> {
+                override fun onResponse(call: Call<Token>, response: Response<Token>) {
                     if (response.isSuccessful) {
-                        token = response.body()?.data?.token!!
-                        Log.i(TAG, "info success $token")
+                        val t = response.body()?.t
+                        val e = response.body()?.e
+                        if (!t.isNullOrEmpty()) {
+                            token = t
+                            Log.e(TAG, "token success $token")
+                            if (e != null) {
+                                handler.postDelayed(
+                                    tokenRunnable,
+                                    max(600000, (e - 1500) * 1000).toLong()
+                                )
+                            } else {
+                                Log.e(TAG, "e empty")
+                                handler.postDelayed(
+                                    tokenRunnable,
+                                    600000
+                                )
+                            }
+                        } else {
+                            Log.e(TAG, "token empty")
+                            handler.postDelayed(
+                                tokenRunnable,
+                                600000
+                            )
+                        }
                     } else {
                         Log.e(TAG, "token status error")
+                        handler.postDelayed(
+                            tokenRunnable,
+                            600000
+                        )
                     }
                 }
 
-                override fun onFailure(call: Call<Info>, t: Throwable) {
+                override fun onFailure(call: Call<Token>, t: Throwable) {
                     Log.e(TAG, "token request error $t")
+                    handler.postDelayed(
+                        tokenRunnable,
+                        600000
+                    )
                 }
             })
     }
