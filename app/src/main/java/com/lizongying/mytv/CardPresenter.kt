@@ -52,6 +52,11 @@ class CardPresenter(
                 .centerInside()
                 .into(cardView.mainImageView)
 
+            "CETV1" -> Glide.with(viewHolder.view.context)
+                .load(R.drawable.cetv1)
+                .centerInside()
+                .into(cardView.mainImageView)
+
             else -> Glide.with(viewHolder.view.context)
                 .load(tvViewModel.logo.value)
                 .centerInside()
