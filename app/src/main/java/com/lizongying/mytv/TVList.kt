@@ -127,7 +127,7 @@ object TVList {
             ),
             TV(
                 8,
-                "CCTV9 记录",
+                "CCTV9 纪录",
                 "CCTV9",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226197/index.m3u8"),
                 0,
