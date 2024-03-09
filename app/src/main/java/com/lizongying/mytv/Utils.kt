@@ -26,6 +26,10 @@ object Utils {
         return (System.currentTimeMillis() - between) / 1000
     }
 
+    fun setBetween(currentTimeMillis: Long) {
+        between = System.currentTimeMillis() - currentTimeMillis
+    }
+
     suspend fun init() {
         var currentTimeMillis: Long = 0
         try {
