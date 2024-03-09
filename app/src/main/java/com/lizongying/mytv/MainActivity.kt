@@ -39,7 +39,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var gestureDetector: GestureDetector
 
     private val handler = Handler()
-    private val delayHideMain: Long = 5000
+    private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
 
     init {
