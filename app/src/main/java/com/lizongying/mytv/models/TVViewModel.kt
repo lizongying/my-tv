@@ -53,8 +53,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val videoIndex: LiveData<Int>
         get() = _videoIndex
 
-    private val _logo = MutableLiveData<String>()
-    val logo: LiveData<String>
+    private val _logo = MutableLiveData<Any>()
+    val logo: LiveData<Any>
         get() = _logo
 
     private val _pid = MutableLiveData<String>()
@@ -73,10 +73,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val ready: LiveData<Boolean>
         get() = _ready
 
-    private var mMinimumLoadableRetryCount = 5
-
     var seq = 0
-
 
     fun addVideoUrl(url: String) {
         if (_videoUrl.value?.isNotEmpty() == true) {
@@ -112,10 +109,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun setVideoIndex(videoIndex: Int) {
         _videoIndex.value = videoIndex
-    }
-
-    fun setLogo(url: String) {
-        _logo.value = url
     }
 
     init {
@@ -195,10 +188,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun setHeaders(headers: Map<String, String>) {
         mHeaders = headers
-    }
-
-    fun setMinimumLoadableRetryCount(minimumLoadableRetryCount: Int) {
-        mMinimumLoadableRetryCount = minimumLoadableRetryCount
     }
 
     /**
