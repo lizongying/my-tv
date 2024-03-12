@@ -1,8 +1,6 @@
 package com.lizongying.mytv
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -14,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lizongying.mytv.Utils.dpToPx
-import com.lizongying.mytv.Utils.getDateTimestamp
+import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.databinding.RowBinding
 import com.lizongying.mytv.databinding.ShowBinding
 import com.lizongying.mytv.models.TVListViewModel
@@ -32,14 +30,9 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     private var _binding: ShowBinding? = null
     private val binding get() = _binding!!
 
-    private var request = Request()
-
     var tvListViewModel = TVListViewModel()
 
     private var lastVideoUrl = ""
-
-    private val handler = Handler(Looper.getMainLooper())
-    private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +45,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activity?.let { request.initYSP(it) }
+        activity?.let { YSP.init(it) }
 
         itemPosition = SP.itemPosition
 
@@ -71,6 +64,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     tvViewModel.setItemPosition(idx2)
                     tvListViewModelCurrent.addTVViewModel(tvViewModel)
                     tvListViewModel.addTVViewModel(tvViewModel)
+
+                    updateEPG(tvViewModel)
                 }
                 tvListViewModel.maxNum.add(v.size)
 
@@ -112,9 +107,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 idx++
             }
 
-            mUpdateProgramRunnable = UpdateProgramRunnable()
-            handler.post(mUpdateProgramRunnable)
-
             if (itemPosition >= tvListViewModel.size()) {
                 itemPosition = 0
             }
@@ -155,7 +147,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                         if (tvViewModel.pid.value != "") {
                             Log.i(TAG, "request $title")
                             lifecycleScope.launch(Dispatchers.IO) {
-                                tvViewModel.let { request.fetchData(it) }
+                                tvViewModel.let { Request.fetchData(it) }
                             }
                             (activity as? MainActivity)?.showInfoFragment(tvViewModel)
                             setPosition(
@@ -304,30 +296,11 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         }
     }
 
-    fun updateProgram(tvViewModel: TVViewModel) {
-        val timestamp = getDateTimestamp()
-        if (timestamp - tvViewModel.programUpdateTime > 60) {
-            if (tvViewModel.program.value!!.isEmpty()) {
-                tvViewModel.programUpdateTime = timestamp
-                request.fetchProgram(tvViewModel)
-            } else {
-                if (tvViewModel.program.value!!.last().et - timestamp < 600) {
-                    tvViewModel.programUpdateTime = timestamp
-                    request.fetchProgram(tvViewModel)
-                }
-            }
-        }
-    }
-
-    inner class UpdateProgramRunnable : Runnable {
-        override fun run() {
-            tvListViewModel.tvListViewModel.value?.filter { it.programId.value != null && it.programId.value != "" }
-                ?.forEach { tvViewModel ->
-                    updateProgram(
-                        tvViewModel
-                    )
-                }
-            handler.postDelayed(this, 60000)
+    private fun updateEPG(tvViewModel: TVViewModel) {
+        if (tvViewModel.getTV().channel == "港澳台") {
+            Request.fetchFEPG(tvViewModel)
+        } else {
+            Request.fetchYEPG(tvViewModel)
         }
     }
 
@@ -346,9 +319,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         super.onDestroy()
-        if (::mUpdateProgramRunnable.isInitialized) {
-            handler.removeCallbacks(mUpdateProgramRunnable)
-        }
     }
 
     override fun onDestroyView() {

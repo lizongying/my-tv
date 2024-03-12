@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Base64
@@ -11,9 +10,12 @@ import com.lizongying.mytv.api.Auth
 import com.lizongying.mytv.api.AuthRequest
 import com.lizongying.mytv.api.FAuth
 import com.lizongying.mytv.api.FAuthService
+import com.lizongying.mytv.api.FEPG
 import com.lizongying.mytv.api.Info
+import com.lizongying.mytv.api.InfoV2
 import com.lizongying.mytv.api.LiveInfo
 import com.lizongying.mytv.api.LiveInfoRequest
+import com.lizongying.mytv.api.Token
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.api.YSPApiService
 import com.lizongying.mytv.api.YSPBtraceService
@@ -28,20 +30,22 @@ import retrofit2.Response
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.math.max
 
 
-class Request {
+object Request {
+    private const val TAG = "Request"
     private var yspTokenService: YSPTokenService = ApiClient().yspTokenService
     private var yspApiService: YSPApiService = ApiClient().yspApiService
     private var yspBtraceService: YSPBtraceService = ApiClient().yspBtraceService
     private var yspProtoService: YSPProtoService = ApiClient().yspProtoService
     private var fAuthService: FAuthService = ApiClient().fAuthService
-    private var ysp: YSP? = null
+
     private var token = ""
+    private var tokenFH = ""
 
     private var needAuth = false
 
-    // TODO onDestroy
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var btraceRunnable: BtraceRunnable
     private var tokenRunnable: TokenRunnable = TokenRunnable()
@@ -50,12 +54,16 @@ class Request {
     private val input =
         """{"mver":"1","subver":"1.2","host":"www.yangshipin.cn/#/tv/home?pid=","referer":"","canvas":"YSPANGLE(Apple,ANGLEMetalRenderer:AppleM1Pro,UnspecifiedVersion)"}""".toByteArray()
 
-    init {
-        handler.post(tokenRunnable)
+    private var listener: RequestListener? = null
+
+    fun onCreate() {
+        Log.i(TAG, "onCreate")
+        fetchInfoV2()
     }
 
-    fun initYSP(context: Context) {
-        ysp = YSP(context)
+    fun onDestroy() {
+        Log.i(TAG, "onDestroy")
+        handler.removeCallbacks(tokenRunnable)
     }
 
     var call: Call<LiveInfo>? = null
@@ -66,9 +74,9 @@ class Request {
 
         val title = tvModel.title.value
 
-        val data = ysp?.getAuthData(tvModel)
-        val request = data?.let { AuthRequest(it) }
-        callAuth = request?.let { yspApiService.getAuth("guid=${ysp?.getGuid()}; $cookie", it) }
+        val data = YSP.getAuthData(tvModel)
+        val request = AuthRequest(data)
+        callAuth = request.let { yspApiService.getAuth("guid=${YSP.getGuid()}; $cookie", it) }
 
         callAuth?.enqueue(object : Callback<Auth> {
             override fun onResponse(call: Call<Auth>, response: Response<Auth>) {
@@ -77,7 +85,7 @@ class Request {
 
                     if (liveInfo?.data?.token != null) {
                         Log.i(TAG, "token ${liveInfo.data.token}")
-                        ysp?.token = liveInfo.data.token
+                        YSP.token = liveInfo.data.token
                         fetchVideo(tvModel, cookie)
                     } else {
                         Log.e(TAG, "$title token error")
@@ -147,12 +155,12 @@ class Request {
         val title = tvModel.title.value
 
         tvModel.seq = 0
-        val data = ysp?.switch(tvModel)
-        val request = data?.let { LiveInfoRequest(it) }
-        call = request?.let {
+        val data = YSP.switch(tvModel)
+        val request = LiveInfoRequest(data)
+        call = request.let {
             yspApiService.getLiveInfo(
-                "guid=${ysp?.getGuid()}; $cookie",
-                ysp!!.token,
+                "guid=${YSP.getGuid()}; $cookie",
+                YSP.token,
                 it
             )
         }
@@ -323,6 +331,7 @@ class Request {
     }
 
     fun fetchVideo(tvModel: TVViewModel) {
+        Log.d(TAG, "fetchVideo")
         if (token == "") {
             yspTokenService.getInfo("")
                 .enqueue(object : Callback<Info> {
@@ -377,7 +386,12 @@ class Request {
 
         val title = tvModel.title.value
 
-        fAuth = fAuthService.getAuth(tvModel.getTV().pid, "HD")
+        var qa = "HD"
+        if (tokenFH != "") {
+            qa = "FHD"
+        }
+
+        fAuth = fAuthService.getAuth(tokenFH, tvModel.getTV().pid, qa)
         fAuth?.enqueue(object : Callback<FAuth> {
             override fun onResponse(call: Call<FAuth>, response: Response<FAuth>) {
                 if (response.isSuccessful && response.body()?.data?.live_url != null) {
@@ -428,32 +442,122 @@ class Request {
         }
     }
 
-    inner class TokenRunnable : Runnable {
+    class TokenRunnable : Runnable {
         override fun run() {
             fetchToken()
             handler.postDelayed(this, 600000)
         }
     }
 
-    fun fetchToken() {
-        yspTokenService.getInfo(token)
-            .enqueue(object : Callback<Info> {
-                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+    private fun fetchInfoV2() {
+        yspTokenService.getInfoV2()
+            .enqueue(object : Callback<InfoV2> {
+                override fun onResponse(call: Call<InfoV2>, response: Response<InfoV2>) {
                     if (response.isSuccessful) {
-                        token = response.body()?.data?.token!!
-                        Log.i(TAG, "info success $token")
+                        val t = response.body()?.t
+                        val f = response.body()?.f
+                        val e = response.body()?.e
+                        val c = response.body()?.c
+                        if (!t.isNullOrEmpty()) {
+                            token = t
+                            Log.i(TAG, "token success $token")
+                            if (e != null) {
+                                handler.postDelayed(
+                                    tokenRunnable,
+                                    max(30 * 60 * 1000, (e - 1500) * 1000).toLong()
+                                )
+                            } else {
+                                Log.e(TAG, "e empty")
+                                handler.postDelayed(
+                                    tokenRunnable,
+                                    30 * 60 * 1000
+                                )
+                            }
+                        } else {
+                            Log.e(TAG, "token empty")
+                            handler.postDelayed(
+                                tokenRunnable,
+                                30 * 60 * 1000
+                            )
+                        }
+                        if (!f.isNullOrEmpty()) {
+                            tokenFH = f
+                            Log.i(TAG, "tokenFH success $tokenFH")
+                        }
+                        if (c != null) {
+                            Utils.setBetween(c * 1000L)
+                            Log.i(TAG, "current time $c")
+                        }
                     } else {
                         Log.e(TAG, "token status error")
+                        handler.postDelayed(
+                            tokenRunnable,
+                            30 * 60 * 1000
+                        )
                     }
+                    listener?.onRequestFinished()
                 }
 
-                override fun onFailure(call: Call<Info>, t: Throwable) {
+                override fun onFailure(call: Call<InfoV2>, t: Throwable) {
                     Log.e(TAG, "token request error $t")
+                    handler.postDelayed(
+                        tokenRunnable,
+                        30 * 60 * 1000
+                    )
+                    listener?.onRequestFinished()
                 }
             })
     }
 
-    inner class BtraceRunnable(private val tvModel: TVViewModel) : Runnable {
+    fun fetchToken() {
+        yspTokenService.getToken(token)
+            .enqueue(object : Callback<Token> {
+                override fun onResponse(call: Call<Token>, response: Response<Token>) {
+                    if (response.isSuccessful) {
+                        val t = response.body()?.t
+                        val e = response.body()?.e
+                        if (!t.isNullOrEmpty()) {
+                            token = t
+                            Log.e(TAG, "token success $token")
+                            if (e != null) {
+                                handler.postDelayed(
+                                    tokenRunnable,
+                                    max(30 * 60 * 1000, (e - 1500) * 1000).toLong()
+                                )
+                            } else {
+                                Log.e(TAG, "e empty")
+                                handler.postDelayed(
+                                    tokenRunnable,
+                                    30 * 60 * 1000
+                                )
+                            }
+                        } else {
+                            Log.e(TAG, "token empty")
+                            handler.postDelayed(
+                                tokenRunnable,
+                                30 * 60 * 1000
+                            )
+                        }
+                    } else {
+                        Log.e(TAG, "token status error")
+                        handler.postDelayed(
+                            tokenRunnable,
+                            30 * 60 * 1000
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<Token>, t: Throwable) {
+                    Log.e(TAG, "token request error $t")
+                    handler.postDelayed(
+                        tokenRunnable,
+                        30 * 60 * 1000
+                    )
+                }
+            })
+    }
+
+    class BtraceRunnable(private val tvModel: TVViewModel) : Runnable {
         override fun run() {
             fetchBtrace(tvModel)
             handler.postDelayed(this, 60000)
@@ -463,11 +567,11 @@ class Request {
     fun fetchBtrace(tvModel: TVViewModel) {
         val title = tvModel.title.value
 
-        val guid = ysp?.getGuid()!!
+        val guid = YSP.getGuid()
         val pid = tvModel.pid.value!!
         val sid = tvModel.sid.value!!
         yspBtraceService.kvcollect(
-            c_timestamp = ysp?.generateGuid()!!,
+            c_timestamp = YSP.generateGuid(),
             guid = guid,
             c_guid = guid,
             prog = sid,
@@ -475,7 +579,7 @@ class Request {
             fpid = pid,
             livepid = pid,
             sUrl = "https://www.yangshipin.cn/#/tv/home?pid=$pid",
-            playno = ysp?.getRand()!!,
+            playno = YSP.getRand(),
             ftime = getDateFormat("yyyy-MM-dd HH:mm:ss"),
             seq = tvModel.seq.toString(),
         )
@@ -529,7 +633,7 @@ class Request {
         })
     }
 
-    fun fetchProgram(tvViewModel: TVViewModel) {
+    fun fetchYEPG(tvViewModel: TVViewModel) {
         val title = tvViewModel.title.value
         yspProtoService.getProgram(tvViewModel.programId.value!!, getDateFormat("yyyyMMdd"))
             .enqueue(object : Callback<epgProgramModel.Response> {
@@ -540,7 +644,7 @@ class Request {
                     if (response.isSuccessful) {
                         val program = response.body()
                         if (program != null) {
-                            tvViewModel.addProgram(program.dataListList)
+                            tvViewModel.addYEPG(program.dataListList)
                             Log.d(TAG, "$title program ${program.dataListList.size}")
                         }
                     } else {
@@ -549,6 +653,31 @@ class Request {
                 }
 
                 override fun onFailure(call: Call<epgProgramModel.Response>, t: Throwable) {
+                    Log.e(TAG, "$title program request failed $t")
+                }
+            })
+    }
+
+    fun fetchFEPG(tvViewModel: TVViewModel) {
+        val title = tvViewModel.title.value
+        fAuthService.getEPG(tvViewModel.pid.value!!, getDateFormat("yyyyMMdd"))
+            .enqueue(object : Callback<List<FEPG>> {
+                override fun onResponse(
+                    call: Call<List<FEPG>>,
+                    response: Response<List<FEPG>>
+                ) {
+                    if (response.isSuccessful) {
+                        val program = response.body()
+                        if (program != null) {
+                            tvViewModel.addFEPG(program)
+                            Log.d(TAG, "$title program ${program.size}")
+                        }
+                    } else {
+                        Log.w(TAG, "$title program error")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<FEPG>>, t: Throwable) {
                     Log.e(TAG, "$title program request failed $t")
                 }
             })
@@ -567,7 +696,11 @@ class Request {
         }
     }
 
-    companion object {
-        private const val TAG = "Request"
+    interface RequestListener {
+        fun onRequestFinished()
+    }
+
+    fun setRequestListener(listener: RequestListener) {
+        this.listener = listener
     }
 }

@@ -10,4 +10,13 @@ interface YSPTokenService {
     fun getInfo(
         @Query("token") token: String = "",
     ): Call<Info>
+
+    @GET("my-tv/v2/token")
+    fun getToken(
+        @Query("token") token: String = "",
+    ): Call<Token>
+
+    @GET("my-tv/v2/info")
+    fun getInfoV2(
+    ): Call<InfoV2>
 }

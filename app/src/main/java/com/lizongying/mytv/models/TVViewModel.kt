@@ -11,8 +11,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.lizongying.mytv.TV
-import com.lizongying.mytv.Utils.getDateTimestamp
+import com.lizongying.mytv.api.FEPG
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
+import java.text.SimpleDateFormat
+import java.util.TimeZone
 
 class TVViewModel(private var tv: TV) : ViewModel() {
 
@@ -33,9 +35,9 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val programId: LiveData<String>
         get() = _programId
 
-    private var _program = MutableLiveData<MutableList<Program>>()
-    val program: LiveData<MutableList<Program>>
-        get() = _program
+    private var _epg = MutableLiveData<MutableList<EPG>>()
+    val epg: LiveData<MutableList<EPG>>
+        get() = _epg
 
     private val _id = MutableLiveData<Int>()
     val id: LiveData<Int>
@@ -53,8 +55,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val videoIndex: LiveData<Int>
         get() = _videoIndex
 
-    private val _logo = MutableLiveData<String>()
-    val logo: LiveData<String>
+    private val _logo = MutableLiveData<Any>()
+    val logo: LiveData<Any>
         get() = _logo
 
     private val _pid = MutableLiveData<String>()
@@ -73,10 +75,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val ready: LiveData<Boolean>
         get() = _ready
 
-    private var mMinimumLoadableRetryCount = 5
-
     var seq = 0
-
 
     fun addVideoUrl(url: String) {
         if (_videoUrl.value?.isNotEmpty() == true) {
@@ -114,10 +113,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _videoIndex.value = videoIndex
     }
 
-    fun setLogo(url: String) {
-        _logo.value = url
-    }
-
     init {
         _id.value = tv.id
         _title.value = tv.title
@@ -127,9 +122,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _programId.value = tv.programId
         _pid.value = tv.pid
         _sid.value = tv.sid
-        _program.value = mutableListOf()
     }
-
 
     fun getRowPosition(): Int {
         return rowPosition
@@ -159,46 +152,28 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         return tv
     }
 
-    fun getProgramOne(): Program? {
-        val programNew =
-            (_program.value?.filter { it.et > getDateTimestamp() })?.toMutableList()
-        if (programNew != null && _program.value != programNew) {
-            _program.value = programNew
-        }
-        if (_program.value!!.isEmpty()) {
-            return null
-        }
-        return _program.value?.first()
+    fun addYEPG(p: MutableList<Program>) {
+        _epg.value = p.map { EPG(it.name, it.st.toInt()) }.toMutableList()
     }
 
-    fun addProgram(p: MutableList<Program>) {
-        val timestamp = getDateTimestamp()
-
-        // after now & not empty & different
-        val p1 = (p.filter { it.et > timestamp }).toMutableList()
-        if (p1.isEmpty() || _program.value == p1) {
-            return
+    private fun formatFTime(s: String): Int {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val date = dateFormat.parse(s.substring(0, 19))
+        if (date != null) {
+            return (date.time / 1000).toInt()
         }
-
-        if (_program.value!!.isEmpty()) {
-            _program.value = p1
-        } else {
-            _program.value =
-                ((_program.value?.filter { it.et > timestamp && it.st < p1.first().st })?.plus(
-                    p1
-                ))?.toMutableList()
-        }
+        return 0
     }
 
+    fun addFEPG(p: List<FEPG>) {
+        _epg.value = p.map { EPG(it.title, formatFTime(it.event_time)) }.toMutableList()
+    }
 
     private var mHeaders: Map<String, String>? = mapOf()
 
     fun setHeaders(headers: Map<String, String>) {
         mHeaders = headers
-    }
-
-    fun setMinimumLoadableRetryCount(minimumLoadableRetryCount: Int) {
-        mMinimumLoadableRetryCount = minimumLoadableRetryCount
     }
 
     /**

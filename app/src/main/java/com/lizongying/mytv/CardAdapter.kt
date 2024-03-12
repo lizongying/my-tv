@@ -88,46 +88,19 @@ class CardAdapter(
 
         cardView.titleText = tvViewModel.title.value
 
-        when (tvViewModel.title.value) {
-            "CCTV8K 超高清" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.cctv8k)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "天津卫视" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.tianjin)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "新疆卫视" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.xinjiang)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "兵团卫视" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.bingtuan)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "CETV1" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.cetv1)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            else -> Glide.with(viewHolder.view.context)
-                .load(tvViewModel.logo.value)
-                .centerInside()
-                .into(cardView.mainImageView)
-        }
+        Glide.with(viewHolder.view.context)
+            .load(tvViewModel.logo.value)
+            .centerInside()
+            .into(cardView.mainImageView)
 
         cardView.mainImageView.setBackgroundColor(Color.WHITE)
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
 
-        tvViewModel.program.observe(owner) { _ ->
-            val program = tvViewModel.getProgramOne()
-            if (program != null) {
-                cardView.contentText = program.name
-            }
+        val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
+        if (!epg.isNullOrEmpty()) {
+            cardView.contentText = epg.last().title
+        } else {
+            cardView.contentText = ""
         }
     }
 

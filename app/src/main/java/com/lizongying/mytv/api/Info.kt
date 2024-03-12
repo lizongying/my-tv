@@ -10,6 +10,18 @@ data class Info(
     )
 }
 
+data class Token(
+    val e: Int?,
+    val t: String?,
+)
+
+data class InfoV2(
+    val f: String?,
+    val t: String?,
+    val e: Int?,
+    val c: Int?,
+)
+
 data class Release(
     val code: Int?,
     val msg: String?,

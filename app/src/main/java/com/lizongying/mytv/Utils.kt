@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.util.TypedValue
@@ -8,7 +7,6 @@ import com.google.gson.Gson
 import com.lizongying.mytv.api.TimeResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -26,6 +24,10 @@ object Utils {
 
     fun getDateTimestamp(): Long {
         return (System.currentTimeMillis() - between) / 1000
+    }
+
+    fun setBetween(currentTimeMillis: Long) {
+        between = System.currentTimeMillis() - currentTimeMillis
     }
 
     suspend fun init() {
@@ -76,49 +78,4 @@ object Utils {
     }
 
     fun isTmallDevice() = Build.MANUFACTURER.equals("Tmall", ignoreCase = true)
-
-    /**
-     * 获取可读写的目录
-     *
-     * @param context 应用环境信息
-     *
-     * @return 可读写的目录
-     *
-     */
-    fun getAppDirectory(context: Context): File {
-        return context.filesDir
-    }
-
-    /**
-     * 更新channels.json
-     *
-     * @param context 应用环境信息
-     *
-     * @return 无
-     *
-     * @throws IOException 网络请求失败
-     */
-    fun updateChannel(context: Context) {
-        val client = okhttp3.OkHttpClient()
-        val request = okhttp3.Request.Builder().url(getServerUrl(context)).build()
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("Unexpected code $response")
-            val body = response.body()
-            //覆盖channels.json
-            val file = File(getAppDirectory(context), "channels.json")
-            if (!file.exists()) {
-                file.createNewFile()
-            }
-            file.writeText(body!!.string())
-        }
-    }
-
-    /**
-     * 从res/values/server.xml获取服务器地址
-     * @param context 应用环境信息
-     * @return 服务器地址
-     */
-    private fun getServerUrl(context: Context): String {
-        return context.resources.getString(R.string.server_url)
-    }
 }
