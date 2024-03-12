@@ -127,7 +127,7 @@ object TVList {
             ),
             TV(
                 8,
-                "CCTV9 记录",
+                "CCTV9 纪录",
                 "CCTV9",
                 listOf("http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226197/index.m3u8"),
                 0,
@@ -292,7 +292,7 @@ object TVList {
                 listOf(),
                 0,
                 "央视",
-                "",
+                R.drawable.cctv8k,
                 "600156816",
                 "2020603421",
                 "",
@@ -838,7 +838,7 @@ object TVList {
                 listOf(),
                 0,
                 "地方",
-                "",
+                R.drawable.tianjin,
                 "600152137",
                 "2019927003",
                 "",
@@ -852,7 +852,7 @@ object TVList {
                 listOf(),
                 0,
                 "地方",
-                "",
+                R.drawable.xinjiang,
                 "600152138",
                 "2019927403",
                 "",
@@ -866,9 +866,23 @@ object TVList {
                 listOf(),
                 0,
                 "地方",
-                "",
+                R.drawable.bingtuan,
                 "600170344",
                 "2022606701",
+                "",
+                true,
+                mustToken = false
+            ),
+            TV(
+                57,
+                "CETV1",
+                "CETV1",
+                listOf(),
+                0,
+                "地方",
+                R.drawable.cetv1,
+                "600171827",
+                "2022823801",
                 "",
                 true,
                 mustToken = false
@@ -876,7 +890,7 @@ object TVList {
         ),
         "港澳台" to listOf(
             TV(
-                57,
+                58,
                 "凤凰卫视资讯台",
                 "",
                 listOf(),
@@ -890,7 +904,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                58,
+                59,
                 "凤凰卫视中文台",
                 "",
                 listOf(),
@@ -904,7 +918,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                59,
+                60,
                 "凤凰卫视香港台",
                 "",
                 listOf(),
@@ -920,7 +934,7 @@ object TVList {
         ),
         "国际" to listOf(
             TV(
-                60,
+                61,
                 "CGTN",
                 "CGTN",
                 listOf("http://live.cgtn.com/1000/prog_index.m3u8"),
@@ -934,7 +948,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                61,
+                62,
                 "CGTN 法语频道",
                 "CGTN法语频道",
                 listOf("https://livefr.cgtn.com/1000f/prog_index.m3u8"),
@@ -948,7 +962,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                62,
+                63,
                 "CGTN 俄语频道",
                 "CGTN俄语频道",
                 listOf("http://liveru.cgtn.com/1000r/prog_index.m3u8"),
@@ -962,7 +976,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                63,
+                64,
                 "CGTN 阿拉伯语频道",
                 "CGTN阿拉伯语频道",
                 listOf("http://livear.cgtn.com/1000a/prog_index.m3u8"),
@@ -976,7 +990,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                64,
+                65,
                 "CGTN 西班牙语频道",
                 "CGTN西班牙语频道",
                 listOf(
@@ -993,7 +1007,7 @@ object TVList {
                 mustToken = false
             ),
             TV(
-                65,
+                66,
                 "CGTN 纪录频道",
                 "CGTN外语纪录频道",
                 listOf("https://livedoc.cgtn.com/500d/prog_index.m3u8"),

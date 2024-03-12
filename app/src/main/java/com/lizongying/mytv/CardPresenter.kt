@@ -31,32 +31,10 @@ class CardPresenter(
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.tag = tvViewModel.videoUrl.value
 
-        when (tvViewModel.title.value) {
-            "CCTV8K 超高清" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.cctv8k)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "天津卫视" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.tianjin)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "新疆卫视" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.xinjiang)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            "兵团卫视" -> Glide.with(viewHolder.view.context)
-                .load(R.drawable.bingtuan)
-                .centerInside()
-                .into(cardView.mainImageView)
-
-            else -> Glide.with(viewHolder.view.context)
-                .load(tvViewModel.logo.value)
-                .centerInside()
-                .into(cardView.mainImageView)
-        }
+        Glide.with(viewHolder.view.context)
+            .load(tvViewModel.logo.value)
+            .centerInside()
+            .into(cardView.mainImageView)
 
         cardView.setBackgroundColor(Color.WHITE)
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)

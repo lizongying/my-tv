@@ -130,7 +130,7 @@
     "programId": "600004078",
     "needToken": true,
     "mustToken": false,
-    "title": "CCTV9 记录",
+    "title": "CCTV9 纪录",
     "videoUrl": [
       "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226197/index.m3u8"
     ]
@@ -863,7 +863,7 @@
   {
     "id": 56,
     "videoIndex": 0,
-    "channel": "国际频道",
+    "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/a72dff758ca1c17cd0ecc8cedc11b893d208f409d5e6302faa0e9d298848abc3.png?imageMogr2/format/webp",
     "pid": "600014550",
     "sid": "2001656803",
@@ -878,7 +878,7 @@
   {
     "id": 57,
     "videoIndex": 0,
-    "channel": "国际频道",
+    "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/a8d0046a47433d952bf6ed17062deb8bd2184ba9aec0f7781df6bf9487a3ffcf.png?imageMogr2/format/webp",
     "pid": "600084704",
     "sid": "2010153503",
@@ -893,7 +893,7 @@
   {
     "id": 58,
     "videoIndex": 0,
-    "channel": "国际频道",
+    "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/bf0a820893cbaf20dd0333e27042e1ef9c8806e5b602b6a8c95af399db0bc77a.png?imageMogr2/format/webp",
     "pid": "600084758",
     "sid": "2010152603",
@@ -908,7 +908,7 @@
   {
     "id": 59,
     "videoIndex": 0,
-    "channel": "国际频道",
+    "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/2e44e2aa3e7a1cedf07fd0ae59fe69e86a60a2632660a006e3e9e7397b2d107e.png?imageMogr2/format/webp",
     "pid": "600084782",
     "sid": "2010155203",
@@ -923,7 +923,7 @@
   {
     "id": 60,
     "videoIndex": 0,
-    "channel": "国际频道",
+    "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
     "pid": "600084744",
     "sid": "2010152503",
@@ -939,7 +939,7 @@
   {
     "id": 61,
     "videoIndex": 0,
-    "channel": "国际频道",
+    "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
     "pid": "600084781",
     "sid": "2010155403",

@@ -9,7 +9,7 @@ data class TV(
     var videoUrl: List<String>,
     var videoIndex: Int = 0,
     var channel: String = "",
-    var logo: String = "",
+    var logo: Any = "",
     var pid: String = "",
     var sid: String = "",
     var programId: String = "",

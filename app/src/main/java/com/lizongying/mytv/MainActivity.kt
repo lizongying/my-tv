@@ -19,7 +19,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), Request.RequestListener {
 
     private var ready = 0
     private val playerFragment = PlayerFragment()
@@ -33,23 +33,26 @@ class MainActivity : FragmentActivity() {
     private lateinit var gestureDetector: GestureDetector
 
     private val handler = Handler()
-    private val delayHideMain: Long = 5000
+    private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
 
-    init {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
-
-            utilsJob.start()
-
-            utilsJob.await()
-        }
-    }
+//    init {
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
+//
+//            utilsJob.start()
+//
+//            utilsJob.await()
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Request.onCreate()
+        Request.setRequestListener(this)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -157,7 +160,7 @@ class MainActivity : FragmentActivity() {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 4) {
+        if (ready == 5) {
             mainFragment.fragmentReady()
         }
     }
@@ -444,7 +447,17 @@ class MainActivity : FragmentActivity() {
         handler.removeCallbacks(hideMain)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Request.onDestroy()
+    }
+
+    override fun onRequestFinished() {
+        fragmentReady()
+    }
+
     private companion object {
         const val TAG = "MainActivity"
     }
+
 }

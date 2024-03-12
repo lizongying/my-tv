@@ -9,7 +9,9 @@ import com.lizongying.mytv.models.TVViewModel
 import kotlin.math.floor
 import kotlin.random.Random
 
-class YSP(var context: Context) {
+object YSP {
+    private const val TAG = "YSP"
+
     private var cnlid = ""
 
     private var livepid = ""
@@ -53,14 +55,10 @@ class YSP(var context: Context) {
     private var appid = "ysp_pc"
     var token = ""
 
-    private var encryptor: Encryptor? = null
+    private var encryptor = Encryptor()
 
-    init {
-        if (context is MainActivity) {
-            encryptor = Encryptor()
-            encryptor!!.init(context)
-        }
-
+    fun init(context: Context) {
+        encryptor.init(context)
         guid = getGuid()
     }
 
@@ -78,7 +76,7 @@ class YSP(var context: Context) {
         timeStr = getTimeStr()
 
         cKey =
-            encryptor!!.encrypt(cnlid, timeStr, appVer, guid, platform)
+            encryptor.encrypt(cnlid, timeStr, appVer, guid, platform)
         signature = getSignature()
         return """{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","rand_str":"$randStr","channel":"$channel","defn":"$defn","signature":"$signature"}"""
     }
@@ -134,18 +132,14 @@ class YSP(var context: Context) {
     private fun getSignature(): String {
         val e =
             "adjust=${adjust}&appVer=${appVer}&app_version=$appVersion&cKey=$cKey&channel=$channel&cmd=$cmd&cnlid=$cnlid&defn=${defn}&devid=${devid}&dtype=${dtype}&encryptVer=${encryptVer}&guid=${guid}&livepid=${livepid}&otype=${otype}&platform=${platform}&rand_str=${randStr}&sphttps=${sphttps}&stream=${stream}".toByteArray()
-        val hashedData = encryptor?.hash(e) ?: return ""
+        val hashedData = encryptor.hash(e) ?: return ""
         return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
     }
 
     private fun getAuthSignature(): String {
         val e =
             "appid=${appid}&guid=${guid}&pid=${livepid}&rand_str=${randStr}".toByteArray()
-        val hashedData = encryptor?.hash2(e) ?: return ""
+        val hashedData = encryptor.hash2(e) ?: return ""
         return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
-    }
-
-    companion object {
-        private const val TAG = "YSP"
     }
 }

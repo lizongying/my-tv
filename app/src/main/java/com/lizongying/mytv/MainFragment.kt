@@ -18,6 +18,7 @@ import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.Utils.getDateTimestamp
+import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +29,6 @@ class MainFragment : BrowseSupportFragment() {
     private var itemPosition = 0
 
     private var rowsAdapter: ArrayObjectAdapter? = null
-
-    private var request = Request()
 
     var tvListViewModel = TVListViewModel()
 
@@ -52,7 +51,7 @@ class MainFragment : BrowseSupportFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activity?.let { request.initYSP(it) }
+        activity?.let { YSP.init(it) }
 
         loadRows()
 
@@ -87,7 +86,7 @@ class MainFragment : BrowseSupportFragment() {
                     if (tvViewModel.pid.value != "") {
                         Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
-                            tvViewModel.let { request.fetchData(it) }
+                            tvViewModel.let { Request.fetchData(it) }
                         }
                         (activity as? MainActivity)?.showInfoFragment(tvViewModel)
                         setSelectedPosition(
@@ -283,11 +282,11 @@ class MainFragment : BrowseSupportFragment() {
         if (timestamp - tvViewModel.programUpdateTime > 60) {
             if (tvViewModel.program.value!!.isEmpty()) {
                 tvViewModel.programUpdateTime = timestamp
-                request.fetchProgram(tvViewModel)
+                Request.fetchProgram(tvViewModel)
             } else {
                 if (tvViewModel.program.value!!.last().et - timestamp < 600) {
                     tvViewModel.programUpdateTime = timestamp
-                    request.fetchProgram(tvViewModel)
+                    Request.fetchProgram(tvViewModel)
                 }
             }
         }

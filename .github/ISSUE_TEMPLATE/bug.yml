@@ -19,8 +19,8 @@ body:
       label: my-ty 版本
       description: 请选择正在使用的版本
       options:
-        - 最新稳定版
-        - 最新 CI 版
+        - 通用版
+        - 专用版
     validations:
       required: true
   - type: textarea
