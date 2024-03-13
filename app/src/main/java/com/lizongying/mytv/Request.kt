@@ -445,7 +445,6 @@ object Request {
     class TokenRunnable : Runnable {
         override fun run() {
             fetchToken()
-            handler.postDelayed(this, 600000)
         }
     }
 
