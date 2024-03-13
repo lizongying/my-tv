@@ -36,16 +36,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
 
-//    init {
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
-//
-//            utilsJob.start()
-//
-//            utilsJob.await()
-//        }
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
@@ -459,5 +449,4 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private companion object {
         const val TAG = "MainActivity"
     }
-
 }

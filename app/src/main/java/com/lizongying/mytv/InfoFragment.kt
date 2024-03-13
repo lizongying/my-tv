@@ -2,6 +2,7 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +35,12 @@ class InfoFragment : Fragment() {
             .load(tvViewModel.logo.value)
             .into(binding.infoLogo)
 
-        val program = tvViewModel.getProgramOne()
-        if (program != null) {
-            binding.infoDesc.text = program.name
+        Log.i(TAG, "${tvViewModel.title.value} ${tvViewModel.epg.value}")
+        val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
+        if (!epg.isNullOrEmpty()) {
+            binding.infoDesc.text = epg.last().title
+        } else {
+            binding.infoDesc.text = ""
         }
 
         handler.removeCallbacks(removeRunnable)

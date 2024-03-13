@@ -34,9 +34,6 @@ class MainFragment : BrowseSupportFragment() {
 
     private var lastVideoUrl = ""
 
-    private val handler = Handler(Looper.getMainLooper())
-    private lateinit var mUpdateProgramRunnable: UpdateProgramRunnable
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
@@ -56,9 +53,6 @@ class MainFragment : BrowseSupportFragment() {
         loadRows()
 
         setupEventListeners()
-
-        mUpdateProgramRunnable = UpdateProgramRunnable()
-        handler.post(mUpdateProgramRunnable)
 
         tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
             tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
@@ -141,6 +135,8 @@ class MainFragment : BrowseSupportFragment() {
                 tvViewModel.setItemPosition(idx2)
                 tvListViewModel.addTVViewModel(tvViewModel)
                 listRowAdapter.add(tvViewModel)
+
+                updateEPG(tvViewModel)
             }
             tvListViewModel.maxNum.add(v.size)
             val header = HeaderItem(idx, k)
@@ -277,30 +273,11 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
-    fun updateProgram(tvViewModel: TVViewModel) {
-        val timestamp = getDateTimestamp()
-        if (timestamp - tvViewModel.programUpdateTime > 60) {
-            if (tvViewModel.program.value!!.isEmpty()) {
-                tvViewModel.programUpdateTime = timestamp
-                Request.fetchProgram(tvViewModel)
-            } else {
-                if (tvViewModel.program.value!!.last().et - timestamp < 600) {
-                    tvViewModel.programUpdateTime = timestamp
-                    Request.fetchProgram(tvViewModel)
-                }
-            }
-        }
-    }
-
-    inner class UpdateProgramRunnable : Runnable {
-        override fun run() {
-            tvListViewModel.tvListViewModel.value?.filter { it.programId.value != null && it.programId.value != "" }
-                ?.forEach { tvViewModel ->
-                    updateProgram(
-                        tvViewModel
-                    )
-                }
-            handler.postDelayed(this, 60000)
+    private fun updateEPG(tvViewModel: TVViewModel) {
+        if (tvViewModel.getTV().channel == "港澳台") {
+            Request.fetchFEPG(tvViewModel)
+        } else {
+            Request.fetchYEPG(tvViewModel)
         }
     }
 
@@ -313,18 +290,16 @@ class MainFragment : BrowseSupportFragment() {
         Log.i(TAG, "onStop")
         super.onStop()
         SP.itemPosition = itemPosition
-        Log.i(TAG, "position saved")
+        Log.i(TAG, "$POSITION $itemPosition saved")
     }
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         super.onDestroy()
-        if (::mUpdateProgramRunnable.isInitialized) {
-            handler.removeCallbacks(mUpdateProgramRunnable)
-        }
     }
 
     companion object {
         private const val TAG = "MainFragment"
+        private const val POSITION = "position"
     }
 }

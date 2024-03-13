@@ -10,6 +10,7 @@ import com.lizongying.mytv.api.Auth
 import com.lizongying.mytv.api.AuthRequest
 import com.lizongying.mytv.api.FAuth
 import com.lizongying.mytv.api.FAuthService
+import com.lizongying.mytv.api.FEPG
 import com.lizongying.mytv.api.Info
 import com.lizongying.mytv.api.InfoV2
 import com.lizongying.mytv.api.LiveInfo
@@ -400,7 +401,7 @@ object Request {
                     tvModel.allReady()
                     tvModel.tokenRetryTimes = 0
                 } else {
-                    Log.e(TAG, "auth status error")
+                    Log.e(TAG, "auth status error ${response.code()}")
                     if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
                         tvModel.tokenRetryTimes++
                         fetchFAuth(tvModel)
@@ -419,7 +420,6 @@ object Request {
     }
 
     fun fetchData(tvModel: TVViewModel) {
-        Log.d(TAG, "fetchData")
         if (tvModel.getTV().channel == "港澳台") {
             fetchFAuth(tvModel)
             return
@@ -463,20 +463,20 @@ object Request {
                             if (e != null) {
                                 handler.postDelayed(
                                     tokenRunnable,
-                                    max(600000, (e - 1500) * 1000).toLong()
+                                    max(30 * 60 * 1000, (e - 1500) * 1000).toLong()
                                 )
                             } else {
                                 Log.e(TAG, "e empty")
                                 handler.postDelayed(
                                     tokenRunnable,
-                                    600000
+                                    30 * 60 * 1000
                                 )
                             }
                         } else {
                             Log.e(TAG, "token empty")
                             handler.postDelayed(
                                 tokenRunnable,
-                                600000
+                                30 * 60 * 1000
                             )
                         }
                         if (!f.isNullOrEmpty()) {
@@ -491,7 +491,7 @@ object Request {
                         Log.e(TAG, "token status error")
                         handler.postDelayed(
                             tokenRunnable,
-                            600000
+                            30 * 60 * 1000
                         )
                     }
                     listener?.onRequestFinished()
@@ -501,7 +501,7 @@ object Request {
                     Log.e(TAG, "token request error $t")
                     handler.postDelayed(
                         tokenRunnable,
-                        600000
+                        30 * 60 * 1000
                     )
                     listener?.onRequestFinished()
                 }
@@ -521,27 +521,27 @@ object Request {
                             if (e != null) {
                                 handler.postDelayed(
                                     tokenRunnable,
-                                    max(600000, (e - 1500) * 1000).toLong()
+                                    max(30 * 60 * 1000, (e - 1500) * 1000).toLong()
                                 )
                             } else {
                                 Log.e(TAG, "e empty")
                                 handler.postDelayed(
                                     tokenRunnable,
-                                    600000
+                                    30 * 60 * 1000
                                 )
                             }
                         } else {
                             Log.e(TAG, "token empty")
                             handler.postDelayed(
                                 tokenRunnable,
-                                600000
+                                30 * 60 * 1000
                             )
                         }
                     } else {
                         Log.e(TAG, "token status error")
                         handler.postDelayed(
                             tokenRunnable,
-                            600000
+                            30 * 60 * 1000
                         )
                     }
                 }
@@ -550,7 +550,7 @@ object Request {
                     Log.e(TAG, "token request error $t")
                     handler.postDelayed(
                         tokenRunnable,
-                        600000
+                        30 * 60 * 1000
                     )
                 }
             })
@@ -632,7 +632,7 @@ object Request {
         })
     }
 
-    fun fetchProgram(tvViewModel: TVViewModel) {
+    fun fetchYEPG(tvViewModel: TVViewModel) {
         val title = tvViewModel.title.value
         yspProtoService.getProgram(tvViewModel.programId.value!!, getDateFormat("yyyyMMdd"))
             .enqueue(object : Callback<epgProgramModel.Response> {
@@ -643,7 +643,7 @@ object Request {
                     if (response.isSuccessful) {
                         val program = response.body()
                         if (program != null) {
-                            tvViewModel.addProgram(program.dataListList)
+                            tvViewModel.addYEPG(program.dataListList)
                             Log.d(TAG, "$title program ${program.dataListList.size}")
                         }
                     } else {
@@ -652,6 +652,31 @@ object Request {
                 }
 
                 override fun onFailure(call: Call<epgProgramModel.Response>, t: Throwable) {
+                    Log.e(TAG, "$title program request failed $t")
+                }
+            })
+    }
+
+    fun fetchFEPG(tvViewModel: TVViewModel) {
+        val title = tvViewModel.title.value
+        fAuthService.getEPG(tvViewModel.pid.value!!, getDateFormat("yyyyMMdd"))
+            .enqueue(object : Callback<List<FEPG>> {
+                override fun onResponse(
+                    call: Call<List<FEPG>>,
+                    response: Response<List<FEPG>>
+                ) {
+                    if (response.isSuccessful) {
+                        val program = response.body()
+                        if (program != null) {
+                            tvViewModel.addFEPG(program)
+                            Log.d(TAG, "$title program ${program.size}")
+                        }
+                    } else {
+                        Log.w(TAG, "$title program error")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<FEPG>>, t: Throwable) {
                     Log.e(TAG, "$title program request failed $t")
                 }
             })

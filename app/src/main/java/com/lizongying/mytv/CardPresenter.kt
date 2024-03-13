@@ -39,11 +39,11 @@ class CardPresenter(
         cardView.setBackgroundColor(Color.WHITE)
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
 
-        tvViewModel.program.observe(owner) { _ ->
-            val program = tvViewModel.getProgramOne()
-            if (program != null) {
-                cardView.contentText = program.name
-            }
+        val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
+        if (!epg.isNullOrEmpty()) {
+            cardView.contentText = epg.last().title
+        } else {
+            cardView.contentText = ""
         }
     }
 
