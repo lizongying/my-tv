@@ -398,7 +398,7 @@ object Request {
 //                    Log.d(TAG, "$title url $url")
                     tvModel.addVideoUrl(url)
                     tvModel.allReady()
-                    tvModel.retryTimes = 0
+                    tvModel.tokenRetryTimes = 0
                 } else {
                     Log.e(TAG, "auth status error")
                     if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
