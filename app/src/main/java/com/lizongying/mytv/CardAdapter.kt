@@ -17,15 +17,15 @@ import com.lizongying.mytv.models.TVViewModel
 
 class CardAdapter(
     private val recyclerView: RecyclerView,
-    private val owner: LifecycleOwner,
+    private val mainFragment: MainFragment,
     private var tvListViewModel: TVListViewModel,
 ) :
     RecyclerView.Adapter<CardAdapter.ViewHolder>() {
 
     private var listener: ItemListener? = null
     private var focused: View? = null
-    private var defaultFocused = false
-    var defaultFocus: Int = -1
+
+    var visiable = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val cardView = object :
@@ -57,19 +57,23 @@ class CardAdapter(
 
         val tvViewModel = item as TVViewModel
         val cardView = viewHolder.view as ImageCardView
+        cardView.tag = tvViewModel
 
-        if (!defaultFocused && item.id.value == defaultFocus) {
-            cardView.requestFocus()
-            defaultFocused = true
-        }
-
-        val onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            listener?.onItemFocusChange(item, hasFocus)
-
-//            if (hasFocus && defaultFocus == item.id.value) {
+        val onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
+                listener?.onItemHasFocus(item)
                 focused = cardView
+
                 startScaleAnimation(cardView, 0.9f, 1.0f, 200)
+//
+//                if (mainFragment.shouldHasFocus(view.tag as TVViewModel)) {
+//                }
+
+//                if (visiable) {
+//                    startScaleAnimation(cardView, 0.9f, 1.0f, 200)
+//                } else {
+//                    visiable = true
+//                }
             }
         }
 
@@ -110,8 +114,16 @@ class CardAdapter(
         val view = itemView
     }
 
+    fun toPosition(position: Int) {
+        recyclerView.post {
+            recyclerView.scrollToPosition(position)
+            recyclerView.getChildAt(position)?.isSelected
+            recyclerView.getChildAt(position)?.requestFocus()
+        }
+    }
+
     interface ItemListener {
-        fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean)
+        fun onItemHasFocus(tvViewModel: TVViewModel)
         fun onItemClicked(tvViewModel: TVViewModel)
         fun onKey(keyCode: Int): Boolean
     }

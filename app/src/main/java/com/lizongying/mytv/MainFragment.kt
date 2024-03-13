@@ -72,7 +72,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 val adapter =
                     CardAdapter(
                         itemBinding.rowItems,
-                        viewLifecycleOwner,
+                        this,
                         tvListViewModelCurrent,
                     )
                 rowList.add(itemBinding.rowItems)
@@ -109,14 +109,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
             if (itemPosition >= tvListViewModel.size()) {
                 itemPosition = 0
-            }
-
-            val tv = tvListViewModel.getTVViewModel(itemPosition)
-            for (i in rowList) {
-                if (i.tag as Int == tv?.getRowPosition()) {
-                    ((i as RecyclerView).adapter as CardAdapter).defaultFocus = itemPosition
-                    break
-                }
             }
 
             tvListViewModel.setItemPosition(itemPosition)
@@ -191,20 +183,18 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         return false
     }
 
-    override fun onItemFocusChange(tvViewModel: TVViewModel, hasFocus: Boolean) {
-        if (hasFocus) {
-            tvListViewModel.setItemPositionCurrent(tvViewModel.id.value!!)
+    override fun onItemHasFocus(tvViewModel: TVViewModel) {
+        tvListViewModel.setItemPositionCurrent(tvViewModel.id.value!!)
 
-            val row = tvViewModel.getRowPosition()
+        val row = tvViewModel.getRowPosition()
 
-            for (i in rowList) {
-                if (i.tag as Int != row) {
-                    ((i as RecyclerView).adapter as CardAdapter).clear()
-                }
+        for (i in rowList) {
+            if (i.tag as Int != row) {
+                ((i as RecyclerView).adapter as CardAdapter).clear()
             }
-
-            (activity as MainActivity).mainActive()
         }
+
+        (activity as MainActivity).mainActive()
     }
 
     override fun onItemClicked(tvViewModel: TVViewModel) {
@@ -237,8 +227,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 itemPosition
             )?.requestFocus()
         }
-
-        ((rowList[rowPosition] as RecyclerView).adapter as CardAdapter).defaultFocus = itemPosition
     }
 
     fun check(tvViewModel: TVViewModel): Boolean {
@@ -301,6 +289,32 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             Request.fetchFEPG(tvViewModel)
         } else {
             Request.fetchYEPG(tvViewModel)
+        }
+    }
+
+    fun shouldHasFocus(tvModel: TVViewModel):Boolean {
+        return tvModel == tvListViewModel.getTVViewModel(itemPosition)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            val tvModel = tvListViewModel.getTVViewModel(itemPosition)
+            val rowPosition = tvModel?.getRowPosition()
+            val itemPosition = tvModel?.getItemPosition()
+            Log.i(TAG, "toPosition $rowPosition $itemPosition")
+            for (i in rowList) {
+                if (i.tag as Int == rowPosition) {
+                    ((i as RecyclerView).adapter as CardAdapter).toPosition(itemPosition!!)
+                    break
+                }
+            }
+        } else {
+            view?.post {
+//                for (i in rowList) {
+//                    ((i as RecyclerView).adapter as CardAdapter).visiable = false
+//                }
+            }
         }
     }
 
