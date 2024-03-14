@@ -147,6 +147,7 @@ object Request {
     }
 
     fun fetchVideo(tvModel: TVViewModel, cookie: String) {
+        Log.i(TAG, "fetchVideo with cookie")
         call?.cancel()
         if (::btraceRunnable.isInitialized) {
             handler.removeCallbacks(btraceRunnable)
@@ -420,6 +421,7 @@ object Request {
     }
 
     fun fetchData(tvModel: TVViewModel) {
+        Log.i(TAG, "fetchData")
         if (tvModel.getTV().channel == "港澳台") {
             fetchFAuth(tvModel)
             return
