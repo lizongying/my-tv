@@ -22,10 +22,11 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var itemPosition: Int = 0
 
     var retryTimes = 0
-    var tokenRetryTimes = 0
     var retryMaxTimes = 8
-    var tokenRetryMaxTimes = 2
-    var programUpdateTime: Long = 0
+    var tokenRetryTimes = 0
+    var tokenRetryMaxTimes = 0
+    var tokenFHRetryTimes = 0
+    var tokenFHRetryMaxTimes = 2
 
     private val _errInfo = MutableLiveData<String>()
     val errInfo: LiveData<String>
