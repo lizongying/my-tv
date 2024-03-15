@@ -1,10 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.content.pm.Signature
-import android.content.pm.SigningInfo
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,23 +11,17 @@ import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import java.security.MessageDigest
 
 
 class MainActivity : FragmentActivity(), Request.RequestListener {
 
     private var ready = 0
-    private var playerFragment = PlayerFragment()
-    private var mainFragment = MainFragment()
-    private var infoFragment = InfoFragment()
-    private var channelFragment = ChannelFragment()
-    private lateinit var settingFragment: SettingFragment
+    private val playerFragment = PlayerFragment()
+    private val mainFragment = MainFragment()
+    private val infoFragment = InfoFragment()
+    private val channelFragment = ChannelFragment()
+    private val settingFragment = SettingFragment()
 
     private var doubleBackToExitPressedOnce = false
 
@@ -64,20 +53,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
-        val packageInfo = getPackageInfo()
-        val versionName = packageInfo.versionName
-        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            packageInfo.longVersionCode
-        } else {
-            packageInfo.versionCode.toLong()
-        }
-        settingFragment = SettingFragment(
-            versionName,
-            versionCode,
-            SP.channelReversal,
-            SP.channelNum,
-            SP.bootStartup
-        )
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -448,56 +423,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun getPackageInfo(): PackageInfo {
-        val flag = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            PackageManager.GET_SIGNATURES
-        } else {
-            PackageManager.GET_SIGNING_CERTIFICATES
-        }
-
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            packageManager.getPackageInfo(packageName, flag)
-        } else {
-            packageManager.getPackageInfo(
-                packageName,
-                PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong())
-            )
-        }
-    }
-
-    private fun getAppSignature(): String {
-        val packageInfo = getPackageInfo()
-
-        var sign: Signature? = null
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            val signatures: Array<out Signature>? = packageInfo.signatures
-            if (signatures != null) {
-                sign = signatures[0]
-            }
-        } else {
-            val signingInfo: SigningInfo? = packageInfo.signingInfo
-            if (signingInfo != null) {
-                sign = signingInfo.apkContentsSigners[0]
-            }
-        }
-        if (sign == null) {
-            return ""
-        }
-
-        return hashSignature(sign)
-    }
-
-    private fun hashSignature(signature: Signature): String {
-        return try {
-            val md = MessageDigest.getInstance("MD5")
-            md.update(signature.toByteArray())
-            val digest = md.digest()
-            digest.let { it -> it.joinToString("") { "%02x".format(it) } }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error hashing signature", e)
-            ""
-        }
-    }
+    private fun getAppSignature() = this.appSignature
 
     override fun onStart() {
         Log.i(TAG, "onStart")

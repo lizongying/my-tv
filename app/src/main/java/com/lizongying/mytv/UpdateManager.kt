@@ -23,7 +23,7 @@ import java.io.File
 
 
 class UpdateManager(
-    private var context: Context?,
+    private var context: Context,
     private var settingFragment: SettingFragment,
     private var versionCode: Long
 ) :
@@ -67,7 +67,7 @@ class UpdateManager(
         val apkFileName = "my-tv-${release.data.versionName}.apk"
         Log.i(TAG, "apkFileName $apkFileName")
         val downloadManager =
-            context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request = Request(Uri.parse(release.data.downloadUrl))
         Log.i(TAG, "url ${Uri.parse(release.data.downloadUrl)}")
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, apkFileName)
@@ -77,22 +77,22 @@ class UpdateManager(
         // 获取下载任务的引用
         val downloadReference = downloadManager.enqueue(request)
 
-        downloadReceiver = DownloadReceiver(context!!, apkFileName, downloadReference)
+        downloadReceiver = DownloadReceiver(context, apkFileName, downloadReference)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context!!.registerReceiver(
+            context.registerReceiver(
                 downloadReceiver,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
                 Context.RECEIVER_NOT_EXPORTED,
             )
         } else {
-            context!!.registerReceiver(
+            context.registerReceiver(
                 downloadReceiver,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
             )
         }
 
-        getDownloadProgress(context!!, downloadReference) { progress ->
+        getDownloadProgress(context, downloadReference) { progress ->
             println("Download progress: $progress%")
         }
     }
@@ -182,7 +182,7 @@ class UpdateManager(
 
     fun destroy() {
         if (downloadReceiver != null) {
-            context!!.unregisterReceiver(downloadReceiver)
+            context.unregisterReceiver(downloadReceiver)
             Log.i(TAG, "destroy downloadReceiver")
         }
     }

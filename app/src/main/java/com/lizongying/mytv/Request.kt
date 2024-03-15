@@ -56,6 +56,9 @@ object Request {
 
     private var listener: RequestListener? = null
 
+    private var initRetryTimes = 0
+    private var initRetryMaxTimes = 1
+
     fun onCreate() {
         Log.i(TAG, "onCreate")
         fetchInfoV2()
@@ -66,11 +69,22 @@ object Request {
         handler.removeCallbacks(tokenRunnable)
     }
 
-    var call: Call<LiveInfo>? = null
+    private var call: Call<LiveInfo>? = null
     private var callAuth: Call<Auth>? = null
+    private var callInfo: Call<Info>? = null
+    private var fAuth: Call<FAuth>? = null
+    private var callPage: Call<pageModel.Response>? = null
+
+    private fun cancelCall() {
+        call?.cancel()
+        callAuth?.cancel()
+        callInfo?.cancel()
+        fAuth?.cancel()
+        callPage?.cancel()
+    }
 
     private fun fetchAuth(tvModel: TVViewModel, cookie: String) {
-        callAuth?.cancel()
+        cancelCall()
 
         val title = tvModel.title.value
 
@@ -146,9 +160,9 @@ object Request {
         })
     }
 
-    fun fetchVideo(tvModel: TVViewModel, cookie: String) {
-        Log.i(TAG, "fetchVideo with cookie")
-        call?.cancel()
+    private fun fetchVideo(tvModel: TVViewModel, cookie: String) {
+        cancelCall()
+
         if (::btraceRunnable.isInitialized) {
             handler.removeCallbacks(btraceRunnable)
         }
@@ -284,37 +298,23 @@ object Request {
         })
     }
 
-    fun fetchAuth(tvModel: TVViewModel) {
+    private fun fetchAuth(tvModel: TVViewModel) {
+        cancelCall()
         if (token == "") {
-            yspTokenService.getInfo("")
-                .enqueue(object : Callback<Info> {
-                    override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                        if (response.isSuccessful) {
-                            token = response.body()?.data?.token!!
-                            Log.i(TAG, "info success $token")
-                            val cookie =
-                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
-                            fetchAuth(tvModel, cookie)
-                        } else {
-                            Log.e(TAG, "info status error")
-                            if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
-                                tvModel.tokenRetryTimes++
-                                fetchAuth(tvModel)
-                            } else {
-                                if (!tvModel.getTV().mustToken) {
-                                    val cookie =
-                                        "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
-                                    fetchAuth(tvModel, cookie)
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Info>, t: Throwable) {
-                        Log.e(TAG, "info request error $t")
+            callInfo = yspTokenService.getInfo("")
+            callInfo?.enqueue(object : Callback<Info> {
+                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                    if (response.isSuccessful) {
+                        token = response.body()?.data?.token!!
+                        Log.i(TAG, "info success $token")
+                        val cookie =
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                        fetchAuth(tvModel, cookie)
+                    } else {
+                        Log.e(TAG, "info status error")
                         if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
                             tvModel.tokenRetryTimes++
-                            fetchVideo(tvModel)
+                            fetchAuth(tvModel)
                         } else {
                             if (!tvModel.getTV().mustToken) {
                                 val cookie =
@@ -323,7 +323,22 @@ object Request {
                             }
                         }
                     }
-                })
+                }
+
+                override fun onFailure(call: Call<Info>, t: Throwable) {
+                    Log.e(TAG, "info request error $t")
+                    if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
+                        tvModel.tokenRetryTimes++
+                        fetchVideo(tvModel)
+                    } else {
+                        if (!tvModel.getTV().mustToken) {
+                            val cookie =
+                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
+                            fetchAuth(tvModel, cookie)
+                        }
+                    }
+                }
+            })
         } else {
             val cookie =
                 "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
@@ -331,35 +346,21 @@ object Request {
         }
     }
 
-    fun fetchVideo(tvModel: TVViewModel) {
+    private fun fetchVideo(tvModel: TVViewModel) {
+        cancelCall()
         Log.d(TAG, "fetchVideo")
         if (token == "") {
-            yspTokenService.getInfo("")
-                .enqueue(object : Callback<Info> {
-                    override fun onResponse(call: Call<Info>, response: Response<Info>) {
-                        if (response.isSuccessful && response.body()?.data?.token != null) {
-                            token = response.body()?.data?.token!!
-                            Log.i(TAG, "info success $token")
-                            val cookie =
-                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
-                            fetchVideo(tvModel, cookie)
-                        } else {
-                            Log.e(TAG, "info status error")
-                            if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
-                                tvModel.tokenRetryTimes++
-                                fetchVideo(tvModel)
-                            } else {
-                                if (!tvModel.getTV().mustToken) {
-                                    val cookie =
-                                        "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
-                                    fetchVideo(tvModel, cookie)
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Info>, t: Throwable) {
-                        Log.e(TAG, "info request error $t")
+            callInfo = yspTokenService.getInfo("")
+            callInfo?.enqueue(object : Callback<Info> {
+                override fun onResponse(call: Call<Info>, response: Response<Info>) {
+                    if (response.isSuccessful && response.body()?.data?.token != null) {
+                        token = response.body()?.data?.token!!
+                        Log.i(TAG, "info success $token")
+                        val cookie =
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                        fetchVideo(tvModel, cookie)
+                    } else {
+                        Log.e(TAG, "info status error")
                         if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
                             tvModel.tokenRetryTimes++
                             fetchVideo(tvModel)
@@ -371,7 +372,22 @@ object Request {
                             }
                         }
                     }
-                })
+                }
+
+                override fun onFailure(call: Call<Info>, t: Throwable) {
+                    Log.e(TAG, "info request error $t")
+                    if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
+                        tvModel.tokenRetryTimes++
+                        fetchVideo(tvModel)
+                    } else {
+                        if (!tvModel.getTV().mustToken) {
+                            val cookie =
+                                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
+                            fetchVideo(tvModel, cookie)
+                        }
+                    }
+                }
+            })
         } else {
             val cookie =
                 "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
@@ -379,11 +395,8 @@ object Request {
         }
     }
 
-    private var fAuth: Call<FAuth>? = null
-    fun fetchFAuth(tvModel: TVViewModel) {
-        call?.cancel()
-        callAuth?.cancel()
-        fAuth?.cancel()
+    private fun fetchFAuth(tvModel: TVViewModel) {
+        cancelCall()
 
         val title = tvModel.title.value
 
@@ -400,11 +413,11 @@ object Request {
 //                    Log.d(TAG, "$title url $url")
                     tvModel.addVideoUrl(url)
                     tvModel.allReady()
-                    tvModel.tokenRetryTimes = 0
+                    tvModel.tokenFHRetryTimes = 0
                 } else {
                     Log.e(TAG, "auth status error ${response.code()}")
-                    if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
-                        tvModel.tokenRetryTimes++
+                    if (tvModel.tokenFHRetryTimes < tvModel.tokenFHRetryMaxTimes) {
+                        tvModel.tokenFHRetryTimes++
                         fetchFAuth(tvModel)
                     }
                 }
@@ -412,8 +425,8 @@ object Request {
 
             override fun onFailure(call: Call<FAuth>, t: Throwable) {
                 Log.e(TAG, "auth request error $t")
-                if (tvModel.tokenRetryTimes < tvModel.tokenRetryMaxTimes) {
-                    tvModel.tokenRetryTimes++
+                if (tvModel.tokenFHRetryTimes < tvModel.tokenFHRetryMaxTimes) {
+                    tvModel.tokenFHRetryTimes++
                     fetchFAuth(tvModel)
                 }
             }
@@ -421,7 +434,6 @@ object Request {
     }
 
     fun fetchData(tvModel: TVViewModel) {
-        Log.i(TAG, "fetchData")
         if (tvModel.getTV().channel == "港澳台") {
             fetchFAuth(tvModel)
             return
@@ -446,7 +458,7 @@ object Request {
 
     class TokenRunnable : Runnable {
         override fun run() {
-            fetchToken()
+//            fetchToken()
         }
     }
 
@@ -489,14 +501,20 @@ object Request {
                             Utils.setBetween(c * 1000L)
                             Log.i(TAG, "current time $c")
                         }
+                        listener?.onRequestFinished()
                     } else {
                         Log.e(TAG, "token status error")
                         handler.postDelayed(
                             tokenRunnable,
                             30 * 60 * 1000
                         )
+                        if (initRetryTimes < initRetryMaxTimes) {
+                            initRetryTimes++
+                            fetchInfoV2()
+                        } else {
+                            listener?.onRequestFinished()
+                        }
                     }
-                    listener?.onRequestFinished()
                 }
 
                 override fun onFailure(call: Call<InfoV2>, t: Throwable) {
@@ -505,7 +523,13 @@ object Request {
                         tokenRunnable,
                         30 * 60 * 1000
                     )
-                    listener?.onRequestFinished()
+
+                    if (initRetryTimes < initRetryMaxTimes) {
+                        initRetryTimes++
+                        fetchInfoV2()
+                    } else {
+                        listener?.onRequestFinished()
+                    }
                 }
             })
     }
@@ -601,7 +625,8 @@ object Request {
     }
 
     fun fetchPage() {
-        yspProtoService.getPage().enqueue(object : Callback<pageModel.Response> {
+        callPage = yspProtoService.getPage()
+        callPage?.enqueue(object : Callback<pageModel.Response> {
             override fun onResponse(
                 call: Call<pageModel.Response>,
                 response: Response<pageModel.Response>
