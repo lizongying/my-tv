@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.leanback.widget.ImageCardView
 import androidx.recyclerview.widget.RecyclerView
 
 class GrayOverlayItemDecoration(private val context: Context) : RecyclerView.ItemDecoration() {
@@ -22,17 +23,19 @@ class GrayOverlayItemDecoration(private val context: Context) : RecyclerView.Ite
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             if (!child.hasFocus()) {
-//                child.alpha = 0.7f
+                (child as ImageCardView).setInfoAreaBackgroundColor(ContextCompat.getColor(context, R.color.blur))
+//                child.alpha = 0.5f
                 // 计算遮罩层的大小
-                val overlayRect = Rect(
-                    child.left,
-                    child.top,
-                    child.right,
-                    child.bottom
-                )
-                // 绘制灰色遮罩层
-                c.drawRect(overlayRect, grayOverlayPaint)
+//                val overlayRect = Rect(
+//                    child.left,
+//                    child.top,
+//                    child.right,
+//                    child.bottom
+//                )
+//                // 绘制灰色遮罩层
+//                c.drawRect(overlayRect, grayOverlayPaint)
             } else {
+                (child as ImageCardView).setInfoAreaBackgroundColor(ContextCompat.getColor(context, R.color.focus))
 //                child.alpha = 1f
             }
         }

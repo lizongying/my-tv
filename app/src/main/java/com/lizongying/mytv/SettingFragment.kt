@@ -54,6 +54,14 @@ class SettingFragment : DialogFragment() {
             }
         }
 
+        binding.switchGrid.run {
+            isChecked = SP.grid
+            setOnCheckedChangeListener { _, isChecked ->
+                SP.grid = isChecked
+                (activity as MainActivity).settingActive()
+            }
+        }
+
         updateManager = UpdateManager(context, this, context.appVersionCode)
         binding.checkVersion.setOnClickListener(OnClickListenerCheckVersion(updateManager))
 

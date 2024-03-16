@@ -48,7 +48,7 @@ val Context.appVersionCode: Long
  * Return the version name of the app which is defined in build.gradle.
  * eg:1.0.0
  */
-val Context.appVersionName: String get() = packageInfo.versionName
+val Context.appVersionName: String get() = packageInfo.versionName ?: ""
 
 val Context.appSignature: String
     get() {

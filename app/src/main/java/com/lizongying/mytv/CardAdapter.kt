@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import androidx.core.view.updatePadding
 import androidx.leanback.widget.ImageCardView
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lizongying.mytv.models.TVListViewModel
@@ -32,6 +32,7 @@ class CardAdapter(
             ImageCardView(ContextThemeWrapper(parent.context, R.style.CustomImageCardTheme)) {}
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
+        cardView.updatePadding(1, 1, 1, 1)
         return ViewHolder(cardView)
     }
 

@@ -3,4 +3,6 @@
     <color name="black">#000</color>
     <color name="white">#FFF</color>
     <color name="gray_overlay">#7F000000</color>
+    <color name="focus">#0096a6</color>
+    <color name="blur">#FF263238</color>
 </resources>
