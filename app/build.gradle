@@ -75,7 +75,7 @@ static def VersionCode() {
         def process = p.execute()
         process.waitFor()
         def replace = [v: "", ".": " ", "-": " "]
-        def arr = (process.text.replace(replace) + " 0").split(" ")
+        def arr = (process.text.trim().replace(replace) + " 0").split(" ")
         def versionCode = arr[0].toInteger() * 16777216 + arr[1].toInteger() * 65536 + arr[2].toInteger() * 256 + arr[3].toInteger()
         println("VersionCode $versionCode")
         return versionCode
