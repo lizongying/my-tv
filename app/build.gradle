@@ -54,7 +54,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget=17
+        jvmTarget = 17
     }
 
     // Encapsulates your external native build configurations.
@@ -71,9 +71,14 @@ android {
 
 static def VersionCode() {
     try {
-        def process = "git describe --tags --always | sed 's/v/ /g' | sed 's/\\./ /g' | sed 's/-/ /g' | awk '{print \$1*16777216+\$2*65536+\$3*256+\$4}'".execute()
+        def p = "git describe --tags --always"
+        def process = p.execute()
         process.waitFor()
-        return process.text.toInteger()
+        def replace = [v: "", ".": " ", "-": " "]
+        def arr = (process.text.replace(replace) + " 0").split(" ")
+        def versionCode = arr[0].toInteger() * 16777216 + arr[1].toInteger() * 65536 + arr[2].toInteger() * 256 + arr[3].toInteger()
+        println("VersionCode $versionCode")
+        return versionCode
     } catch (ignored) {
         return 0
     }
