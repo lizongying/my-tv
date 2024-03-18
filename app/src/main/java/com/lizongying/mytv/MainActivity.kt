@@ -11,12 +11,7 @@ import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 
 class MainActivity : FragmentActivity(), Request.RequestListener {
@@ -39,6 +34,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         Request.onCreate()
@@ -165,8 +161,12 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            Log.i(TAG, "onSingleTapConfirmed")
             switchMainFragment()
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            showSetting()
             return true
         }
 

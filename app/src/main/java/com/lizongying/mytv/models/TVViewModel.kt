@@ -23,10 +23,12 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     var retryTimes = 0
     var retryMaxTimes = 8
-    var tokenRetryTimes = 0
-    var tokenRetryMaxTimes = 0
+    var tokenYSPRetryTimes = 0
+    var tokenYSPRetryMaxTimes = 0
     var tokenFHRetryTimes = 0
-    var tokenFHRetryMaxTimes = 2
+    var tokenFHRetryMaxTimes = 4
+
+    var needGetToken = false
 
     private val _errInfo = MutableLiveData<String>()
     val errInfo: LiveData<String>
@@ -88,9 +90,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         } else {
             tv.videoUrl = tv.videoUrl + listOf(url)
         }
-        tv.videoIndex = tv.videoUrl.lastIndex
         _videoUrl.value = tv.videoUrl
-        _videoIndex.value = tv.videoIndex
+        _videoIndex.value = tv.videoUrl.lastIndex
     }
 
     fun firstSource() {
@@ -118,7 +119,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _id.value = tv.id
         _title.value = tv.title
         _videoUrl.value = tv.videoUrl
-        _videoIndex.value = tv.videoIndex
+        _videoIndex.value = tv.videoUrl.lastIndex
         _logo.value = tv.logo
         _programId.value = tv.programId
         _pid.value = tv.pid
@@ -171,19 +172,13 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _epg.value = p.map { EPG(it.title, formatFTime(it.event_time)) }.toMutableList()
     }
 
-    private var mHeaders: Map<String, String>? = mapOf()
-
-    fun setHeaders(headers: Map<String, String>) {
-        mHeaders = headers
-    }
-
     /**
      * (playerView?.player as ExoPlayer).setMediaSource(tvViewModel.buildSource())
      */
     @OptIn(UnstableApi::class)
     fun buildSource(): HlsMediaSource {
         val httpDataSource = DefaultHttpDataSource.Factory()
-        mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
+//        mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
 
         return HlsMediaSource.Factory(httpDataSource).createMediaSource(
             MediaItem.fromUri(

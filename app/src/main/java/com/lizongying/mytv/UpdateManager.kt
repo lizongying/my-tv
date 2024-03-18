@@ -1,5 +1,6 @@
 package com.lizongying.mytv
 
+import android.app.Activity
 import android.app.DownloadManager
 import android.app.DownloadManager.Request
 import android.content.BroadcastReceiver
@@ -13,8 +14,10 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
-import com.lizongying.mytv.api.Release
+import androidx.core.app.ActivityCompat
+import androidx.core.content.PermissionChecker
+import androidx.core.content.PermissionChecker.checkSelfPermission
+import com.lizongying.mytv.api.ReleaseV2
 import com.lizongying.mytv.requests.MyRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,49 +33,79 @@ class UpdateManager(
     ConfirmationDialogFragment.ConfirmationDialogListener {
 
     private var myRequest = MyRequest()
-    private var release: Release? = null
+    private var release: ReleaseV2? = null
 
     private var downloadReceiver: DownloadReceiver? = null
 
     fun checkAndUpdate() {
+        if (!haveStoragePermission()) {
+            return
+        }
         CoroutineScope(Dispatchers.Main).launch {
+            var text = "版本获取失败"
             try {
                 release = myRequest.getRelease()
-                updateUI(release)
-                Log.i(TAG, "versionCode $versionCode ${release?.data?.versionCode}")
-                if (release != null) {
-                    if (release?.data?.versionCode!! >= versionCode) {
+                Log.i(TAG, "versionCode $versionCode ${release?.c}")
+                if (release?.c != null) {
+                    if (release?.c!! >= versionCode) {
+                        text = "最新版本：${release?.n}"
                         val dialog = ConfirmationDialogFragment(this@UpdateManager)
                         dialog.show(settingFragment.fragmentManager, "ConfirmationDialogFragment")
                     } else {
-                        Toast.makeText(context, "不需要更新", Toast.LENGTH_LONG)
-                            .show()
+                        text = "已是最新版本，不需要更新"
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error occurred: ${e.message}", e)
             }
+            updateUI(text)
         }
     }
 
-    private fun updateUI(release: Release?) {
-        if (release?.data?.versionName.isNullOrEmpty()) {
-            settingFragment.setVersionName("版本获取失败")
-        } else {
-            settingFragment.setVersionName("最新版本：${release?.data?.versionName!!}")
+    private fun updateUI(text: String) {
+        settingFragment.setVersionName(text)
+    }
+
+    fun haveStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                === PermissionChecker.PERMISSION_GRANTED
+            ) {
+                Log.e("Permission error", "You have permission")
+                return true
+            } else {
+                Log.e("Permission error", "You have asked for permission")
+                ActivityCompat.requestPermissions(
+                    context as Activity, arrayOf(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ), 1
+                )
+                return false
+            }
+        } else { //you don't need to worry about these stuff below api level 23
+            Log.e("Permission error", "You already have the permission")
+            return true
         }
     }
 
-    private fun startDownload(release: Release) {
-        val apkFileName = "my-tv-${release.data.versionName}.apk"
+
+    private fun startDownload(release: ReleaseV2) {
+        val apkFileName = "my-tv-${release.n}.apk"
         Log.i(TAG, "apkFileName $apkFileName")
         val downloadManager =
             context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val request = Request(Uri.parse(release.data.downloadUrl))
-        Log.i(TAG, "url ${Uri.parse(release.data.downloadUrl)}")
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, apkFileName)
+        val request = Request(Uri.parse(release.u))
+        Log.i(TAG, "url ${Uri.parse(release.u)}")
+        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.mkdirs()
+        request.setDestinationInExternalFilesDir(
+            context,
+            Environment.DIRECTORY_DOWNLOADS,
+            apkFileName
+        )
         request.setTitle("New Version Download")
         request.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        request.setAllowedOverRoaming(false)
+        request.setMimeType("application/vnd.android.package-archive")
 
         // 获取下载任务的引用
         val downloadReference = downloadManager.enqueue(request)
@@ -97,7 +130,11 @@ class UpdateManager(
         }
     }
 
-    private fun getDownloadProgress(context: Context, downloadId: Long, progressListener: (Int) -> Unit) {
+    private fun getDownloadProgress(
+        context: Context,
+        downloadId: Long,
+        progressListener: (Int) -> Unit
+    ) {
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val handler = Handler(Looper.getMainLooper())
         val intervalMillis: Long = 1000
@@ -178,7 +215,6 @@ class UpdateManager(
 
     override fun onCancel() {
     }
-
 
     fun destroy() {
         if (downloadReceiver != null) {

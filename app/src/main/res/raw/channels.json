@@ -1,7 +1,6 @@
 [
   {
     "id": 0,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/d57905b93540bd15f0c48230dbbbff7ee0d645ff539e38866e2d15c8b9f7dfcd.png?imageMogr2/format/webp",
     "pid": "600001859",
@@ -16,7 +15,6 @@
   },
   {
     "id": 1,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/20115388de0207131af17eac86c33049b95d69eaff064e55653a1b941810a006.png?imageMogr2/format/webp",
     "pid": "600001800",
@@ -31,7 +29,6 @@
   },
   {
     "id": 2,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/7b7a65c712450da3deb6ca66fbacf4f9aee00d3f20bd80eafb5ada01ec63eb3a.png?imageMogr2/format/webp",
     "pid": "600001801",
@@ -46,7 +43,6 @@
   },
   {
     "id": 3,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/f357e58fdbcc076a3d65e1f958c942b2e14f14342c60736ceed98b092d35356a.png?imageMogr2/format/webp",
     "pid": "600001814",
@@ -62,7 +58,6 @@
   },
   {
     "id": 4,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/0a6a7138952675983a3d854df7688557b286d59aa06166edae51506f9204d655.png?imageMogr2/format/webp",
     "pid": "600001818",
@@ -77,7 +72,6 @@
   },
   {
     "id": 5,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/741515efda91f03f455df8a7da4ee11fa9329139c276435cf0a9e2af398d5bf2.png?imageMogr2/format/webp",
     "pid": "600001802",
@@ -92,7 +86,6 @@
   },
   {
     "id": 6,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/b29af94e295ebdf646cefb68122c429b9cd921f498ca20d2d8070252536f9ff9.png?imageMogr2/format/webp",
     "pid": "600004092",
@@ -107,7 +100,6 @@
   },
   {
     "id": 7,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/ad51de94426a0ba039e6dd6a8534ea98ecc813a6176bde87b4f18cc34d6d7590.png?imageMogr2/format/webp",
     "pid": "600001803",
@@ -122,7 +114,6 @@
   },
   {
     "id": 8,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/2ed1b4deeca179d5db806bb941790f82eb92a1b7299c1c38fe027f95a5caee5e.png?imageMogr2/format/webp",
     "pid": "600004078",
@@ -137,7 +128,6 @@
   },
   {
     "id": 9,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/aa6157ec65188cd41826e5a2f088c3d6d153205f5f6428258d12c59999e221aa.png?imageMogr2/format/webp",
     "pid": "600001805",
@@ -152,7 +142,6 @@
   },
   {
     "id": 10,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/ed12ed7c7a1034dae4350011fe039284c5d5a836506b28c9e32e3c75299625c0.png?imageMogr2/format/webp",
     "pid": "600001806",
@@ -167,7 +156,6 @@
   },
   {
     "id": 11,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/484083cffaa40df7e659565e8cb4d1cc740158a185512114167aa21fa0c59240.png?imageMogr2/format/webp",
     "pid": "600001807",
@@ -182,7 +170,6 @@
   },
   {
     "id": 12,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/266da7b43c03e2312186b4a999e0f060e8f15b10d2cc2c9aa32171819254cf1a.png?imageMogr2/format/webp",
     "pid": "600001811",
@@ -198,7 +185,6 @@
   },
   {
     "id": 13,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/af6b603896938dc346fbb16abfc63c12cba54b0ec9d18770a15d347d115f12d5.png?imageMogr2/format/webp",
     "pid": "600001809",
@@ -213,7 +199,6 @@
   },
   {
     "id": 14,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/2ceee92188ef684efe0d8b90839c4f3ad450d179dc64d59beff417059453af47.png?imageMogr2/format/webp",
     "pid": "600001815",
@@ -228,7 +213,6 @@
   },
   {
     "id": 15,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/53793fa7bacd3a93ff6dc5d2758418985e1f952a316c335d663b572d8bdcd74d.png?imageMogr2/format/webp",
     "pid": "600098637",
@@ -244,7 +228,6 @@
   },
   {
     "id": 16,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/ddef563072f8bad2bea5b9e52674cb7b4ed50efb20c26e61994dfbdf05c1e3c0.png?imageMogr2/format/webp",
     "pid": "600001810",
@@ -259,7 +242,6 @@
   },
   {
     "id": 17,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/649ad76a90bfef55b05db9fe52e006487280f619089099d5dc971e387fc6eff0.png?imageMogr2/format/webp",
     "pid": "600001817",
@@ -274,7 +256,6 @@
   },
   {
     "id": 18,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/3e9d06fd7244d950df5838750f1c6ac3456e172b51caca2c16d2282125b111e8.png?imageMogr2/format/webp",
     "pid": "600002264",
@@ -289,7 +270,6 @@
   },
   {
     "id": 19,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "",
     "pid": "600156816",
@@ -304,7 +284,6 @@
   },
   {
     "id": 20,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/4d549e53e6d0f632d5a633d1945280797b153e588f919221a07faa869812cc89.png?imageMogr2/format/webp",
     "pid": "600099658",
@@ -319,7 +298,6 @@
   },
   {
     "id": 21,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/a556bd7d93ce65e18f243a8892b5604f4faa994a4897315914216a710a706208.png?imageMogr2/format/webp",
     "pid": "600099655",
@@ -334,7 +312,6 @@
   },
   {
     "id": 22,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/5661bd04fecdb6e899f801147a22ab5d3a475bf2b62e30aec2c0023190ebc9b1.png?imageMogr2/format/webp",
     "pid": "600099620",
@@ -349,7 +326,6 @@
   },
   {
     "id": 23,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/bb3c6c9e145d698137f5bb64a582021a01b51344b929003630eb769ea65832a9.png?imageMogr2/format/webp",
     "pid": "600099637",
@@ -364,7 +340,6 @@
   },
   {
     "id": 24,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/bbf1d024c5228b8dd128b0e3cb1717d173fab4ee84c3a4c8a57b1a215362ca3b.png?imageMogr2/format/webp",
     "pid": "600099660",
@@ -379,7 +354,6 @@
   },
   {
     "id": 25,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/4c6b6a6d3839889f34d33db3c2f80233b26b74d3489b393487635f8704e70796.png?imageMogr2/format/webp",
     "pid": "600099649",
@@ -394,7 +368,6 @@
   },
   {
     "id": 26,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/cd1e2bb52b06a991de168733e5ff0f1d85adc8042d40c8f393f723543e5dd08a.png?imageMogr2/format/webp",
     "pid": "600099636",
@@ -409,7 +382,6 @@
   },
   {
     "id": 27,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/cdd1b31ede7a5ad049ed53d9a072422f829e72dd062ed2c19e077fdd01699071.png?imageMogr2/format/webp",
     "pid": "600099659",
@@ -424,7 +396,6 @@
   },
   {
     "id": 28,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/fa28955ce8b2539d728bf4c6a13a46ff57ad76eae46627f7bcfb1ed8a613d3fc.png?imageMogr2/format/webp",
     "pid": "600099650",
@@ -439,7 +410,6 @@
   },
   {
     "id": 29,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/14ac5ce40482cacd3d4b37435222bfe86af2b452a2f04ecbfc1d13d76edd7c57.png?imageMogr2/format/webp",
     "pid": "600099653",
@@ -454,7 +424,6 @@
   },
   {
     "id": 30,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/10e14a92478011aa6c3c8562e62127f3b1908e29fcd78e4b2b24b9e6d3ec2fbc.png?imageMogr2/format/webp",
     "pid": "600099652",
@@ -469,7 +438,6 @@
   },
   {
     "id": 31,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/244d72c0eb1615ed7d51c2f5db5a67f306aa3f58c05bc2d34de3aa7e956dc8c9.png?imageMogr2/format/webp",
     "pid": "600099656",
@@ -484,7 +452,6 @@
   },
   {
     "id": 32,
-    "videoIndex": 0,
     "channel": "央视",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/54a6863656fdfd8f803be193ddf22441c5000a108833889816fd2d8911715ce8.png?imageMogr2/format/webp",
     "pid": "600099651",
@@ -499,7 +466,6 @@
   },
   {
     "id": 33,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/9bd372ca292a82ce3aa08772b07efc4af1f85c21d1f268ea33440c49e9a0a488.png?imageMogr2/format/webp",
     "pid": "600002483",
@@ -514,7 +480,6 @@
   },
   {
     "id": 34,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/4120e89d3079d08aa17d382f69a2308ec70839b278367763c34a34666c75cb88.png?imageMogr2/format/webp",
     "pid": "600002475",
@@ -530,7 +495,6 @@
   },
   {
     "id": 35,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/7a6be5a2bb1dc53a945c016ff1f525dc4a84c51db371c15c89aa55404b0ba784.png?imageMogr2/format/webp",
     "pid": "600002508",
@@ -546,7 +510,6 @@
   },
   {
     "id": 36,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/ac4ed6058a87c101ae7147ebc38905d0cae047fb73fd277ee5049b84f52bda36.png?imageMogr2/format/webp",
     "pid": "600002505",
@@ -562,7 +525,6 @@
   },
   {
     "id": 37,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/380ad685c0c1d5b2c902246b8d2df6d3f9b45e2837abcfe493075bbded597a31.png?imageMogr2/format/webp",
     "pid": "600002521",
@@ -578,7 +540,6 @@
   },
   {
     "id": 38,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/3c760d0d00463855890e8a1864ea4a6b6dd66b90c29b4ac714a4b17c16519871.png?imageMogr2/format/webp",
     "pid": "600002503",
@@ -594,7 +555,6 @@
   },
   {
     "id": 39,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/22d403f07a7cf5410b3ad3ddb65a11aa229a32475fac213f5344c9f0ec330ca1.png?imageMogr2/format/webp",
     "pid": "600002513",
@@ -609,7 +569,6 @@
   },
   {
     "id": 40,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/28886880a4dc0f06fb7e0a528a1def0591d61a65870e29176ede0cc92033bbfd.png?imageMogr2/format/webp",
     "pid": "600002485",
@@ -624,7 +583,6 @@
   },
   {
     "id": 41,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/54b7e97cb816bb223fe05f3fc44da2c7820eb66e8550c19d23100f2c414ecc38.png?imageMogr2/format/webp",
     "pid": "600002509",
@@ -640,7 +598,6 @@
   },
   {
     "id": 42,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/657651f411de2673d1770d9a78b44c1265704f7468cc41d4be7f51d630768494.png?imageMogr2/format/webp",
     "pid": "600002531",
@@ -656,7 +613,6 @@
   },
   {
     "id": 43,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/74925962148a6d31c85808b6cd4e444c2a54bab393d2c5fc85e960b50e22fa86.png?imageMogr2/format/webp",
     "pid": "600002525",
@@ -672,7 +628,6 @@
   },
   {
     "id": 44,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/d545becdc81c60197b08c7f47380705e4665ed3fe55efc8b855e486f6e655378.png?imageMogr2/format/webp",
     "pid": "600002493",
@@ -688,7 +643,6 @@
   },
   {
     "id": 45,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/4eb45f4781d33d872af027dc01c941559aab55667dd99cc5c22bef7037807b13.png?imageMogr2/format/webp",
     "pid": "600002490",
@@ -704,7 +658,6 @@
   },
   {
     "id": 46,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/f4f23633c578beea49a3841d88d3490100f029ee349059fa532869db889872c5.png?imageMogr2/format/webp",
     "pid": "600002309",
@@ -720,7 +673,6 @@
   },
   {
     "id": 47,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/d8273ae9be698ce2db21f5b886ecac95a73429593f93713c60ed8c12c38bf0d3.png?imageMogr2/format/webp",
     "pid": "600002498",
@@ -736,7 +688,6 @@
   },
   {
     "id": 48,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/a66c836bd98ba3e41a2e9a570d4b9c50dedc6839e9de333e2e78212ad505f37e.png?imageMogr2/format/webp",
     "pid": "600002520",
@@ -752,7 +703,6 @@
   },
   {
     "id": 49,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/f35fa04b51b1ee4984b03578b65403570868ebca03c6c01e11b097f999a58d9b.png?imageMogr2/format/webp",
     "pid": "600002532",
@@ -768,7 +718,6 @@
   },
   {
     "id": 50,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/d59fec04c902e3581c617136d02d4b9b8c4cbe64272781ddd3525e80c823edb7.png?imageMogr2/format/webp",
     "pid": "600002481",
@@ -784,7 +733,6 @@
   },
   {
     "id": 51,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/3276a414ae0eaa0f116f2045cd913367967d0c7c1e978e8621ac3879436c6ed7.png?imageMogr2/format/webp",
     "pid": "600002516",
@@ -800,7 +748,6 @@
   },
   {
     "id": 52,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/3208fe6564a293c21b711333fb3edb05bb5b406cff840573c9a8d839680a1579.png?imageMogr2/format/webp",
     "pid": "600002484",
@@ -816,7 +763,6 @@
   },
   {
     "id": 53,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/6e060391fde0469801fc3d84dbf204b4f8d650d251f17d7595a6964c0bb99e81.png?imageMogr2/format/webp",
     "pid": "600002506",
@@ -832,7 +778,6 @@
   },
   {
     "id": 54,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "",
     "pid": "600152137",
@@ -847,7 +792,6 @@
   },
   {
     "id": 55,
-    "videoIndex": 0,
     "channel": "地方",
     "logo": "",
     "pid": "600152138",
@@ -862,7 +806,6 @@
   },
   {
     "id": 56,
-    "videoIndex": 0,
     "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/a72dff758ca1c17cd0ecc8cedc11b893d208f409d5e6302faa0e9d298848abc3.png?imageMogr2/format/webp",
     "pid": "600014550",
@@ -877,7 +820,6 @@
   },
   {
     "id": 57,
-    "videoIndex": 0,
     "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/a8d0046a47433d952bf6ed17062deb8bd2184ba9aec0f7781df6bf9487a3ffcf.png?imageMogr2/format/webp",
     "pid": "600084704",
@@ -892,7 +834,6 @@
   },
   {
     "id": 58,
-    "videoIndex": 0,
     "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/bf0a820893cbaf20dd0333e27042e1ef9c8806e5b602b6a8c95af399db0bc77a.png?imageMogr2/format/webp",
     "pid": "600084758",
@@ -907,7 +848,6 @@
   },
   {
     "id": 59,
-    "videoIndex": 0,
     "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202306/2e44e2aa3e7a1cedf07fd0ae59fe69e86a60a2632660a006e3e9e7397b2d107e.png?imageMogr2/format/webp",
     "pid": "600084782",
@@ -922,7 +862,6 @@
   },
   {
     "id": 60,
-    "videoIndex": 0,
     "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202309/7c337e3dbe64402ec7e4678a619a4a6d95144e42f35161181ff78e143b7cf67a.png?imageMogr2/format/webp",
     "pid": "600084744",
@@ -938,7 +877,6 @@
   },
   {
     "id": 61,
-    "videoIndex": 0,
     "channel": "国际",
     "logo": "https://resources.yangshipin.cn/assets/oms/image/202309/74d3ac436a7e374879578de1d87a941fbf566d39d5632b027c5097891ed32bd5.png?imageMogr2/format/webp",
     "pid": "600084781",

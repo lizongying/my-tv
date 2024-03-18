@@ -6,14 +6,19 @@ import android.content.SharedPreferences
 object SP {
     // Name of the sp file TODO Should use a meaningful name and do migrations
     private const val SP_FILE_NAME = "MainActivity"
+
     // If Change channel with up and down in reversed order or not
     private const val KEY_CHANNEL_REVERSAL = "channel_reversal"
+
     // If use channel num to select channel or not
     private const val KEY_CHANNEL_NUM = "channel_num"
+
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
+
     // Position in list of the selected channel item
     private const val KEY_POSITION = "position"
+
     // guid
     private const val KEY_GUID = "guid"
 
@@ -43,6 +48,6 @@ object SP {
         set(value) = sp.edit().putInt(KEY_POSITION, value).apply()
 
     var guid: String
-        get() = sp.getString(KEY_GUID, "")  ?: ""
+        get() = sp.getString(KEY_GUID, "") ?: ""
         set(value) = sp.edit().putString(KEY_GUID, value).apply()
 }
