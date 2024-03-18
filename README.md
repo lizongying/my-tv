@@ -4,7 +4,7 @@
 
 ## 使用
 
-下载安装 [releases](https://github.com/lizongying/my-tv/releases/)
+下载安装 [releases](./releases/)
 
 小米电视可以使用小米电视助手进行安装
 
