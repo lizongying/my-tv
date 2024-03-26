@@ -1,13 +1,12 @@
 package com.lizongying.mytv
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.ListRowPresenter.SelectItemViewHolderTask
@@ -17,7 +16,6 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
-import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
@@ -57,7 +55,7 @@ class MainFragment : BrowseSupportFragment() {
         tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
             tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
                 if (tvViewModel.errInfo.value != null
-                    && tvViewModel.id.value == itemPosition
+                    && tvViewModel.getTV().id == itemPosition
                 ) {
                     Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT).show()
                 }
@@ -66,18 +64,18 @@ class MainFragment : BrowseSupportFragment() {
 
                 // not first time && channel not change
                 if (tvViewModel.ready.value != null
-                    && tvViewModel.id.value == itemPosition
+                    && tvViewModel.getTV().id == itemPosition
                     && check(tvViewModel)
                 ) {
-                    Log.i(TAG, "ready ${tvViewModel.title.value}")
+                    Log.i(TAG, "ready ${tvViewModel.getTV().title}")
                     (activity as? MainActivity)?.play(tvViewModel)
                 }
             }
             tvViewModel.change.observe(viewLifecycleOwner) { _ ->
                 if (tvViewModel.change.value != null) {
-                    val title = tvViewModel.title.value
+                    val title = tvViewModel.getTV().title
                     Log.i(TAG, "switch $title")
-                    if (tvViewModel.pid.value != "") {
+                    if (tvViewModel.getTV().pid != "") {
                         Log.i(TAG, "request $title")
                         lifecycleScope.launch(Dispatchers.IO) {
                             tvViewModel.let { Request.fetchData(it) }
@@ -196,8 +194,8 @@ class MainFragment : BrowseSupportFragment() {
             row: Row
         ) {
             if (item is TVViewModel) {
-                if (itemPosition != item.id.value!!) {
-                    itemPosition = item.id.value!!
+                if (itemPosition != item.getTV().id) {
+                    itemPosition = item.getTV().id
                     tvListViewModel.setItemPosition(itemPosition)
                     tvListViewModel.getTVViewModel(itemPosition)?.changed()
                 }
@@ -211,15 +209,18 @@ class MainFragment : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
+//            if (itemViewHolder !=null) {
+//                (itemViewHolder.view as ImageCardView).setInfoAreaBackgroundColor(resources.getColor(R.color.focus))
+//            }
             if (item is TVViewModel) {
-                tvListViewModel.setItemPositionCurrent(item.id.value!!)
+                tvListViewModel.setItemPositionCurrent(item.getTV().id)
                 (activity as MainActivity).mainActive()
             }
         }
     }
 
     fun check(tvViewModel: TVViewModel): Boolean {
-        val title = tvViewModel.title.value
+        val title = tvViewModel.getTV().title
         val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
         if (videoUrl == null || videoUrl == "") {
             Log.e(TAG, "$title videoUrl is empty")

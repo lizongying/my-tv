@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="local_channel_version">1</integer>
-    <string name="server_version_url">https://fastly.jsdelivr.net/gh/LeGend-wLw/my-tv-json-utils@main/version.txt</string>
-    <string name="server_url">https://fastly.jsdelivr.net/gh/LeGend-wLw/my-tv-json-utils@main/channels.json</string>
-</resources>

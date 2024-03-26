@@ -82,6 +82,13 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
                         Log.e(TAG, "PlaybackException $error")
                         tvViewModel?.changed()
                     }
+
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        super.onIsPlayingChanged(isPlaying)
+                        if (isPlaying) {
+                            (activity as MainActivity).isPlaying()
+                        }
+                    }
                 })
             }
         })

@@ -1,5 +1,9 @@
 package com.lizongying.mytv
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,11 +11,17 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 class MainActivity : FragmentActivity(), Request.RequestListener {
@@ -22,6 +32,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val infoFragment = InfoFragment()
     private val channelFragment = ChannelFragment()
     private val settingFragment = SettingFragment()
+    private val errorFragment = ErrorFragment()
 
     private var doubleBackToExitPressedOnce = false
 
@@ -30,6 +41,16 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val handler = Handler()
     private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
+
+    init {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
+
+            utilsJob.start()
+
+//            utilsJob.await()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
@@ -50,10 +71,38 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
+//                .add(R.id.main_browse_fragment, errorFragment)
                 .hide(mainFragment)
+//                .hide(errorFragment)
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
+
+        errorFragment.buttonClickListener = View.OnClickListener {
+            supportFragmentManager.beginTransaction()
+                .remove(errorFragment)
+                .commit()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.registerDefaultNetworkCallback(object :
+                ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
+                    if (this@MainActivity.isNetworkConnected) {
+                        Log.i(TAG, "net isNetworkConnected")
+                        ready++
+                    }
+                }
+            })
+        } else {
+            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
+            ready++
+        }
+
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -146,8 +195,16 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 5) {
+        if (ready == 6) {
             mainFragment.fragmentReady()
+        }
+    }
+
+    fun isPlaying() {
+        if (errorFragment.isVisible) {
+            supportFragmentManager.beginTransaction()
+                .remove(errorFragment)
+                .commit()
         }
     }
 
@@ -442,7 +499,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         Request.onDestroy()
     }
 
-    override fun onRequestFinished() {
+    override fun onRequestFinished(message: String?) {
+        if (message != null && !errorFragment.isVisible) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main_browse_fragment, errorFragment)
+                .commitNow()
+            errorFragment.setErrorContent(message)
+        }
         fragmentReady()
     }
 

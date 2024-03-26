@@ -1,15 +1,9 @@
 package com.lizongying.mytv.models
 
-import android.net.Uri
 import android.util.Log
-import androidx.annotation.OptIn
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.lizongying.mytv.TV
 import com.lizongying.mytv.api.FEPG
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
@@ -26,7 +20,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     var tokenYSPRetryTimes = 0
     var tokenYSPRetryMaxTimes = 0
     var tokenFHRetryTimes = 0
-    var tokenFHRetryMaxTimes = 4
+    var tokenFHRetryMaxTimes = 8
 
     var needGetToken = false
 
@@ -34,21 +28,9 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val errInfo: LiveData<String>
         get() = _errInfo
 
-    private val _programId = MutableLiveData<String>()
-    val programId: LiveData<String>
-        get() = _programId
-
     private var _epg = MutableLiveData<MutableList<EPG>>()
     val epg: LiveData<MutableList<EPG>>
         get() = _epg
-
-    private val _id = MutableLiveData<Int>()
-    val id: LiveData<Int>
-        get() = _id
-
-    private val _title = MutableLiveData<String>()
-    val title: LiveData<String>
-        get() = _title
 
     private val _videoUrl = MutableLiveData<List<String>>()
     val videoUrl: LiveData<List<String>>
@@ -57,18 +39,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private val _videoIndex = MutableLiveData<Int>()
     val videoIndex: LiveData<Int>
         get() = _videoIndex
-
-    private val _logo = MutableLiveData<Any>()
-    val logo: LiveData<Any>
-        get() = _logo
-
-    private val _pid = MutableLiveData<String>()
-    val pid: LiveData<String>
-        get() = _pid
-
-    private val _sid = MutableLiveData<String>()
-    val sid: LiveData<String>
-        get() = _sid
 
     private val _change = MutableLiveData<Boolean>()
     val change: LiveData<Boolean>
@@ -116,14 +86,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     }
 
     init {
-        _id.value = tv.id
-        _title.value = tv.title
         _videoUrl.value = tv.videoUrl
         _videoIndex.value = tv.videoUrl.lastIndex
-        _logo.value = tv.logo
-        _programId.value = tv.programId
-        _pid.value = tv.pid
-        _sid.value = tv.sid
     }
 
     fun getRowPosition(): Int {
@@ -146,10 +110,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         _errInfo.value = info
     }
 
-    fun update(t: TV) {
-        tv = t
-    }
-
     fun getTV(): TV {
         return tv
     }
@@ -170,21 +130,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun addFEPG(p: List<FEPG>) {
         _epg.value = p.map { EPG(it.title, formatFTime(it.event_time)) }.toMutableList()
-    }
-
-    /**
-     * (playerView?.player as ExoPlayer).setMediaSource(tvViewModel.buildSource())
-     */
-    @OptIn(UnstableApi::class)
-    fun buildSource(): HlsMediaSource {
-        val httpDataSource = DefaultHttpDataSource.Factory()
-//        mHeaders?.let { httpDataSource.setDefaultRequestProperties(it) }
-
-        return HlsMediaSource.Factory(httpDataSource).createMediaSource(
-            MediaItem.fromUri(
-                Uri.parse(getVideoUrlCurrent())
-            )
-        )
     }
 
     fun getVideoUrlCurrent(): String {

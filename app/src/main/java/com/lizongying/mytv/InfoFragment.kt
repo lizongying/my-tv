@@ -29,13 +29,13 @@ class InfoFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
-        binding.textView.text = tvViewModel.title.value
+        binding.textView.text = tvViewModel.getTV().title
 
         Glide.with(this)
-            .load(tvViewModel.logo.value)
+            .load(tvViewModel.getTV().logo)
             .into(binding.infoLogo)
 
-        Log.i(TAG, "${tvViewModel.title.value} ${tvViewModel.epg.value}")
+        Log.i(TAG, "${tvViewModel.getTV().title} ${tvViewModel.epg.value}")
         val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
         if (!epg.isNullOrEmpty()) {
             binding.infoDesc.text = epg.last().title

@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.lizongying.mytv.databinding.DialogBinding
+import com.lizongying.mytv.databinding.SettingBinding
 
 
 class SettingFragment : DialogFragment() {
 
-    private var _binding: DialogBinding? = null
+    private var _binding: SettingBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var updateManager: UpdateManager
@@ -26,7 +26,7 @@ class SettingFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         val context = requireContext() // It‘s safe to get context here.
-        _binding = DialogBinding.inflate(inflater, container, false)
+        _binding = SettingBinding.inflate(inflater, container, false)
         binding.versionName.text = "当前版本: v${context.appVersionName}"
         binding.version.text = "https://github.com/lizongying/my-tv"
 
@@ -74,11 +74,6 @@ class SettingFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        updateManager.destroy()
     }
 
     companion object {

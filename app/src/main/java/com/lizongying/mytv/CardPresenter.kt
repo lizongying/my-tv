@@ -27,12 +27,12 @@ class CardPresenter(
         val tvViewModel = item as TVViewModel
         val cardView = viewHolder.view as ImageCardView
 
-        cardView.titleText = tvViewModel.title.value
+        cardView.titleText = tvViewModel.getTV().title
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.tag = tvViewModel.videoUrl.value
 
         Glide.with(viewHolder.view.context)
-            .load(tvViewModel.logo.value)
+            .load(tvViewModel.getTV().logo)
             .centerInside()
             .into(cardView.mainImageView)
 
