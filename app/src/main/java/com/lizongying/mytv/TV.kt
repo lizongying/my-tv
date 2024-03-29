@@ -7,7 +7,6 @@ data class TV(
     var title: String,
     var alias: String = "",
     var videoUrl: List<String>,
-    var videoIndex: Int = 0,
     var channel: String = "",
     var logo: Any = "",
     var pid: String = "",
@@ -23,7 +22,6 @@ data class TV(
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
-                ", videoIndex='" + videoIndex + '\'' +
                 ", logo='" + logo + '\'' +
                 ", pid='" + pid + '\'' +
                 ", sid='" + sid + '\'' +

@@ -1,5 +1,9 @@
 package com.lizongying.mytv
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,11 +11,17 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 class MainActivity : FragmentActivity(), Request.RequestListener {
@@ -31,9 +41,20 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
 
+    init {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
+
+            utilsJob.start()
+
+//            utilsJob.await()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         Request.onCreate()
@@ -53,6 +74,26 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.registerDefaultNetworkCallback(object :
+                ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
+                    if (this@MainActivity.isNetworkConnected) {
+                        Log.i(TAG, "net isNetworkConnected")
+                        ready++
+                    }
+                }
+            })
+        } else {
+            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
+            ready++
+        }
+
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -120,9 +161,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         handler.postDelayed(hideMain, delayHideMain)
     }
 
-    fun settingActive() {
+    fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
+    }
+
+    fun settingNeverHide() {
+        handler.removeCallbacks(hideSetting)
     }
 
     private val hideMain = Runnable {
@@ -146,7 +191,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 5) {
+        if (ready == 6) {
             mainFragment.fragmentReady()
         }
     }
@@ -163,6 +208,11 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             Log.i(TAG, "onSingleTapConfirmed")
             switchMainFragment()
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            showSetting()
             return true
         }
 
@@ -207,7 +257,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
             settingFragment.show(supportFragmentManager, "setting")
-            settingActive()
+            settingDelayHide()
         } else {
             handler.removeCallbacks(hideSetting)
             settingFragment.dismiss()
@@ -449,7 +499,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         Request.onDestroy()
     }
 
-    override fun onRequestFinished() {
+    override fun onRequestFinished(message: String?) {
         fragmentReady()
     }
 

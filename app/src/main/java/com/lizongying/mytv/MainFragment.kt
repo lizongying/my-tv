@@ -122,7 +122,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
                 tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
                     if (tvViewModel.errInfo.value != null
-                        && tvViewModel.id.value == itemPosition
+                        && tvViewModel.getTV().id == itemPosition
                     ) {
                         Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT)
                             .show()
@@ -132,18 +132,18 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
                     // not first time && channel not change
                     if (tvViewModel.ready.value != null
-                        && tvViewModel.id.value == itemPosition
+                        && tvViewModel.getTV().id == itemPosition
                         && check(tvViewModel)
                     ) {
-                        Log.i(TAG, "ready ${tvViewModel.title.value}")
+                        Log.i(TAG, "ready ${tvViewModel.getTV().title}")
                         (activity as? MainActivity)?.play(tvViewModel)
                     }
                 }
                 tvViewModel.change.observe(viewLifecycleOwner) { _ ->
                     if (tvViewModel.change.value != null) {
-                        val title = tvViewModel.title.value
+                        val title = tvViewModel.getTV().title
                         Log.i(TAG, "switch $title")
-                        if (tvViewModel.pid.value != "") {
+                        if (tvViewModel.getTV().pid != "") {
                             Log.i(TAG, "request $title")
                             lifecycleScope.launch(Dispatchers.IO) {
                                 tvViewModel.let { Request.fetchData(it) }
@@ -191,7 +191,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     override fun onItemHasFocus(tvViewModel: TVViewModel) {
-        tvListViewModel.setItemPositionCurrent(tvViewModel.id.value!!)
+        tvListViewModel.setItemPositionCurrent(tvViewModel.getTV().id)
 
         val row = tvViewModel.getRowPosition()
 
@@ -211,8 +211,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             return
         }
 
-        if (itemPosition != tvViewModel.id.value!!) {
-            itemPosition = tvViewModel.id.value!!
+        if (itemPosition != tvViewModel.getTV().id) {
+            itemPosition = tvViewModel.getTV().id
             tvListViewModel.setItemPosition(itemPosition)
             tvListViewModel.getTVViewModel(itemPosition)?.changed()
         }
@@ -245,7 +245,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     fun check(tvViewModel: TVViewModel): Boolean {
-        val title = tvViewModel.title.value
+        val title = tvViewModel.getTV().title
         val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
         if (videoUrl == null || videoUrl == "") {
             Log.e(TAG, "$title videoUrl is empty")

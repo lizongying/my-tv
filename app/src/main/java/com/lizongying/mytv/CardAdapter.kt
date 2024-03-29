@@ -91,10 +91,10 @@ class CardAdapter(
             false
         }
 
-        cardView.titleText = tvViewModel.title.value
+        cardView.titleText = tvViewModel.getTV().title
 
         Glide.with(viewHolder.view.context)
-            .load(tvViewModel.logo.value)
+            .load(tvViewModel.getTV().logo)
             .centerInside()
             .into(cardView.mainImageView)
 

@@ -63,8 +63,8 @@ object YSP {
     }
 
     fun switch(tvModel: TVViewModel): String {
-        livepid = tvModel.pid.value!!
-        cnlid = tvModel.sid.value!!
+        livepid = tvModel.getTV().pid
+        cnlid = tvModel.getTV().sid
         defn = "fhd"
 
         randStr = getRand()
@@ -82,7 +82,7 @@ object YSP {
     }
 
     fun getAuthData(tvModel: TVViewModel): String {
-        livepid = tvModel.pid.value!!
+        livepid = tvModel.getTV().pid
 
         randStr = getRand()
 

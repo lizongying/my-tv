@@ -57,7 +57,9 @@ object Request {
     private var listener: RequestListener? = null
 
     private var initRetryTimes = 0
-    private var initRetryMaxTimes = 1
+    private var initRetryMaxTimes = 0
+
+    private var openid = "vu0-8lgGV2LW9QjDeucB9H12d_6HQWmTFgqCWg5o-VBQN4"
 
     fun onCreate() {
         Log.i(TAG, "onCreate")
@@ -86,7 +88,7 @@ object Request {
     private fun fetchAuth(tvModel: TVViewModel, cookie: String) {
         cancelCall()
 
-        val title = tvModel.title.value
+        val title = tvModel.getTV().title
 
         val data = YSP.getAuthData(tvModel)
         val request = AuthRequest(data)
@@ -166,7 +168,7 @@ object Request {
             handler.removeCallbacks(btraceRunnable)
         }
 
-        val title = tvModel.title.value
+        val title = tvModel.getTV().title
 
         tvModel.seq = 0
         val data = YSP.switch(tvModel)
@@ -254,7 +256,7 @@ object Request {
                         }
                     }
                 } else {
-                    Log.e(TAG, "$title status error")
+                    Log.e(TAG, "$title status error $data")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
                         if (tvModel.getTV().needToken) {
@@ -309,13 +311,13 @@ object Request {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=$openid; vusession=$token"
                         fetchAuth(tvModel, cookie)
                     } else if (response.code() == 304) {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else {
                         Log.e(TAG, "info status error")
@@ -348,7 +350,7 @@ object Request {
             })
         } else {
             val cookie =
-                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=$openid; vusession=$token"
             fetchAuth(tvModel, cookie)
         }
     }
@@ -366,13 +368,13 @@ object Request {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else if (response.code() == 304) {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else {
                         Log.e(TAG, "info status error")
@@ -405,7 +407,7 @@ object Request {
             })
         } else {
             val cookie =
-                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
             fetchVideo(tvModel, cookie)
         }
     }
@@ -413,7 +415,7 @@ object Request {
     private fun fetchFAuth(tvModel: TVViewModel) {
         cancelCall()
 
-        val title = tvModel.title.value
+        val title = tvModel.getTV().title
 
         var qa = "HD"
         if (tokenFH != "") {
@@ -455,6 +457,9 @@ object Request {
         }
 
         if (tvModel.getTV().needToken) {
+            if (token == "") {
+                tvModel.needGetToken = true
+            }
             if (needAuth) {
                 fetchAuth(tvModel)
             } else {
@@ -462,7 +467,7 @@ object Request {
             }
         } else {
             val cookie =
-                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; updateProtocol=1; deviceModel=120"
             if (needAuth) {
                 fetchAuth(tvModel, cookie)
             } else {
@@ -482,10 +487,14 @@ object Request {
             .enqueue(object : Callback<InfoV2> {
                 override fun onResponse(call: Call<InfoV2>, response: Response<InfoV2>) {
                     if (response.isSuccessful) {
+                        val o = response.body()?.o
                         val t = response.body()?.t
                         val f = response.body()?.f
                         val e = response.body()?.e
                         val c = response.body()?.c
+                        if (!o.isNullOrEmpty()) {
+                            openid = o
+                        }
                         if (!t.isNullOrEmpty()) {
                             token = t
                             Log.i(TAG, "token success $token")
@@ -516,7 +525,7 @@ object Request {
                             Utils.setBetween(c * 1000L)
                             Log.i(TAG, "current time $c")
                         }
-                        listener?.onRequestFinished()
+                        listener?.onRequestFinished(null)
                     } else {
                         Log.e(TAG, "token status error")
                         handler.postDelayed(
@@ -527,7 +536,7 @@ object Request {
                             initRetryTimes++
                             fetchInfoV2()
                         } else {
-                            listener?.onRequestFinished()
+                            listener?.onRequestFinished("状态错误")
                         }
                     }
                 }
@@ -543,7 +552,7 @@ object Request {
                         initRetryTimes++
                         fetchInfoV2()
                     } else {
-                        listener?.onRequestFinished()
+                        listener?.onRequestFinished("网络错误")
                     }
                 }
             })
@@ -605,11 +614,11 @@ object Request {
     }
 
     fun fetchBtrace(tvModel: TVViewModel) {
-        val title = tvModel.title.value
+        val title = tvModel.getTV().title
 
         val guid = YSP.getGuid()
-        val pid = tvModel.pid.value!!
-        val sid = tvModel.sid.value!!
+        val pid = tvModel.getTV().pid
+        val sid = tvModel.getTV().sid
         yspBtraceService.kvcollect(
             c_timestamp = YSP.generateGuid(),
             guid = guid,
@@ -675,8 +684,8 @@ object Request {
     }
 
     fun fetchYEPG(tvViewModel: TVViewModel) {
-        val title = tvViewModel.title.value
-        yspProtoService.getProgram(tvViewModel.programId.value!!, getDateFormat("yyyyMMdd"))
+        val title = tvViewModel.getTV().title
+        yspProtoService.getProgram(tvViewModel.getTV().programId, getDateFormat("yyyyMMdd"))
             .enqueue(object : Callback<epgProgramModel.Response> {
                 override fun onResponse(
                     call: Call<epgProgramModel.Response>,
@@ -700,8 +709,8 @@ object Request {
     }
 
     fun fetchFEPG(tvViewModel: TVViewModel) {
-        val title = tvViewModel.title.value
-        fAuthService.getEPG(tvViewModel.pid.value!!, getDateFormat("yyyyMMdd"))
+        val title = tvViewModel.getTV().title
+        fAuthService.getEPG(tvViewModel.getTV().pid, getDateFormat("yyyyMMdd"))
             .enqueue(object : Callback<List<FEPG>> {
                 override fun onResponse(
                     call: Call<List<FEPG>>,
@@ -738,7 +747,7 @@ object Request {
     }
 
     interface RequestListener {
-        fun onRequestFinished()
+        fun onRequestFinished(message: String?)
     }
 
     fun setRequestListener(listener: RequestListener) {

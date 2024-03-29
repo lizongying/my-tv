@@ -7,6 +7,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.content.pm.SigningInfo
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import java.security.MessageDigest
@@ -69,6 +71,25 @@ val Context.appSignature: String
             return ""
         }
         return hashSignature(sign)
+    }
+
+
+val Context.isNetworkConnected: Boolean
+    get() {
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = connectivityManager.activeNetwork
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+            return networkCapabilities != null &&
+                    (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+        } else {
+            val networkInfo = connectivityManager.activeNetworkInfo
+            return networkInfo != null && networkInfo.isConnectedOrConnecting
+        }
     }
 
 private fun hashSignature(signature: Signature): String {
