@@ -128,9 +128,12 @@ class ApiClient {
             val sslContext = SSLContext.getInstance("SSL")
             sslContext.init(null, trustAllCerts, java.security.SecureRandom())
 
+            val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress("10.0.2.2", 8888))
+
             val builder = OkHttpClient.Builder()
                 .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
                 .hostnameVerifier { _, _ -> true }
+//                .proxy(proxy)
                 .dns(DnsCache())
 
             return enableTls12OnPreLollipop(builder).build()

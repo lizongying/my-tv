@@ -1,17 +1,17 @@
 package com.lizongying.mytv
 
+import android.content.Context
 import android.graphics.Color
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
-import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.Glide
 import com.lizongying.mytv.models.TVViewModel
 
 class CardPresenter(
-    private val owner: LifecycleOwner,
+    private val context: Context,
 ) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -38,6 +38,20 @@ class CardPresenter(
 
         cardView.setBackgroundColor(Color.WHITE)
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
+
+//        cardView.setOnFocusChangeListener { v, hasFocus ->
+//            run {
+//                if (hasFocus) {
+//                    if (v != null) {
+//                        (v as ImageCardView).setInfoAreaBackgroundColor(context.resources.getColor(R.color.focus))
+//                    }
+//                } else {
+//                    if (v != null) {
+//                        (v as ImageCardView).setInfoAreaBackgroundColor(context.resources.getColor(R.color.ic_launcher_background))
+//                    }
+//                }
+//            }
+//        }
 
         val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
         if (!epg.isNullOrEmpty()) {

@@ -34,7 +34,7 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.channelReversal
             setOnCheckedChangeListener { _, isChecked ->
                 SP.channelReversal = isChecked
-                (activity as MainActivity).settingActive()
+                (activity as MainActivity).settingDelayHide()
             }
         }
 
@@ -42,7 +42,7 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.channelNum
             setOnCheckedChangeListener { _, isChecked ->
                 SP.channelNum = isChecked
-                (activity as MainActivity).settingActive()
+                (activity as MainActivity).settingDelayHide()
             }
         }
 
@@ -50,23 +50,34 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.bootStartup
             setOnCheckedChangeListener { _, isChecked ->
                 SP.bootStartup = isChecked
-                (activity as MainActivity).settingActive()
+                (activity as MainActivity).settingDelayHide()
             }
         }
 
         updateManager = UpdateManager(context, this, context.appVersionCode)
-        binding.checkVersion.setOnClickListener(OnClickListenerCheckVersion(updateManager))
+        binding.checkVersion.setOnClickListener(
+            OnClickListenerCheckVersion(
+                activity as MainActivity,
+                updateManager
+            )
+        )
 
         return binding.root
     }
 
     fun setVersionName(versionName: String) {
-        binding.versionName.text = versionName
+        if (_binding != null) {
+            binding.versionName.text = versionName
+        }
     }
 
-    internal class OnClickListenerCheckVersion(private val updateManager: UpdateManager) :
+    internal class OnClickListenerCheckVersion(
+        private val mainActivity: MainActivity,
+        private val updateManager: UpdateManager
+    ) :
         View.OnClickListener {
         override fun onClick(view: View?) {
+            mainActivity.settingDelayHide()
             updateManager.checkAndUpdate()
         }
     }

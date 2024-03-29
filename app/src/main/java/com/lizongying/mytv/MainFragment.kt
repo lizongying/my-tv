@@ -2,11 +2,13 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.ListRowPresenter.SelectItemViewHolderTask
@@ -37,6 +39,29 @@ class MainFragment : BrowseSupportFragment() {
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
     }
+
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        val rootView = super.onCreateView(inflater, container, savedInstanceState)
+//        rootView?.setOnClickListener {
+//            Log.i(TAG, "main on click")
+//            fragmentManager!!.beginTransaction().hide(this).commit()
+//        }
+//        mainFragment.view?.setOnClickListener {
+//            Log.i(TAG, "mainFragment on click")
+//            fragmentManager!!.beginTransaction().hide(this).commit()
+//        }
+//        getRowsSupportFragment().view?.setOnClickListener {
+//            Log.i(TAG, "getRowsSupportFragment on click")
+//            fragmentManager!!.beginTransaction().hide(this).commit()
+//        }
+//
+//
+//        return rootView
+//    }
 
     override fun onStart() {
         Log.i(TAG, "onStart")
@@ -122,7 +147,7 @@ class MainFragment : BrowseSupportFragment() {
     private fun loadRows() {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-        val cardPresenter = CardPresenter(viewLifecycleOwner)
+        val cardPresenter = CardPresenter(context!!)
 
         var idx: Long = 0
         for ((k, v) in TVList.list) {
@@ -133,8 +158,6 @@ class MainFragment : BrowseSupportFragment() {
                 tvViewModel.setItemPosition(idx2)
                 tvListViewModel.addTVViewModel(tvViewModel)
                 listRowAdapter.add(tvViewModel)
-
-                updateEPG(tvViewModel)
             }
             tvListViewModel.maxNum.add(v.size)
             val header = HeaderItem(idx, k)
@@ -209,9 +232,6 @@ class MainFragment : BrowseSupportFragment() {
             itemViewHolder: Presenter.ViewHolder?, item: Any?,
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
-//            if (itemViewHolder !=null) {
-//                (itemViewHolder.view as ImageCardView).setInfoAreaBackgroundColor(resources.getColor(R.color.focus))
-//            }
             if (item is TVViewModel) {
                 tvListViewModel.setItemPositionCurrent(item.getTV().id)
                 (activity as MainActivity).mainActive()
@@ -236,8 +256,11 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     fun fragmentReady() {
-//            request.fetchPage()
         tvListViewModel.getTVViewModel(itemPosition)?.changed()
+
+        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
+            updateEPG(tvViewModel)
+        }
     }
 
     fun play(itemPosition: Int) {

@@ -62,6 +62,8 @@ object Request {
     private var initRetryTimes = 0
     private var initRetryMaxTimes = 0
 
+    private var openid = "vu0-8lgGV2LW9QjDeucB9H12d_6HQWmTFgqCWg5o-VBQN4"
+
     fun onCreate() {
         Log.i(TAG, "onCreate")
         fetchInfoV2()
@@ -264,7 +266,7 @@ object Request {
                         }
                     }
                 } else {
-                    Log.e(TAG, "$title status error")
+                    Log.e(TAG, "$title status error $data")
                     if (tvModel.retryTimes < tvModel.retryMaxTimes) {
                         tvModel.retryTimes++
                         if (tvModel.getTV().needToken) {
@@ -319,13 +321,13 @@ object Request {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=$openid; vusession=$token"
                         fetchAuth(tvModel, cookie)
                     } else if (response.code() == 304) {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else {
                         Log.e(TAG, "info status error")
@@ -358,7 +360,7 @@ object Request {
             })
         } else {
             val cookie =
-                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109;yspopenid=$openid; vusession=$token"
             fetchAuth(tvModel, cookie)
         }
     }
@@ -376,13 +378,13 @@ object Request {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else if (response.code() == 304) {
                         tvModel.needGetToken = false
                         tvModel.tokenYSPRetryTimes = 0
                         val cookie =
-                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                            "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
                         fetchVideo(tvModel, cookie)
                     } else {
                         Log.e(TAG, "info status error")
@@ -415,7 +417,7 @@ object Request {
             })
         } else {
             val cookie =
-                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=vu0-8lgGV2LW9QjDeuBFsX8yMnzs37Q3_HZF6XyVDpGR_I; vusession=$token"
+                "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109; yspopenid=$openid; vusession=$token"
             fetchVideo(tvModel, cookie)
         }
     }
@@ -495,10 +497,14 @@ object Request {
             .enqueue(object : Callback<InfoV2> {
                 override fun onResponse(call: Call<InfoV2>, response: Response<InfoV2>) {
                     if (response.isSuccessful) {
+                        val o = response.body()?.o
                         val t = response.body()?.t
                         val f = response.body()?.f
                         val e = response.body()?.e
                         val c = response.body()?.c
+                        if (!o.isNullOrEmpty()) {
+                            openid = o
+                        }
                         if (!t.isNullOrEmpty()) {
                             token = t
                             Log.i(TAG, "token success $token")

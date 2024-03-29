@@ -5,14 +5,16 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 
-class ConfirmationDialogFragment(private val listener: ConfirmationDialogListener) :
-    DialogFragment() {
+class ConfirmationFragment(
+    private val listener: ConfirmationListener,
+    private val message: String
+) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            builder.setTitle("确认")
-                .setMessage("确认更新吗？")
+            builder.setTitle("确定更新吗？")
+                .setMessage(message)
                 .setPositiveButton(
                     "确定"
                 ) { _, _ ->
@@ -23,12 +25,11 @@ class ConfirmationDialogFragment(private val listener: ConfirmationDialogListene
                 ) { _, _ ->
                     listener.onCancel()
                 }
-            // 创建并返回 AlertDialog 对象
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    interface ConfirmationDialogListener {
+    interface ConfirmationListener {
         fun onConfirm()
         fun onCancel()
     }

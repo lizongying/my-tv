@@ -30,7 +30,7 @@ class UpdateManager(
     private var settingFragment: SettingFragment,
     private var versionCode: Long
 ) :
-    ConfirmationDialogFragment.ConfirmationDialogListener {
+    ConfirmationFragment.ConfirmationListener {
 
     private var myRequest = MyRequest()
     private var release: ReleaseV2? = null
@@ -47,12 +47,10 @@ class UpdateManager(
                 release = myRequest.getRelease()
                 Log.i(TAG, "versionCode $versionCode ${release?.c}")
                 if (release?.c != null) {
-                    if (release?.c!! >= versionCode) {
-                        text = "最新版本：${release?.n}"
-                        val dialog = ConfirmationDialogFragment(this@UpdateManager)
-                        dialog.show(settingFragment.fragmentManager, "ConfirmationDialogFragment")
+                    text = if (release?.c!! > versionCode) {
+                        "最新版本：${release?.n}\n${release?.d ?: ""}"
                     } else {
-                        text = "已是最新版本，不需要更新"
+                        "已是最新版本，不需要更新"
                     }
                 }
             } catch (e: Exception) {
@@ -63,10 +61,11 @@ class UpdateManager(
     }
 
     private fun updateUI(text: String) {
-        settingFragment.setVersionName(text)
+        val dialog = ConfirmationFragment(this@UpdateManager, text)
+        dialog.show(settingFragment.fragmentManager, TAG)
     }
 
-    fun haveStoragePermission(): Boolean {
+    private fun haveStoragePermission(): Boolean {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 === PermissionChecker.PERMISSION_GRANTED
@@ -102,7 +101,7 @@ class UpdateManager(
             Environment.DIRECTORY_DOWNLOADS,
             apkFileName
         )
-        request.setTitle("New Version Download")
+        request.setTitle("${settingFragment.resources.getString(R.string.app_name)} ${release.n}")
         request.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setAllowedOverRoaming(false)
         request.setMimeType("application/vnd.android.package-archive")

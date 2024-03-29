@@ -71,9 +71,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
-//                .add(R.id.main_browse_fragment, errorFragment)
                 .hide(mainFragment)
-//                .hide(errorFragment)
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
@@ -169,9 +167,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         handler.postDelayed(hideMain, delayHideMain)
     }
 
-    fun settingActive() {
+    fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
+    }
+
+    fun settingNeverHide() {
+        handler.removeCallbacks(hideSetting)
     }
 
     private val hideMain = Runnable {
@@ -268,7 +270,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
             settingFragment.show(supportFragmentManager, "setting")
-            settingActive()
+            settingDelayHide()
         } else {
             handler.removeCallbacks(hideSetting)
             settingFragment.dismiss()
@@ -334,6 +336,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Log.i(TAG, "keyCode $keyCode, event $event")
         when (keyCode) {
             KeyEvent.KEYCODE_0 -> {
                 showChannel("0")

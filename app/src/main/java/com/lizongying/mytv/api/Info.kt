@@ -16,6 +16,7 @@ data class Token(
 )
 
 data class InfoV2(
+    val o: String?,
     val f: String?,
     val t: String?,
     val e: Int?,
@@ -25,6 +26,7 @@ data class InfoV2(
 data class ReleaseV2(
     val n: String?,
     val u: String?,
+    val d: String?,
     val c: Int?,
 )
 
