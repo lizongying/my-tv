@@ -57,7 +57,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
         setContentView(R.layout.activity_main)
 
-        Request.onCreate()
         Request.setRequestListener(this)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -191,7 +190,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun fragmentReady() {
         ready++
         Log.i(TAG, "ready $ready")
-        if (ready == 6) {
+        if (ready == 5) {
             mainFragment.fragmentReady()
         }
     }

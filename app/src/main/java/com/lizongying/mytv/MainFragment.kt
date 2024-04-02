@@ -16,6 +16,7 @@ import com.lizongying.mytv.Utils.dpToPx
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.databinding.RowBinding
 import com.lizongying.mytv.databinding.ShowBinding
+import com.lizongying.mytv.models.ProgramType
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
@@ -65,8 +66,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     tvViewModel.setItemPosition(idx2)
                     tvListViewModelCurrent.addTVViewModel(tvViewModel)
                     tvListViewModel.addTVViewModel(tvViewModel)
-
-                    updateEPG(tvViewModel)
                 }
                 tvListViewModel.maxNum.add(v.size)
 
@@ -263,6 +262,10 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     fun fragmentReady() {
 //            request.fetchPage()
         tvListViewModel.getTVViewModel(itemPosition)?.changed()
+
+        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
+            updateEPG(tvViewModel)
+        }
     }
 
     fun play(itemPosition: Int) {
@@ -300,10 +303,18 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     private fun updateEPG(tvViewModel: TVViewModel) {
-        if (tvViewModel.getTV().channel == "港澳台") {
-            Request.fetchFEPG(tvViewModel)
-        } else {
-            Request.fetchYEPG(tvViewModel)
+        when (tvViewModel.getTV().programType) {
+            ProgramType.Y_PROTO -> {
+                Request.fetchYProtoEPG(tvViewModel)
+            }
+
+            ProgramType.Y_JCE -> {
+                Request.fetchYJceEPG(tvViewModel)
+            }
+
+            ProgramType.F -> {
+                Request.fetchFEPG(tvViewModel)
+            }
         }
     }
 
