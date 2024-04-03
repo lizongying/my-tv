@@ -3,6 +3,7 @@ package com.lizongying.mytv.api
 
 import android.os.Build
 import android.util.Log
+import com.lizongying.mytv.jce.JceConverterFactory
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
@@ -21,6 +22,7 @@ class ApiClient {
     private val myUrl = "https://lyrics.run/"
     private val protoUrl = "https://capi.yangshipin.cn/"
     private val traceUrl = "https://btrace.yangshipin.cn/"
+    private val jceUrl = "https://jacc.ysp.cctv.cn/"
     private val fUrl = "https://m.fengshows.com/"
 
     private var okHttpClient = getUnsafeOkHttpClient()
@@ -63,6 +65,14 @@ class ApiClient {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(YSPBtraceService::class.java)
+    }
+
+    val yspJceService: YSPJceService by lazy {
+        Retrofit.Builder()
+            .baseUrl(jceUrl)
+            .client(okHttpClient)
+            .addConverterFactory(JceConverterFactory.create())
+            .build().create(YSPJceService::class.java)
     }
 
     val fAuthService: FAuthService by lazy {

@@ -19,6 +19,7 @@ import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.api.YSP
+import com.lizongying.mytv.models.ProgramType
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.Dispatchers
@@ -298,10 +299,18 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun updateEPG(tvViewModel: TVViewModel) {
-        if (tvViewModel.getTV().channel == "港澳台") {
-            Request.fetchFEPG(tvViewModel)
-        } else {
-            Request.fetchYEPG(tvViewModel)
+        when (tvViewModel.getTV().programType) {
+            ProgramType.Y_PROTO -> {
+                Request.fetchYProtoEPG(tvViewModel)
+            }
+
+            ProgramType.Y_JCE -> {
+                Request.fetchYJceEPG(tvViewModel)
+            }
+
+            ProgramType.F -> {
+                Request.fetchFEPG(tvViewModel)
+            }
         }
     }
 

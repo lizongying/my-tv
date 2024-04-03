@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.lizongying.mytv.TV
 import com.lizongying.mytv.api.FEPG
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
+import com.tencent.videolite.android.datamodel.cctvjce.TVProgram
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
@@ -112,6 +113,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun getTV(): TV {
         return tv
+    }
+
+    fun addYJceEPG(p: MutableList<TVProgram>) {
+        _epg.value = p.map { EPG(it.name, it.start_time_stamp.toInt()) }.toMutableList()
     }
 
     fun addYEPG(p: MutableList<Program>) {
