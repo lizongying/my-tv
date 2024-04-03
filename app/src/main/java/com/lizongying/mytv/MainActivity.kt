@@ -172,6 +172,11 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         handler.postDelayed(hideSetting, delayHideSetting)
     }
 
+    fun settingHideNow() {
+        handler.removeCallbacks(hideSetting)
+        handler.postDelayed(hideSetting, 0)
+    }
+
     fun settingNeverHide() {
         handler.removeCallbacks(hideSetting)
     }
@@ -448,20 +453,17 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-//                if (mainFragment.isHidden) {
-//                    prevSource()
-//                } else {
-////                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-////                            ?.getItemPosition() == 0
-////                    ) {
-//////                        mainFragment.toLastPosition()
-////                        hideMainFragment()
-////                    }
-//                }
+                if (!mainFragment.isVisible && !settingFragment.isVisible) {
+                    switchMainFragment()
+                    return true
+                }
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                switchMainFragment()
+                if (!mainFragment.isVisible && !settingFragment.isVisible) {
+                    showSetting()
+                    return true
+                }
             }
         }
 
