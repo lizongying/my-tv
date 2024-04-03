@@ -461,15 +461,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-//                if (mainFragment.isHidden) {
-//                    nextSource()
-//                } else {
-////                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-////                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
-////                    ) {
-////                        mainFragment.toFirstPosition()
-////                    }
-//                }
+                switchMainFragment()
             }
         }
 
