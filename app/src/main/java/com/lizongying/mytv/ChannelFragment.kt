@@ -23,7 +23,7 @@ class ChannelFragment : Fragment() {
     ): View {
         _binding = ChannelBinding.inflate(inflater, container, false)
         _binding!!.root.visibility = View.GONE
-        (activity as MainActivity).fragmentReady()
+        (activity as MainActivity).fragmentReady("ChannelFragment")
         return binding.root
     }
 
@@ -36,6 +36,9 @@ class ChannelFragment : Fragment() {
     }
 
     fun show(channel: String) {
+        if (binding.channelContent.text.length > 1) {
+            return
+        }
         this.channel = "${binding.channelContent.text}$channel".toInt()
         handler.removeCallbacks(hideRunnable)
         handler.removeCallbacks(playRunnable)

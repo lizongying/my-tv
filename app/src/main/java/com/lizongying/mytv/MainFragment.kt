@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lizongying.mytv.Utils.dpToPx
 import com.lizongying.mytv.api.YSP
+import com.lizongying.mytv.databinding.MenuBinding
 import com.lizongying.mytv.databinding.RowBinding
-import com.lizongying.mytv.databinding.ShowBinding
 import com.lizongying.mytv.models.ProgramType
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
@@ -29,7 +29,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     private var rowList: MutableList<View> = mutableListOf()
 
-    private var _binding: ShowBinding? = null
+    private var _binding: MenuBinding? = null
     private val binding get() = _binding!!
 
     var tvListViewModel = TVListViewModel()
@@ -40,8 +40,19 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ShowBinding.inflate(inflater, container, false)
+        _binding = MenuBinding.inflate(inflater, container, false)
+
+        binding.menu.setOnClickListener {
+            hideSelf()
+        }
+
         return binding.root
+    }
+
+    private fun hideSelf() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .hide(this)
+            .commit()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -108,6 +119,9 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 val layoutParams = itemBinding.row.layoutParams as ViewGroup.MarginLayoutParams
                 layoutParams.topMargin = dpToPx(11F)
                 itemBinding.row.layoutParams = layoutParams
+                itemBinding.row.setOnClickListener{
+                    hideSelf()
+                }
                 content.addView(itemBinding.row)
 
                 idx++
@@ -164,7 +178,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     }
                 }
             }
-            (activity as MainActivity).fragmentReady()
+            (activity as MainActivity).fragmentReady("MainFragment")
         }
     }
 
@@ -219,8 +233,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     fun setPosition() {
-        val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-        val rowPosition = tvViewModel!!.getRowPosition()
+        val tvViewModel = tvListViewModel.getTVViewModel(itemPosition) ?: return
+        val rowPosition = tvViewModel.getRowPosition()
         val itemPosition = tvViewModel.getItemPosition()
         setPosition(rowPosition, itemPosition)
     }

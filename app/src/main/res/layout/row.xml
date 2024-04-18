@@ -3,7 +3,11 @@
     android:id="@+id/row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:clickable="true"
+    android:focusable="false"
+    >
 
     <TextView
         android:id="@+id/row_header"

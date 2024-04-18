@@ -65,6 +65,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
+                android:id="@+id/switch_time"
+                android:text="@string/title_time"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Switch
                 android:id="@+id/switch_boot_startup"
                 android:text="@string/title_boot_startup"
                 android:layout_marginTop="10dp"

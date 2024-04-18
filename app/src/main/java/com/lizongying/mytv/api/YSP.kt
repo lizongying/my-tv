@@ -2,7 +2,6 @@ package com.lizongying.mytv.api
 
 import android.content.Context
 import com.lizongying.mytv.Encryptor
-import com.lizongying.mytv.MainActivity
 import com.lizongying.mytv.SP
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel
@@ -140,6 +139,11 @@ object YSP {
         val e =
             "appid=${appid}&guid=${guid}&pid=${livepid}&rand_str=${randStr}".toByteArray()
         val hashedData = encryptor.hash2(e) ?: return ""
+        return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
+    }
+
+    fun getAuthSignature(e: String): String {
+        val hashedData = encryptor.hash2(e.toByteArray()) ?: return ""
         return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
     }
 }

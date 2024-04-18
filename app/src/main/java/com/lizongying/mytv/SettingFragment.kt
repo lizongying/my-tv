@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.lizongying.mytv.databinding.SettingBinding
 
@@ -14,6 +15,14 @@ class SettingFragment : DialogFragment() {
     private val binding get() = _binding!!
 
     private lateinit var updateManager: UpdateManager
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +51,14 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.channelNum
             setOnCheckedChangeListener { _, isChecked ->
                 SP.channelNum = isChecked
+                (activity as MainActivity).settingDelayHide()
+            }
+        }
+
+        binding.switchTime.run {
+            isChecked = SP.time
+            setOnCheckedChangeListener { _, isChecked ->
+                SP.time = isChecked
                 (activity as MainActivity).settingDelayHide()
             }
         }

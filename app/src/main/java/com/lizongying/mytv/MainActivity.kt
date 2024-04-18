@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
@@ -31,6 +30,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
     private val channelFragment = ChannelFragment()
+    private var timeFragment = TimeFragment()
     private val settingFragment = SettingFragment()
 
     private var doubleBackToExitPressedOnce = false
@@ -66,6 +66,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
+                .add(R.id.main_browse_fragment, timeFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
@@ -163,6 +164,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
+        showTime()
     }
 
     fun settingNeverHide() {
@@ -187,11 +189,21 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         }
     }
 
-    fun fragmentReady() {
+    fun fragmentReady(tag: String) {
         ready++
-        Log.i(TAG, "ready $ready")
-        if (ready == 5) {
+        Log.i(TAG, "ready $tag $ready ")
+        if (ready == 6) {
             mainFragment.fragmentReady()
+            showTime()
+        }
+    }
+
+    private fun showTime() {
+        Log.i(TAG, "showTime ${SP.time}")
+        if (SP.time) {
+            timeFragment.show()
+        } else {
+            timeFragment.hide()
         }
     }
 
@@ -266,7 +278,12 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val hideSetting = Runnable {
         if (settingFragment.isVisible) {
             settingFragment.dismiss()
+            showTime()
         }
+    }
+
+    private fun hideSettingFragment() {
+        handler.postDelayed(hideSetting, 0)
     }
 
     private fun channelUp() {
@@ -305,6 +322,11 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private fun back() {
         if (!mainFragmentIsHidden()) {
             hideMainFragment()
+            return
+        }
+
+        if (!settingFragment.isHidden) {
+            hideSettingFragment()
             return
         }
 
@@ -435,30 +457,17 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                channelUp()
-//                if (mainFragment.isHidden) {
-//                    prevSource()
-//                } else {
-////                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-////                            ?.getItemPosition() == 0
-////                    ) {
-//////                        mainFragment.toLastPosition()
-////                        hideMainFragment()
-////                    }
-//                }
+                if (mainFragment.isHidden && !settingFragment.isVisible) {
+                    switchMainFragment()
+                    return true
+                }
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                channelDown()
-//                if (mainFragment.isHidden) {
-//                    nextSource()
-//                } else {
-////                    if (mainFragment.tvListViewModel.getTVViewModelCurrent()
-////                            ?.getItemPosition() == mainFragment.tvListViewModel.maxNum[mainFragment.selectedPosition] - 1
-////                    ) {
-////                        mainFragment.toFirstPosition()
-////                    }
-//                }
+                if (mainFragment.isHidden && !settingFragment.isVisible) {
+                    showSetting()
+                    return true
+                }
             }
         }
         return false
@@ -499,7 +508,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     }
 
     override fun onRequestFinished(message: String?) {
-        fragmentReady()
+        fragmentReady("request")
     }
 
     private companion object {

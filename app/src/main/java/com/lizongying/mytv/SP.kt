@@ -13,6 +13,8 @@ object SP {
     // If use channel num to select channel or not
     private const val KEY_CHANNEL_NUM = "channel_num"
 
+    private const val KEY_TIME = "time"
+
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
 
@@ -40,6 +42,10 @@ object SP {
     var channelNum: Boolean
         get() = sp.getBoolean(KEY_CHANNEL_NUM, true)
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUM, value).apply()
+
+    var time: Boolean
+        get() = sp.getBoolean(KEY_TIME, true)
+        set(value) = sp.edit().putBoolean(KEY_TIME, value).apply()
 
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)

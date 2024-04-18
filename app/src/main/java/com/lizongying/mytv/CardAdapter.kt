@@ -32,7 +32,7 @@ class CardAdapter(
             ImageCardView(ContextThemeWrapper(parent.context, R.style.CustomImageCardTheme)) {}
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
-        cardView.updatePadding(1, 1, 1, 1)
+        cardView.updatePadding(1, 0, 1, 0)
         return ViewHolder(cardView)
     }
 
