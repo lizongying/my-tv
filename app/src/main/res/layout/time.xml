@@ -2,18 +2,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/time"
     android:layout_width="100dp"
-    android:layout_height="50dp"
+    android:layout_height="40dp"
     android:layout_gravity="end|top"
     android:layout_marginTop="25dp"
     android:layout_marginEnd="50dp">
 
     <TextView
-        android:id="@+id/channel_content"
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="0dp"
         android:textColor="#FFEEEEEE"
         android:textStyle="bold"
-        android:textSize="34sp" />
+        android:textSize="32sp" />
 </FrameLayout>

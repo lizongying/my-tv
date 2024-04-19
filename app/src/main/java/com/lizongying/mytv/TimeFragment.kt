@@ -23,6 +23,36 @@ class TimeFragment : Fragment() {
     ): View {
         Log.i(TAG, "onCreateView")
         _binding = TimeBinding.inflate(inflater, container, false)
+
+        val activity = requireActivity()
+        val application = activity.applicationContext as MyApplication
+        val displayMetrics = application.getDisplayMetrics()
+
+        displayMetrics.density
+
+        var screenWidth = displayMetrics.widthPixels
+        var screenHeight = displayMetrics.heightPixels
+        if (screenHeight > screenWidth) {
+            screenWidth = displayMetrics.heightPixels
+            screenHeight = displayMetrics.widthPixels
+        }
+
+        val ratio = 16f / 9f
+
+        if (screenWidth / screenHeight > ratio) {
+            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+            val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.rightMargin += x
+            binding.time.layoutParams = originalLayoutParams
+        }
+
+        if (screenWidth / screenHeight < ratio) {
+            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+            val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.topMargin += y
+            binding.time.layoutParams = originalLayoutParams
+        }
+
         (activity as MainActivity).fragmentReady("TimeFragment")
         return binding.root
     }
@@ -42,7 +72,7 @@ class TimeFragment : Fragment() {
 
     private val showRunnable: Runnable = Runnable {
         run {
-            binding.channelContent.text = getDateFormat("HH:mm")
+            binding.content.text = getDateFormat("HH:mm")
             handler.postDelayed(showRunnable, delay)
         }
     }

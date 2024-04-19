@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginTop="0dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="5dp"
         android:gravity="start"
         android:textColor="#FFEEEEEE"

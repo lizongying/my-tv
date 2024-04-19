@@ -590,7 +590,7 @@ object Request {
         val randomNumber = Random.nextDouble()
         val url = tvModel.getTV().videoUrl.first()
 
-        var r = KvcollectRequest(
+        val r = KvcollectRequest(
             guid = guid,
             prog = sid,
             viewid = sid,
@@ -605,27 +605,10 @@ object Request {
             _dc = randomNumber,
         )
 
-        var e =
+        val e =
             "BossId=${r.BossId}&Pwd=${r.Pwd}&_dc=${r._dc}&cdn=${r.cdn}&cmd=${r.cmd}&defn=${r.defn}&downspeed=${r.downspeed}&durl=${r.durl}&errcode=${r.errcode}&fact1=${r.fact1}&firstreport=${r.firstreport}&fplayerver=${r.fplayerver}&ftime=${r.ftime}&geturltime=6&guid=${r.guid}&hc_openid=${r.hc_openid}&hh_ua=${r.hh_ua}&live_type=${r.live_type}&livepid=${r.livepid}&login_type=${r.login_type}&open_id=&openid=${r.openid}&platform=${r.platform}&playno=${r.playno}&prd=${r.prd}&prog=${r.prog}&rand_str=${r.rand_str}&sRef=${r.sRef}&sUrl=${r.sUrl}&sdtfrom=${r.sdtfrom}&seq=${r.seq}&url=${r.url}&viewid=${r.viewid}"
-        println(e)
         r.signature = YSP.getAuthSignature(e)
-        println(r.signature)
-
-//        val ttt = """{"BossId":2727,"Pwd":1424084450,"prog":"2022576801","playno":"BEoZw3cpZh","guid":"luccvoyr_58va8i3cqw6","hh_ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36","cdn":"waibao","sdtfrom":"ysp_pc_01","prd":60000,"platform":"5910204","errcode":"","durl":"https://outlivecloud-cdn.ysp.cctv.cn/906028A94D533483FE8BAC5CF4DB6CC70753E25A93EF3EC50988538DEDBF10161D1EA8F67C916EE41BA9D891D7893C69500B3F1A37CA814D2EE19341197360196CD9CCF327949104097C904643D493EB5A9B588EC28A2FAC1C8E30F8EE330DB2364B0DEC0124F6990A83773FF283489A/2022576803.m3u8?from=player&svrtime=1713365896&pid=600001859&cdn=5401&revoi=6E400EC7436C79D49BA06E61333D31FB8915F3484D9426FE4CCC4DE01CB8FD1DF473A8F416EF1107B669B0A9447F913272789A827EDD3DC0FE88534D9B59A35669678946589AA4D246F8F248F7C33AB08CE72FA0A73FE7F1F9FD2091D30176895CB8BD44A5B85FAD9579C700CB2AFD8D0939574B2A3EFF4C1B237DFF3E0CD3E194662F9FDEE48D1ACD7BDFAB01868B220743021C40E0EA5514ECCF396B509DA1&app_id=519748109&guid=luccvoyr_58va8i3cqw6&ysign=bb79232986c5429600d76cfedb1d5978&ytime=1713365896&ytype=1","firstreport":1,"sUrl":"https://www.yangshipin.cn/#/tv/home?pid=600001859","sRef":"","fplayerver":"100","livepid":"600001859","viewid":"2022576801","seq":0,"cmd":263,"login_type":"","geturltime":6,"downspeed":1.75,"hc_openid":"","open_id":"","defn":"fhd","fact1":"ysp_pc_live_b","openid":"","_dc":0.7140416315131102,"live_type":"","ftime":"2024-04-17 22:58:31","url":"https://outlivecloud-cdn.ysp.cctv.cn/906028A94D533483FE8BAC5CF4DB6CC70753E25A93EF3EC50988538DEDBF10161D1EA8F67C916EE41BA9D891D7893C69500B3F1A37CA814D2EE19341197360196CD9CCF327949104097C904643D493EB5A9B588EC28A2FAC1C8E30F8EE330DB2364B0DEC0124F6990A83773FF283489A/2022576803.m3u8?from=player&svrtime=1713365896&pid=600001859&cdn=5401&revoi=6E400EC7436C79D49BA06E61333D31FB8915F3484D9426FE4CCC4DE01CB8FD1DF473A8F416EF1107B669B0A9447F913272789A827EDD3DC0FE88534D9B59A35669678946589AA4D246F8F248F7C33AB08CE72FA0A73FE7F1F9FD2091D30176895CB8BD44A5B85FAD9579C700CB2AFD8D0939574B2A3EFF4C1B237DFF3E0CD3E194662F9FDEE48D1ACD7BDFAB01868B220743021C40E0EA5514ECCF396B509DA1&app_id=519748109&guid=luccvoyr_58va8i3cqw6&ysign=bb79232986c5429600d76cfedb1d5978&ytime=1713365896&ytype=1","rand_str":"oKkkZs8lON"}"""
-//        val gson = Gson()
-//        r = gson.fromJson(ttt, KvcollectRequest::class.java)
-//
-//        e =
-//            "BossId=${r.BossId}&Pwd=${r.Pwd}&_dc=${r._dc}&cdn=${r.cdn}&cmd=${r.cmd}&defn=${r.defn}&downspeed=${r.downspeed}&durl=${r.durl}&errcode=${r.errcode}&fact1=${r.fact1}&firstreport=${r.firstreport}&fplayerver=${r.fplayerver}&ftime=${r.ftime}&geturltime=6&guid=${r.guid}&hc_openid=${r.hc_openid}&hh_ua=${r.hh_ua}&live_type=${r.live_type}&livepid=${r.livepid}&login_type=${r.login_type}&open_id=&openid=${r.openid}&platform=${r.platform}&playno=${r.playno}&prd=${r.prd}&prog=${r.prog}&rand_str=${r.rand_str}&sRef=${r.sRef}&sUrl=${r.sUrl}&sdtfrom=${r.sdtfrom}&seq=${r.seq}&url=${r.url}&viewid=${r.viewid}"
-//        println(e)
-//        e =  "BossId=2727&Pwd=1424084450&_dc=0.7140416315131102&cdn=waibao&cmd=263&defn=fhd&downspeed=1.75&durl=https://outlivecloud-cdn.ysp.cctv.cn/906028A94D533483FE8BAC5CF4DB6CC70753E25A93EF3EC50988538DEDBF10161D1EA8F67C916EE41BA9D891D7893C69500B3F1A37CA814D2EE19341197360196CD9CCF327949104097C904643D493EB5A9B588EC28A2FAC1C8E30F8EE330DB2364B0DEC0124F6990A83773FF283489A/2022576803.m3u8?from=player&svrtime=1713365896&pid=600001859&cdn=5401&revoi=6E400EC7436C79D49BA06E61333D31FB8915F3484D9426FE4CCC4DE01CB8FD1DF473A8F416EF1107B669B0A9447F913272789A827EDD3DC0FE88534D9B59A35669678946589AA4D246F8F248F7C33AB08CE72FA0A73FE7F1F9FD2091D30176895CB8BD44A5B85FAD9579C700CB2AFD8D0939574B2A3EFF4C1B237DFF3E0CD3E194662F9FDEE48D1ACD7BDFAB01868B220743021C40E0EA5514ECCF396B509DA1&app_id=519748109&guid=luccvoyr_58va8i3cqw6&ysign=bb79232986c5429600d76cfedb1d5978&ytime=1713365896&ytype=1&errcode=&fact1=ysp_pc_live_b&firstreport=1&fplayerver=100&ftime=2024-04-17 22:58:31&geturltime=6&guid=luccvoyr_58va8i3cqw6&hc_openid=&hh_ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36&live_type=&livepid=600001859&login_type=&open_id=&openid=&platform=5910204&playno=BEoZw3cpZh&prd=60000&prog=2022576801&rand_str=oKkkZs8lON&sRef=&sUrl=https://www.yangshipin.cn/#/tv/home?pid=600001859&sdtfrom=ysp_pc_01&seq=0&url=https://outlivecloud-cdn.ysp.cctv.cn/906028A94D533483FE8BAC5CF4DB6CC70753E25A93EF3EC50988538DEDBF10161D1EA8F67C916EE41BA9D891D7893C69500B3F1A37CA814D2EE19341197360196CD9CCF327949104097C904643D493EB5A9B588EC28A2FAC1C8E30F8EE330DB2364B0DEC0124F6990A83773FF283489A/2022576803.m3u8?from=player&svrtime=1713365896&pid=600001859&cdn=5401&revoi=6E400EC7436C79D49BA06E61333D31FB8915F3484D9426FE4CCC4DE01CB8FD1DF473A8F416EF1107B669B0A9447F913272789A827EDD3DC0FE88534D9B59A35669678946589AA4D246F8F248F7C33AB08CE72FA0A73FE7F1F9FD2091D30176895CB8BD44A5B85FAD9579C700CB2AFD8D0939574B2A3EFF4C1B237DFF3E0CD3E194662F9FDEE48D1ACD7BDFAB01868B220743021C40E0EA5514ECCF396B509DA1&app_id=519748109&guid=luccvoyr_58va8i3cqw6&ysign=bb79232986c5429600d76cfedb1d5978&ytime=1713365896&ytype=1&viewid=2022576801"
-//        println(e)
-//        r.signature = YSP.getAuthSignature(e)
-//        println(r.signature)
-
-        callBtracePage = yspBtraceService2.kvcollect2(
-            r
-        )
+        callBtracePage = yspBtraceService2.kvcollect2(r)
         callBtracePage?.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {

@@ -16,6 +16,7 @@ class ChannelFragment : Fragment() {
     private val handler = Handler()
     private val delay: Long = 3000
     private var channel = 0
+    private var channelCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,6 +24,38 @@ class ChannelFragment : Fragment() {
     ): View {
         _binding = ChannelBinding.inflate(inflater, container, false)
         _binding!!.root.visibility = View.GONE
+
+        val activity = requireActivity()
+        val application = activity.applicationContext as MyApplication
+        val displayMetrics = application.getDisplayMetrics()
+
+        displayMetrics.density
+
+        var screenWidth = displayMetrics.widthPixels
+        var screenHeight = displayMetrics.heightPixels
+        if (screenHeight > screenWidth) {
+            screenWidth = displayMetrics.heightPixels
+            screenHeight = displayMetrics.widthPixels
+        }
+
+        val ratio = 16f / 9f
+
+        if (screenWidth / screenHeight > ratio) {
+            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+            val originalLayoutParams =
+                binding.channel.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.rightMargin += x
+            binding.channel.layoutParams = originalLayoutParams
+        }
+
+        if (screenWidth / screenHeight < ratio) {
+            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+            val originalLayoutParams =
+                binding.channel.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.topMargin += y
+            binding.channel.layoutParams = originalLayoutParams
+        }
+
         (activity as MainActivity).fragmentReady("ChannelFragment")
         return binding.root
     }
@@ -30,20 +63,21 @@ class ChannelFragment : Fragment() {
     fun show(tvViewModel: TVViewModel) {
         handler.removeCallbacks(hideRunnable)
         handler.removeCallbacks(playRunnable)
-        binding.channelContent.text = (tvViewModel.getTV().id.plus(1)).toString()
+        binding.content.text = (tvViewModel.getTV().id.plus(1)).toString()
         view?.visibility = View.VISIBLE
         handler.postDelayed(hideRunnable, delay)
     }
 
     fun show(channel: String) {
-        if (binding.channelContent.text.length > 1) {
+        if (channelCount > 1) {
             return
         }
-        this.channel = "${binding.channelContent.text}$channel".toInt()
+        channelCount++
+        this.channel = "${this.channel}$channel".toInt()
         handler.removeCallbacks(hideRunnable)
         handler.removeCallbacks(playRunnable)
-        if (binding.channelContent.text == "") {
-            binding.channelContent.text = channel
+        if (channelCount < 2) {
+            binding.content.text = "${this.channel}"
             view?.visibility = View.VISIBLE
             handler.postDelayed(playRunnable, delay)
         } else {
@@ -65,14 +99,18 @@ class ChannelFragment : Fragment() {
     }
 
     private val hideRunnable = Runnable {
-        binding.channelContent.text = ""
+        binding.content.text = ""
         view?.visibility = View.GONE
+        channel = 0
+        channelCount = 0
     }
 
     private val playRunnable = Runnable {
         (activity as MainActivity).play(channel - 1)
-        binding.channelContent.text = ""
+        binding.content.text = ""
         view?.visibility = View.GONE
+        channel = 0
+        channelCount = 0
     }
 
     override fun onDestroyView() {

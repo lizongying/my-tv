@@ -87,6 +87,10 @@ class SettingFragment : DialogFragment() {
             )
         )
 
+        binding.exit.setOnClickListener{
+            requireActivity().finishAffinity()
+        }
+
         return binding.root
     }
 

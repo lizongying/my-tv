@@ -8,7 +8,7 @@
     android:focusable="false"
     >
     <ScrollView
-        android:id="@+id/scroll_view"
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout

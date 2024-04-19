@@ -42,6 +42,39 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     ): View {
         _binding = MenuBinding.inflate(inflater, container, false)
 
+        val activity = requireActivity()
+        val application = activity.applicationContext as MyApplication
+        val displayMetrics = application.getDisplayMetrics()
+
+        displayMetrics.density
+
+        var screenWidth = displayMetrics.widthPixels
+        var screenHeight = displayMetrics.heightPixels
+        if (screenHeight > screenWidth) {
+            screenWidth = displayMetrics.heightPixels
+            screenHeight = displayMetrics.widthPixels
+        }
+
+        val ratio = 16f / 9f
+
+        if (screenWidth / screenHeight > ratio) {
+            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+            val originalLayoutParams =
+                binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.leftMargin += x
+            originalLayoutParams.rightMargin += x
+            binding.scroll.layoutParams = originalLayoutParams
+        }
+
+        if (screenWidth / screenHeight < ratio) {
+            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+            val originalLayoutParams =
+                binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.topMargin += y
+            originalLayoutParams.bottomMargin += y
+            binding.scroll.layoutParams = originalLayoutParams
+        }
+
         binding.menu.setOnClickListener {
             hideSelf()
         }
@@ -119,7 +152,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 val layoutParams = itemBinding.row.layoutParams as ViewGroup.MarginLayoutParams
                 layoutParams.topMargin = dpToPx(11F)
                 itemBinding.row.layoutParams = layoutParams
-                itemBinding.row.setOnClickListener{
+                itemBinding.row.setOnClickListener {
                     hideSelf()
                 }
                 content.addView(itemBinding.row)

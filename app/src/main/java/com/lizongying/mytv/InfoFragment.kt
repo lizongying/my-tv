@@ -23,7 +23,31 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = InfoBinding.inflate(inflater, container, false)
+
+        val activity = requireActivity()
+        val application = activity.applicationContext as MyApplication
+        val displayMetrics = application.getDisplayMetrics()
+
+        displayMetrics.density
+
+        var screenWidth = displayMetrics.widthPixels
+        var screenHeight = displayMetrics.heightPixels
+        if (screenHeight > screenWidth) {
+            screenWidth = displayMetrics.heightPixels
+            screenHeight = displayMetrics.widthPixels
+        }
+
+        val ratio = 16f / 9f
+
+        if (screenWidth / screenHeight < ratio) {
+            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+            val originalLayoutParams = binding.info.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.bottomMargin += y
+            binding.info.layoutParams = originalLayoutParams
+        }
+
         _binding!!.root.visibility = View.GONE
+
         (activity as MainActivity).fragmentReady("InfoFragment")
         return binding.root
     }

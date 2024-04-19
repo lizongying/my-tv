@@ -93,12 +93,14 @@ class CardAdapter(
 
         cardView.titleText = tvViewModel.getTV().title
 
-        Glide.with(viewHolder.view.context)
-            .load(tvViewModel.getTV().logo)
-            .centerInside()
-            .into(cardView.mainImageView)
+        cardView.mainImageView?.let {
+            Glide.with(viewHolder.view.context)
+                .load(tvViewModel.getTV().logo)
+                .centerInside()
+                .into(it)
+        }
 
-        cardView.mainImageView.setBackgroundColor(Color.WHITE)
+        cardView.mainImageView?.setBackgroundColor(Color.WHITE)
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
 
         val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }

@@ -77,5 +77,15 @@ object Utils {
         ).toInt()
     }
 
+    fun pxToDp(px: Float): Int {
+        val scale = Resources.getSystem().displayMetrics.density
+        return (px / scale).toInt()
+    }
+
+    fun pxToDp(px: Int): Int {
+        val scale = Resources.getSystem().displayMetrics.density
+        return (px / scale).toInt()
+    }
+
     fun isTmallDevice() = Build.MANUFACTURER.equals("Tmall", ignoreCase = true)
 }

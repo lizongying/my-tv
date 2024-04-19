@@ -325,7 +325,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             return
         }
 
-        if (!settingFragment.isHidden) {
+        if (settingFragment.isVisible) {
             hideSettingFragment()
             return
         }
