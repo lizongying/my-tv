@@ -2,6 +2,7 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ class ChannelFragment : Fragment() {
     private val handler = Handler()
     private val delay: Long = 3000
     private var channel = 0
+    private var channelCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,7 +25,39 @@ class ChannelFragment : Fragment() {
     ): View {
         _binding = ChannelBinding.inflate(inflater, container, false)
         _binding!!.root.visibility = View.GONE
-        (activity as MainActivity).fragmentReady()
+
+        val activity = requireActivity()
+        val application = activity.applicationContext as MyApplication
+        val displayMetrics = application.getDisplayMetrics()
+
+        displayMetrics.density
+
+        var screenWidth = displayMetrics.widthPixels
+        var screenHeight = displayMetrics.heightPixels
+        if (screenHeight > screenWidth) {
+            screenWidth = displayMetrics.heightPixels
+            screenHeight = displayMetrics.widthPixels
+        }
+
+        val ratio = 16f / 9f
+
+        if (screenWidth / screenHeight > ratio) {
+            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+            val originalLayoutParams =
+                binding.channelFragment.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.rightMargin += x
+            binding.channelFragment.layoutParams = originalLayoutParams
+        }
+
+        if (screenWidth / screenHeight < ratio) {
+            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+            val originalLayoutParams =
+                binding.channelFragment.layoutParams as ViewGroup.MarginLayoutParams
+            originalLayoutParams.topMargin += y
+            binding.channelFragment.layoutParams = originalLayoutParams
+        }
+
+        (activity as MainActivity).fragmentReady("ChannelFragment")
         return binding.root
     }
 
@@ -36,11 +70,17 @@ class ChannelFragment : Fragment() {
     }
 
     fun show(channel: String) {
-        this.channel = "${binding.channelContent.text}$channel".toInt()
+        if (channelCount > 1) {
+            return
+        }
+        channelCount++
+        Log.i(TAG, "channelCount ${channelCount}")
+        this.channel = "${this.channel}$channel".toInt()
+        Log.i(TAG, "this.channel ${this.channel}")
         handler.removeCallbacks(hideRunnable)
         handler.removeCallbacks(playRunnable)
-        if (binding.channelContent.text == "") {
-            binding.channelContent.text = channel
+        if (channelCount < 2) {
+            binding.channelContent.text = "${this.channel}"
             view?.visibility = View.VISIBLE
             handler.postDelayed(playRunnable, delay)
         } else {
@@ -64,12 +104,18 @@ class ChannelFragment : Fragment() {
     private val hideRunnable = Runnable {
         binding.channelContent.text = ""
         view?.visibility = View.GONE
+        channel = 0
+        channelCount = 0
+        Log.i(TAG, "hideRunnable")
     }
 
     private val playRunnable = Runnable {
         (activity as MainActivity).play(channel - 1)
         binding.channelContent.text = ""
         view?.visibility = View.GONE
+        channel = 0
+        channelCount = 0
+        Log.i(TAG, "playRunnable")
     }
 
     override fun onDestroyView() {

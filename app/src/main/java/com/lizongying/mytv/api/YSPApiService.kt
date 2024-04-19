@@ -21,18 +21,6 @@ interface YSPApiService {
         @Body request: LiveInfoRequest,
     ): Call<LiveInfo>
 
-    @POST("v1/player/get_live_info")
-    @Headers(
-        "content-type: application/json;charset=UTF-8",
-        "referer: https://www.yangshipin.cn/",
-        "yspappid: 519748109",
-        "user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
-    fun getLiveInfoV2(
-        @Header("cookie") cookie: String,
-        @Body request: LiveInfoRequest,
-    ): Call<LiveInfo>
-
     @POST("v1/player/auth")
     @Headers(
         "content-type: application/x-www-form-urlencoded;charset=UTF-8",

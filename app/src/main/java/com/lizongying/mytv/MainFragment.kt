@@ -125,7 +125,7 @@ class MainFragment : BrowseSupportFragment() {
             }
         }
 
-        (activity as MainActivity).fragmentReady()
+        (activity as MainActivity).fragmentReady("MainFragment")
     }
 
     fun toLastPosition() {

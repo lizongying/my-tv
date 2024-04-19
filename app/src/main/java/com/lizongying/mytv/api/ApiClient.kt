@@ -22,6 +22,8 @@ class ApiClient {
     private val myUrl = "https://lyrics.run/"
     private val protoUrl = "https://capi.yangshipin.cn/"
     private val traceUrl = "https://btrace.yangshipin.cn/"
+    private val trace2Url = "https://aatc-api.yangshipin.cn/"
+    private val trace3Url = "https://dtrace.ysp.cctv.cn/"
     private val jceUrl = "https://jacc.ysp.cctv.cn/"
     private val fUrl = "https://m.fengshows.com/"
 
@@ -62,6 +64,22 @@ class ApiClient {
     val yspBtraceService: YSPBtraceService by lazy {
         Retrofit.Builder()
             .baseUrl(traceUrl)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(YSPBtraceService::class.java)
+    }
+
+    val yspBtraceService2: YSPBtraceService by lazy {
+        Retrofit.Builder()
+            .baseUrl(trace2Url)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(YSPBtraceService::class.java)
+    }
+
+    val yspBtraceService3: YSPBtraceService by lazy {
+        Retrofit.Builder()
+            .baseUrl(trace3Url)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(YSPBtraceService::class.java)

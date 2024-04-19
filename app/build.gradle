@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.lizongying.mytv"
-        minSdk 17
+        minSdk 21
         targetSdk 33
         versionCode VersionCode()
         versionName VersionName()
@@ -95,7 +95,7 @@ static def VersionName() {
 }
 
 dependencies {
-    def media3_version = "1.2.1"
+    def media3_version = "1.3.1"
 
     implementation "androidx.media3:media3-ui:$media3_version"
 
@@ -105,18 +105,22 @@ dependencies {
     // For HLS playback support with ExoPlayer
     implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
 
-    // 21:2.9.0 17:2.6.4
-    def retrofit2_version = "2.9.0"
+    // 21:2.11.0 17:2.6.4
+    def retrofit2_version = "2.11.0"
 
     implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
     implementation "com.squareup.retrofit2:converter-protobuf:$retrofit2_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
-    implementation 'androidx.core:core-ktx:1.11.0-beta02'
-    implementation 'androidx.leanback:leanback:1.2.0-alpha02'
+
+    implementation 'androidx.leanback:leanback:1.2.0-alpha04'
+    
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+
+    implementation 'androidx.core:core-ktx:1.13.0'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
 
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.13.3'

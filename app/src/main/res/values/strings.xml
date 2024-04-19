@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">我的电视</string>
     <string name="title_channel_reversal">换台反转</string>
-    <string name="title_channel_num">数字选台</string>
+    <string name="title_channel_num">换台时显示频道号</string>
     <string name="check_version">检查更新</string>
     <string name="title_boot_startup">开机自启</string>
     <string name="dismiss_error">好的</string>
+    <string name="title_time">显示时间</string>
+    <string name="exit">退出</string>
 </resources>

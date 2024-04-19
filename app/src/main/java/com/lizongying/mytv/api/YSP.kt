@@ -141,4 +141,9 @@ object YSP {
         val hashedData = encryptor.hash2(e) ?: return ""
         return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
     }
+
+    fun getAuthSignature(e: String): String {
+        val hashedData = encryptor.hash2(e.toByteArray()) ?: return ""
+        return hashedData.let { it -> it.joinToString("") { "%02x".format(it) } }
+    }
 }

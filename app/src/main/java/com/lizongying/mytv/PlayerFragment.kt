@@ -92,7 +92,7 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
                 })
             }
         })
-        (activity as MainActivity).fragmentReady()
+        (activity as MainActivity).fragmentReady("PlayerFragment")
         return _binding!!.root
     }
 

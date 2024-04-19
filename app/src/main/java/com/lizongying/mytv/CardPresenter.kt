@@ -23,7 +23,7 @@ class CardPresenter(
         return ViewHolder(cardView)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, item: Any?) {
         val tvViewModel = item as TVViewModel
         val cardView = viewHolder.view as ImageCardView
 
@@ -31,10 +31,12 @@ class CardPresenter(
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.tag = tvViewModel.videoUrl.value
 
-        Glide.with(viewHolder.view.context)
-            .load(tvViewModel.getTV().logo)
-            .centerInside()
-            .into(cardView.mainImageView)
+        cardView.mainImageView?.let {
+            Glide.with(viewHolder.view.context)
+                .load(tvViewModel.getTV().logo)
+                .centerInside()
+                .into(it)
+        }
 
         cardView.setBackgroundColor(Color.WHITE)
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)

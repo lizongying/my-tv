@@ -51,23 +51,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
-
+            <Button
+                android:id="@+id/exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/exit"
+                />
             <Switch
                 android:id="@+id/switch_channel_reversal"
                 android:text="@string/title_channel_reversal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
                 android:id="@+id/switch_channel_num"
                 android:text="@string/title_channel_num"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Switch
+                android:id="@+id/switch_time"
+                android:text="@string/title_time"
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
                 android:id="@+id/switch_boot_startup"
                 android:text="@string/title_boot_startup"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

@@ -24,7 +24,7 @@ class InfoFragment : Fragment() {
     ): View {
         _binding = InfoBinding.inflate(inflater, container, false)
         _binding!!.root.visibility = View.GONE
-        (activity as MainActivity).fragmentReady()
+        (activity as MainActivity).fragmentReady("InfoFragment")
         return binding.root
     }
 

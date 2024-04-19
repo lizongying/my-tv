@@ -13,8 +13,12 @@ object SP {
     // If use channel num to select channel or not
     private const val KEY_CHANNEL_NUM = "channel_num"
 
+    private const val KEY_TIME = "time"
+
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
+
+    private const val KEY_GRID = "grid"
 
     // Position in list of the selected channel item
     private const val KEY_POSITION = "position"
@@ -39,9 +43,17 @@ object SP {
         get() = sp.getBoolean(KEY_CHANNEL_NUM, true)
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUM, value).apply()
 
+    var time: Boolean
+        get() = sp.getBoolean(KEY_TIME, true)
+        set(value) = sp.edit().putBoolean(KEY_TIME, value).apply()
+
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)
         set(value) = sp.edit().putBoolean(KEY_BOOT_STARTUP, value).apply()
+
+    var grid: Boolean
+        get() = sp.getBoolean(KEY_GRID, false)
+        set(value) = sp.edit().putBoolean(KEY_GRID, value).apply()
 
     var itemPosition: Int
         get() = sp.getInt(KEY_POSITION, 0)

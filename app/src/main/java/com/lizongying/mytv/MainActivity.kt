@@ -31,6 +31,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
     private val channelFragment = ChannelFragment()
+    private var timeFragment = TimeFragment()
     private val settingFragment = SettingFragment()
     private val errorFragment = ErrorFragment()
 
@@ -67,6 +68,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
+                .add(R.id.main_browse_fragment, timeFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
@@ -169,6 +171,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
+        showTime()
     }
 
     fun settingHideNow() {
@@ -198,11 +201,21 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         }
     }
 
-    fun fragmentReady() {
+    fun fragmentReady(tag: String) {
         ready++
-        Log.i(TAG, "ready $ready")
-        if (ready == 5) {
+        Log.i(TAG, "ready $tag $ready ")
+        if (ready == 6) {
             mainFragment.fragmentReady()
+            showTime()
+        }
+    }
+
+    private fun showTime() {
+        Log.i(TAG, "showTime ${SP.time}")
+        if (SP.time) {
+            timeFragment.show()
+        } else {
+            timeFragment.hide()
         }
     }
 
@@ -502,7 +515,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .commitNow()
             errorFragment.setErrorContent(message)
         }
-        fragmentReady()
+        fragmentReady("Request")
     }
 
     private companion object {
