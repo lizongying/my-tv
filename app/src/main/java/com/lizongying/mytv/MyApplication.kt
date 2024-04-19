@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import androidx.multidex.MultiDex
+
 
 class MyApplication : Application() {
     private lateinit var displayMetrics: DisplayMetrics
@@ -19,5 +21,10 @@ class MyApplication : Application() {
 
     fun getDisplayMetrics(): DisplayMetrics {
         return displayMetrics
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(base)
     }
 }
