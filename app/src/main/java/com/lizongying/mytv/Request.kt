@@ -54,7 +54,7 @@ object Request {
     private var token = ""
     private var tokenFH = ""
 
-    private var needAuth = false
+    private var needAuth = true
     private var needToken = false
 
     private val handler = Handler(Looper.getMainLooper())

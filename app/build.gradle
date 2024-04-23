@@ -112,11 +112,15 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
     implementation "com.squareup.retrofit2:converter-protobuf:$retrofit2_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
-    implementation 'androidx.core:core-ktx:1.11.0-beta02'
-    implementation 'androidx.leanback:leanback:1.2.0-alpha02'
+
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    implementation 'androidx.core:core-ktx:1.11.0-beta02'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.leanback:leanback:1.2.0-alpha02'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
 
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.13.3'
