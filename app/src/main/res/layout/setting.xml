@@ -8,15 +8,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:id="@+id/content"
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="20dp"
             android:paddingLeft="7dp"
             android:paddingRight="7dp"
-            android:background="#FF263238"
+            android:background="@drawable/rounded_dark_left"
             >
             <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
@@ -27,9 +29,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+                android:textSize="14sp"
                 />
             <LinearLayout
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 >
@@ -38,6 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
+                    android:textSize="14sp"
                     android:text="@string/check_version"
                     />
                 <ProgressBar
@@ -48,6 +52,7 @@
                 <TextView
                     android:id="@+id/version_name"
                     android:text=""
+                    android:textSize="14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -55,44 +60,50 @@
                 android:id="@+id/exit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:textSize="14sp"
                 android:text="@string/exit"
                 />
             <Switch
                 android:id="@+id/switch_channel_reversal"
                 android:text="@string/title_channel_reversal"
+                android:textSize="14sp"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
                 android:id="@+id/switch_channel_num"
                 android:text="@string/title_channel_num"
+                android:textSize="14sp"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
                 android:id="@+id/switch_time"
                 android:text="@string/title_time"
+                android:textSize="14sp"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
                 android:id="@+id/switch_boot_startup"
                 android:text="@string/title_boot_startup"
+                android:textSize="14sp"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Switch
                 android:id="@+id/switch_grid"
                 android:text="@string/title_grid"
+                android:textSize="14sp"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <ImageView
+            android:id="@+id/appreciate"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:src="@drawable/appreciate"
-            android:background="@color/white" />
+            android:background="@drawable/rounded_white_right" />
     </LinearLayout>
 </FrameLayout>

@@ -119,6 +119,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.leanback:leanback:1.2.0-alpha02'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")

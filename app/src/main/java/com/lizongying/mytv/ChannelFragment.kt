@@ -1,10 +1,13 @@
 package com.lizongying.mytv
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import com.lizongying.mytv.databinding.ChannelBinding
 import com.lizongying.mytv.models.TVViewModel
@@ -14,7 +17,7 @@ class ChannelFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val handler = Handler()
-    private val delay: Long = 3000
+    private val delay: Long = 5000
     private var channel = 0
     private var channelCount = 0
 
@@ -25,36 +28,38 @@ class ChannelFragment : Fragment() {
         _binding = ChannelBinding.inflate(inflater, container, false)
         _binding!!.root.visibility = View.GONE
 
-        val activity = requireActivity()
-        val application = activity.applicationContext as MyApplication
-        val displayMetrics = application.getDisplayMetrics()
+        val application = requireActivity().applicationContext as MyTvApplication
 
-        displayMetrics.density
-
-        var screenWidth = displayMetrics.widthPixels
-        var screenHeight = displayMetrics.heightPixels
-        if (screenHeight > screenWidth) {
-            screenWidth = displayMetrics.heightPixels
-            screenHeight = displayMetrics.widthPixels
-        }
+        val width = application.getWidth()
+        val height = application.getHeight()
 
         val ratio = 16f / 9f
 
-        if (screenWidth / screenHeight > ratio) {
-            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+        if (width.toFloat() / height > ratio) {
+            val x =
+                ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.channel.layoutParams as ViewGroup.MarginLayoutParams
             originalLayoutParams.rightMargin += x
             binding.channel.layoutParams = originalLayoutParams
         }
 
-        if (screenWidth / screenHeight < ratio) {
-            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+        if (width.toFloat() / height < ratio) {
+            val y =
+                ((height - Resources.getSystem().displayMetrics.widthPixels / ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.channel.layoutParams as ViewGroup.MarginLayoutParams
             originalLayoutParams.topMargin += y
             binding.channel.layoutParams = originalLayoutParams
         }
+
+        binding.channel.layoutParams.width = application.px2Px(binding.channel.layoutParams.width)
+        binding.channel.layoutParams.height = application.px2Px(binding.channel.layoutParams.height)
+        val layoutParams = binding.channel.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin = application.px2Px(binding.channel.marginTop)
+        layoutParams.rightMargin = application.px2Px(binding.channel.marginRight)
+        binding.channel.layoutParams = layoutParams
+        binding.content.textSize = application.px2PxFont(binding.content.textSize)
 
         (activity as MainActivity).fragmentReady("ChannelFragment")
         return binding.root

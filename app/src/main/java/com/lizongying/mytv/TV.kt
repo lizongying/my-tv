@@ -15,14 +15,15 @@ data class TV(
     var programType: ProgramType,
     var needToken: Boolean = false,
     var mustToken: Boolean = false,
-
-    ) : Serializable {
+) : Serializable {
 
     override fun toString(): String {
         return "TV{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", alias='" + alias + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
+                ", channel='" + channel + '\'' +
                 ", logo='" + logo + '\'' +
                 ", pid='" + pid + '\'' +
                 ", sid='" + sid + '\'' +

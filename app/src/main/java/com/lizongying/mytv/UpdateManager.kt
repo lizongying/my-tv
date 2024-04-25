@@ -62,7 +62,7 @@ class UpdateManager(
 
     private fun updateUI(text: String) {
         val dialog = ConfirmationFragment(this@UpdateManager, text)
-        dialog.show(settingFragment.fragmentManager, TAG)
+        settingFragment.fragmentManager?.let { dialog.show(it, TAG) }
     }
 
     private fun haveStoragePermission(): Boolean {

@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".MyApplication"
+        android:name=".MyTvApplication"
         android:allowBackup="true"
         android:banner="@drawable/banner"
         android:icon="@drawable/logo"

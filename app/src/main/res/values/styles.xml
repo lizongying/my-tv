@@ -10,11 +10,11 @@
     </style>
 
     <style name="CustomImageCardViewImageStyle" parent="Widget.Leanback.ImageCardView.ImageStyle">
-        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_width">150dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:contentDescription">@null</item>
-        <item name="android:scaleType">centerCrop</item>
+        <item name="android:scaleType">centerInside</item>
         <item name="layout_viewType">main</item>
     </style>
 

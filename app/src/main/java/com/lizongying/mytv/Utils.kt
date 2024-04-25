@@ -15,6 +15,8 @@ import java.util.Locale
 object Utils {
     private var between: Long = 0
 
+    private var listener: Request.RequestListener? = null
+
     fun getDateFormat(format: String): String {
         return SimpleDateFormat(
             format,
@@ -38,6 +40,10 @@ object Utils {
             println("Failed to retrieve timestamp from server: ${e.message}")
         }
         between = System.currentTimeMillis() - currentTimeMillis
+
+        withContext(Dispatchers.Main) {
+            listener?.onRequestFinished(null)
+        }
     }
 
     /**
@@ -72,6 +78,8 @@ object Utils {
     }
 
     fun dpToPx(dp: Int): Int {
+//        val density = Resources.getSystem().displayMetrics.density
+//        return (dp * density + 0.5f).toInt()
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), Resources.getSystem().displayMetrics
         ).toInt()
@@ -88,4 +96,8 @@ object Utils {
     }
 
     fun isTmallDevice() = Build.MANUFACTURER.equals("Tmall", ignoreCase = true)
+
+    fun setRequestListener(listener: Request.RequestListener) {
+        this.listener = listener
+    }
 }

@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/info"
-    android:layout_width="320dp"
+    android:layout_width="400dp"
     android:layout_height="80dp"
     android:layout_gravity="center_horizontal|bottom"
-    android:layout_marginBottom="20dp"
-    android:background="@drawable/rounded_background">
+    android:layout_marginBottom="20dp">
 
     <ImageView
-        android:id="@+id/info_logo"
+        android:id="@+id/logo"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/rounded_white_left"
         android:padding="10dp" />
 
     <LinearLayout
-        android:layout_width="216dp"
+        android:id="@+id/main"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_marginStart="100dp"
-        android:background="#FF263238"
+        android:background="@drawable/rounded_dark_right"
         android:gravity="start|center_vertical"
         android:orientation="vertical"
         android:padding="7dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="0dp"
             android:gravity="start"
             android:textColor="#FFEEEEEE"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/info_desc"
+            android:id="@+id/desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -42,12 +41,6 @@
             android:gravity="start"
             android:singleLine="true"
             android:textColor="#B3EEEEEE"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
     </LinearLayout>
-
-    <View
-        android:layout_width="8dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@drawable/rounded_background2" />
 </FrameLayout>

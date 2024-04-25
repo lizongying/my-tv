@@ -1,11 +1,13 @@
 package com.lizongying.mytv
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import com.lizongying.mytv.Utils.getDateFormat
 import com.lizongying.mytv.databinding.TimeBinding
@@ -21,37 +23,38 @@ class TimeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.i(TAG, "onCreateView")
         _binding = TimeBinding.inflate(inflater, container, false)
 
-        val activity = requireActivity()
-        val application = activity.applicationContext as MyApplication
-        val displayMetrics = application.getDisplayMetrics()
+        val application = requireActivity().applicationContext as MyTvApplication
 
-        displayMetrics.density
-
-        var screenWidth = displayMetrics.widthPixels
-        var screenHeight = displayMetrics.heightPixels
-        if (screenHeight > screenWidth) {
-            screenWidth = displayMetrics.heightPixels
-            screenHeight = displayMetrics.widthPixels
-        }
+        val width = application.getWidth()
+        val height = application.getHeight()
 
         val ratio = 16f / 9f
 
-        if (screenWidth / screenHeight > ratio) {
-            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+        if (width.toFloat() / height > ratio) {
+            val x =
+                ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
             val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
             originalLayoutParams.rightMargin += x
             binding.time.layoutParams = originalLayoutParams
         }
 
-        if (screenWidth / screenHeight < ratio) {
-            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+        if (width.toFloat() / height < ratio) {
+            val y =
+                ((height - Resources.getSystem().displayMetrics.widthPixels / ratio) / 2).toInt()
             val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
             originalLayoutParams.topMargin += y
             binding.time.layoutParams = originalLayoutParams
         }
+
+        binding.time.layoutParams.width = application.px2Px(binding.time.layoutParams.width)
+        binding.time.layoutParams.height = application.px2Px(binding.time.layoutParams.height)
+        val layoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin = application.px2Px(binding.time.marginTop)
+        layoutParams.rightMargin = application.px2Px(binding.time.marginRight)
+        binding.time.layoutParams = layoutParams
+        binding.content.textSize = application.px2PxFont(binding.content.textSize)
 
         (activity as MainActivity).fragmentReady("TimeFragment")
         return binding.root
@@ -72,6 +75,9 @@ class TimeFragment : Fragment() {
 
     private val showRunnable: Runnable = Runnable {
         run {
+            if (_binding == null) {
+                return@Runnable
+            }
             binding.content.text = getDateFormat("HH:mm")
             handler.postDelayed(showRunnable, delay)
         }
@@ -89,6 +95,7 @@ class TimeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        handler.removeCallbacks(showRunnable)
         super.onDestroyView()
         _binding = null
     }

@@ -1,5 +1,6 @@
 package com.lizongying.mytv
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -7,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lizongying.mytv.Utils.dpToPx
 import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.databinding.MenuBinding
 import com.lizongying.mytv.databinding.RowBinding
@@ -36,38 +39,39 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     private var lastVideoUrl = ""
 
+    private lateinit var application: MyTvApplication
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = MenuBinding.inflate(inflater, container, false)
 
-        val activity = requireActivity()
-        val application = activity.applicationContext as MyApplication
-        val displayMetrics = application.getDisplayMetrics()
+        application = requireActivity().applicationContext as MyTvApplication
 
-        displayMetrics.density
-
-        var screenWidth = displayMetrics.widthPixels
-        var screenHeight = displayMetrics.heightPixels
-        if (screenHeight > screenWidth) {
-            screenWidth = displayMetrics.heightPixels
-            screenHeight = displayMetrics.widthPixels
-        }
+        val width = application.getWidth()
+        val height = application.getHeight()
 
         val ratio = 16f / 9f
 
-        if (screenWidth / screenHeight > ratio) {
-            val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
+        if (width.toFloat() / height > ratio) {
+            val x =
+                ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
             originalLayoutParams.leftMargin += x
             originalLayoutParams.rightMargin += x
             binding.scroll.layoutParams = originalLayoutParams
+
+            Log.i(
+                TAG,
+                "binding.scroll ${Resources.getSystem().displayMetrics.widthPixels} ${height * ratio}"
+            )
         }
 
-        if (screenWidth / screenHeight < ratio) {
-            val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
+        if (width.toFloat() / height < ratio) {
+            val y =
+                ((height - Resources.getSystem().displayMetrics.widthPixels / ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
             originalLayoutParams.topMargin += y
@@ -115,46 +119,55 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
                 val adapter =
                     CardAdapter(
-                        itemBinding.rowItems,
+                        itemBinding.items,
                         this,
                         tvListViewModelCurrent,
                     )
-                rowList.add(itemBinding.rowItems)
+                rowList.add(itemBinding.items)
 
                 adapter.setItemListener(this)
 
-                itemBinding.rowHeader.text = k
-                itemBinding.rowItems.tag = idx.toInt()
-                itemBinding.rowItems.adapter = adapter
+                itemBinding.header.text = k
+                itemBinding.items.tag = idx.toInt()
+                itemBinding.items.adapter = adapter
 
-                itemBinding.rowItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                itemBinding.items.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
                         (activity as MainActivity).mainActive()
                     }
                 })
 
-                val itemDecoration = context?.let { GrayOverlayItemDecoration(it) }
+                val itemDecoration = context?.let { ItemDecoration(it) }
                 if (itemDecoration != null) {
-                    itemBinding.rowItems.addItemDecoration(itemDecoration)
+                    itemBinding.items.addItemDecoration(itemDecoration)
                 }
 
                 if (SP.grid) {
-                    itemBinding.rowItems.layoutManager =
+                    itemBinding.items.layoutManager =
                         GridLayoutManager(context, 6)
-                    itemBinding.rowItems.layoutParams.height =
-                        dpToPx(92 * ((tvListViewModelCurrent.size() + 6 - 1) / 6))
+                    itemBinding.items.layoutParams.height =
+                        application.dp2Px(110 * ((tvListViewModelCurrent.size() + 6 - 1) / 6) + 5)
                 } else {
-                    itemBinding.rowItems.layoutManager =
+                    itemBinding.items.layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 }
 
                 val layoutParams = itemBinding.row.layoutParams as ViewGroup.MarginLayoutParams
-                layoutParams.topMargin = dpToPx(11F)
+                layoutParams.topMargin = application.dp2Px(11)
                 itemBinding.row.layoutParams = layoutParams
                 itemBinding.row.setOnClickListener {
                     hideSelf()
                 }
+
+                val layoutParamsHeader =
+                    itemBinding.header.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParamsHeader.topMargin = application.px2Px(itemBinding.header.marginTop)
+                layoutParamsHeader.bottomMargin = application.px2Px(itemBinding.header.marginBottom)
+                layoutParamsHeader.leftMargin = application.px2Px(itemBinding.header.marginLeft)
+                itemBinding.header.layoutParams = layoutParamsHeader
+                itemBinding.header.textSize = application.px2PxFont(itemBinding.header.textSize)
+
                 content.addView(itemBinding.row)
 
                 idx++
@@ -215,8 +228,24 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    fun changeStyle() {
+        if (SP.grid) {
+            for (i in rowList) {
+                if (i is RecyclerView) {
+                    i.layoutManager = GridLayoutManager(context, 6)
+                    i.layoutParams.height =
+                        application.dp2Px(110 * (((i.adapter as CardAdapter).getItemCount() + 6 - 1) / 6) + 5)
+                }
+            }
+        } else {
+            for (i in rowList) {
+                if (i is RecyclerView) {
+                    i.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    i.layoutParams.height = application.dp2Px(110 + 5)
+                }
+            }
+        }
     }
 
     override fun onKey(keyCode: Int): Boolean {
@@ -243,7 +272,10 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
         for (i in rowList) {
             if (i.tag as Int != row) {
+                ((i as RecyclerView).adapter as CardAdapter).focusable = false
                 ((i as RecyclerView).adapter as CardAdapter).clear()
+            } else {
+                ((i as RecyclerView).adapter as CardAdapter).focusable = true
             }
         }
 
@@ -260,7 +292,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         if (itemPosition != tvViewModel.getTV().id) {
             itemPosition = tvViewModel.getTV().id
             tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed("menu")
         }
         (activity as? MainActivity)?.switchMainFragment()
     }
@@ -307,8 +339,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     fun fragmentReady() {
-//            request.fetchPage()
-        tvListViewModel.getTVViewModel(itemPosition)?.changed()
+        tvListViewModel.getTVViewModel(itemPosition)?.changed("init")
 
         tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
             updateEPG(tvViewModel)
@@ -320,7 +351,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             if (itemPosition > -1 && itemPosition < tvListViewModel.size()) {
                 this.itemPosition = itemPosition
                 tvListViewModel.setItemPosition(itemPosition)
-                tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                tvListViewModel.getTVViewModel(itemPosition)?.changed("num")
             } else {
                 Toast.makeText(context, "频道不存在", Toast.LENGTH_SHORT).show()
             }
@@ -334,7 +365,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 itemPosition = tvListViewModel.size() - 1
             }
             tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed("prev")
         }
     }
 
@@ -345,7 +376,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 itemPosition = 0
             }
             tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            tvListViewModel.getTVViewModel(itemPosition)?.changed("next")
         }
     }
 
@@ -370,6 +401,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
+        Log.i(TAG, "onHiddenChanged $hidden")
         super.onHiddenChanged(hidden)
         if (!hidden) {
             val tvModel = tvListViewModel.getTVViewModel(itemPosition)
@@ -378,15 +410,16 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             Log.i(TAG, "toPosition $rowPosition $itemPosition")
             for (i in rowList) {
                 if (i.tag as Int == rowPosition) {
+                    ((i as RecyclerView).adapter as CardAdapter).focusable = true
                     ((i as RecyclerView).adapter as CardAdapter).toPosition(itemPosition!!)
                     break
                 }
             }
         } else {
             view?.post {
-//                for (i in rowList) {
-//                    ((i as RecyclerView).adapter as CardAdapter).visiable = false
-//                }
+                for (i in rowList) {
+                    ((i as RecyclerView).adapter as CardAdapter).focusable = false
+                }
             }
         }
     }

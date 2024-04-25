@@ -41,8 +41,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     val videoIndex: LiveData<Int>
         get() = _videoIndex
 
-    private val _change = MutableLiveData<Boolean>()
-    val change: LiveData<Boolean>
+    private val _change = MutableLiveData<String>()
+    val change: LiveData<String>
         get() = _change
 
     private val _ready = MutableLiveData<Boolean>()
@@ -74,8 +74,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
         }
     }
 
-    fun changed() {
-        _change.value = true
+    fun changed(from: String) {
+        _change.value = from
     }
 
     fun allReady() {

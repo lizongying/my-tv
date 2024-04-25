@@ -10,7 +10,7 @@
     >
 
     <TextView
-        android:id="@+id/row_header"
+        android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -22,7 +22,7 @@
         android:textSize="22sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/row_items"
+        android:id="@+id/items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>

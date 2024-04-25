@@ -42,12 +42,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val delayHideSetting: Long = 10000
 
     init {
+        Utils.setRequestListener(this)
+    }
+
+    private fun syncTime() {
         lifecycleScope.launch(Dispatchers.IO) {
             val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
-
             utilsJob.start()
-
-//            utilsJob.await()
         }
     }
 
@@ -93,7 +94,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
             ready++
         }
-
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -119,7 +119,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     fun play(tvViewModel: TVViewModel) {
         playerFragment.play(tvViewModel)
-        mainFragment.view?.requestFocus()
     }
 
     fun play(itemPosition: Int) {
@@ -132,14 +131,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     fun next() {
         mainFragment.next()
-    }
-
-    private fun prevSource() {
-//        mainFragment.prevSource()
-    }
-
-    private fun nextSource() {
-//        mainFragment.nextSource()
     }
 
     fun switchMainFragment() {
@@ -192,7 +183,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun fragmentReady(tag: String) {
         ready++
         Log.i(TAG, "ready $tag $ready ")
-        if (ready == 6) {
+        if (ready == 7) {
             mainFragment.fragmentReady()
             showTime()
         }
@@ -205,6 +196,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         } else {
             timeFragment.hide()
         }
+        mainFragment.changeStyle()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -484,7 +476,8 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private fun getAppSignature() = this.appSignature
 
     override fun onStart() {
-        Log.i(TAG, "onStart")
+        Log.i(TAG, "onStart MainActivity")
+        syncTime()
         super.onStart()
     }
 

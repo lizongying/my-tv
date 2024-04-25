@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.view.marginEnd
+import androidx.core.view.marginTop
 import androidx.fragment.app.DialogFragment
 import com.lizongying.mytv.databinding.SettingBinding
 
@@ -87,7 +89,67 @@ class SettingFragment : DialogFragment() {
             )
         )
 
-        binding.exit.setOnClickListener{
+        val application = requireActivity().applicationContext as MyTvApplication
+
+        binding.content.layoutParams.width =
+            application.px2Px(binding.content.layoutParams.width)
+        binding.content.setPadding(
+            application.px2Px(binding.content.paddingLeft),
+            application.px2Px(binding.content.paddingTop),
+            application.px2Px(binding.content.paddingRight),
+            application.px2Px(binding.content.paddingBottom)
+        )
+        binding.name.textSize = application.px2PxFont(binding.name.textSize)
+        binding.version.textSize = application.px2PxFont(binding.version.textSize)
+        val layoutParamsDesc = binding.version.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsDesc.topMargin = application.px2Px(binding.version.marginTop)
+        binding.version.layoutParams = layoutParamsDesc
+
+        binding.checkVersion.textSize = application.px2PxFont(binding.checkVersion.textSize)
+        val layoutParamsCheckVersion =
+            binding.checkVersion.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsCheckVersion.marginEnd = application.px2Px(binding.checkVersion.marginEnd)
+        binding.checkVersion.layoutParams = layoutParamsCheckVersion
+
+        binding.versionName.textSize = application.px2PxFont(binding.versionName.textSize)
+
+        binding.exit.textSize = application.px2PxFont(binding.exit.textSize)
+
+        binding.switchChannelReversal.textSize =
+            application.px2PxFont(binding.switchChannelReversal.textSize)
+        val layoutParamsChannelReversal =
+            binding.switchChannelReversal.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsChannelReversal.topMargin =
+            application.px2Px(binding.switchChannelReversal.marginTop)
+        binding.switchChannelReversal.layoutParams = layoutParamsChannelReversal
+
+        binding.switchChannelNum.textSize = application.px2PxFont(binding.switchChannelNum.textSize)
+        val layoutParamsChannelNum =
+            binding.switchChannelNum.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsChannelNum.topMargin = application.px2Px(binding.switchChannelNum.marginTop)
+        binding.switchChannelNum.layoutParams = layoutParamsChannelNum
+
+        binding.switchTime.textSize = application.px2PxFont(binding.switchTime.textSize)
+        val layoutParamsTime = binding.switchTime.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsTime.topMargin = application.px2Px(binding.switchTime.marginTop)
+        binding.switchTime.layoutParams = layoutParamsTime
+
+        binding.switchBootStartup.textSize =
+            application.px2PxFont(binding.switchBootStartup.textSize)
+        val layoutParamsBootStartup =
+            binding.switchBootStartup.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsBootStartup.topMargin = application.px2Px(binding.switchBootStartup.marginTop)
+        binding.switchBootStartup.layoutParams = layoutParamsBootStartup
+
+        binding.switchGrid.textSize = application.px2PxFont(binding.switchGrid.textSize)
+        val layoutParamsGrid = binding.switchGrid.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsGrid.topMargin = application.px2Px(binding.switchGrid.marginTop)
+        binding.switchGrid.layoutParams = layoutParamsGrid
+
+        binding.appreciate.layoutParams.width =
+            application.px2Px(binding.appreciate.layoutParams.width)
+
+        binding.exit.setOnClickListener {
             requireActivity().finishAffinity()
         }
 
