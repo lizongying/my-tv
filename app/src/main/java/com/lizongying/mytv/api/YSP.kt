@@ -1,7 +1,6 @@
 package com.lizongying.mytv.api
 
 import android.content.Context
-import com.lizongying.mytv.Encryptor
 import com.lizongying.mytv.SP
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel

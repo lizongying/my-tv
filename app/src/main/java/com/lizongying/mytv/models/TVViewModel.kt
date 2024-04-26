@@ -1,10 +1,8 @@
 package com.lizongying.mytv.models
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lizongying.mytv.TV
 import com.lizongying.mytv.api.FEPG
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.programModel.Program
 import com.tencent.videolite.android.datamodel.cctvjce.TVProgram
@@ -56,22 +54,13 @@ class TVViewModel(private var tv: TV) : ViewModel() {
             if (_videoUrl.value!!.last().contains("cctv.cn")) {
                 tv.videoUrl = tv.videoUrl.subList(0, tv.videoUrl.lastIndex) + listOf(url)
             } else {
-                tv.videoUrl = tv.videoUrl + listOf(url)
+                tv.videoUrl += listOf(url)
             }
         } else {
-            tv.videoUrl = tv.videoUrl + listOf(url)
+            tv.videoUrl += listOf(url)
         }
         _videoUrl.value = tv.videoUrl
         _videoIndex.value = tv.videoUrl.lastIndex
-    }
-
-    fun firstSource() {
-        if (_videoUrl.value!!.isNotEmpty()) {
-            setVideoIndex(0)
-            allReady()
-        } else {
-            Log.e(TAG, "no first")
-        }
     }
 
     fun changed(from: String) {
@@ -80,10 +69,6 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     fun allReady() {
         _ready.value = true
-    }
-
-    fun setVideoIndex(videoIndex: Int) {
-        _videoIndex.value = videoIndex
     }
 
     init {

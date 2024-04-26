@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
+import com.lizongying.mytv.requests.Request
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -27,6 +28,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     private var ready = 0
     private val playerFragment = PlayerFragment()
+    private val errorFragment = ErrorFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
     private val channelFragment = ChannelFragment()
@@ -53,7 +55,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
@@ -67,11 +68,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
+                .add(R.id.main_browse_fragment, errorFragment)
                 .add(R.id.main_browse_fragment, timeFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
+                .hide(errorFragment)
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
@@ -101,6 +104,44 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         if (SP.channelNum) {
             channelFragment.show(tvViewModel)
         }
+    }
+
+    fun showErrorFragment(msg: String) {
+        errorFragment.show(msg)
+        if (errorFragment.isVisible) {
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .show(errorFragment)
+            .commit()
+    }
+
+    fun hideErrorFragment() {
+        errorFragment.show("")
+        if (!errorFragment.isVisible) {
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .hide(errorFragment)
+            .commit()
+    }
+
+    fun showPlayerFragment() {
+        if (playerFragment.isVisible) {
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .show(playerFragment)
+            .commit()
+    }
+
+    fun hidePlayerFragment() {
+        if (!playerFragment.isVisible) {
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .hide(playerFragment)
+            .commit()
     }
 
     private fun showChannel(channel: String) {
@@ -183,7 +224,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun fragmentReady(tag: String) {
         ready++
         Log.i(TAG, "ready $tag $ready ")
-        if (ready == 7) {
+        if (ready == 8) {
             mainFragment.fragmentReady()
             showTime()
         }

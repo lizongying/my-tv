@@ -18,7 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.lizongying.mytv.api.ReleaseV2
-import com.lizongying.mytv.requests.MyRequest
+import com.lizongying.mytv.requests.ReleaseRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ class UpdateManager(
 ) :
     ConfirmationFragment.ConfirmationListener {
 
-    private var myRequest = MyRequest()
+    private var myRequest = ReleaseRequest()
     private var release: ReleaseV2? = null
 
     private var downloadReceiver: DownloadReceiver? = null

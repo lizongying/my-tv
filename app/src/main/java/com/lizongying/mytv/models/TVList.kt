@@ -1,6 +1,6 @@
-package com.lizongying.mytv
+package com.lizongying.mytv.models
 
-import com.lizongying.mytv.models.ProgramType
+import com.lizongying.mytv.R
 
 object TVList {
     val list: Map<String, List<TV>> by lazy {
@@ -900,6 +900,7 @@ object TVList {
             v.forEach { v1 ->
                 if (!v1.mustToken) {
                     v1.id = id
+                    v1.needToken = false
                     id++
                     group.add(v1)
                 }

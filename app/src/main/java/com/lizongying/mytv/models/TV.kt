@@ -1,4 +1,4 @@
-package com.lizongying.mytv
+package com.lizongying.mytv.models
 
 import com.lizongying.mytv.models.ProgramType
 import java.io.Serializable
@@ -28,6 +28,8 @@ data class TV(
                 ", pid='" + pid + '\'' +
                 ", sid='" + sid + '\'' +
                 ", programType='" + programType + '\'' +
+                ", needToken='" + needToken + '\'' +
+                ", mustToken='" + mustToken + '\'' +
                 '}'
     }
 }

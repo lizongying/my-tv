@@ -2,5 +2,6 @@
     <color name="black">#000</color>
     <color name="white">#FFF</color>
     <color name="focus">#0096a6</color>
-    <color name="blur">#FF263238</color>
+    <color name="blur">#223239</color>
+    <color name="ic_launcher_background">#223239</color>
 </resources>

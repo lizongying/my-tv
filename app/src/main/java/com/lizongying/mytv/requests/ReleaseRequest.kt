@@ -10,7 +10,7 @@ import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class MyRequest {
+class ReleaseRequest {
     private var releaseService = ApiClient().releaseService
 
     suspend fun getRelease(): ReleaseV2? {
@@ -39,6 +39,6 @@ class MyRequest {
     }
 
     companion object {
-        private const val TAG = "MyRequest"
+        private const val TAG = "ReleaseRequest"
     }
 }

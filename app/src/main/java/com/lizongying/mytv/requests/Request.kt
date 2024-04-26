@@ -1,11 +1,10 @@
-package com.lizongying.mytv
+package com.lizongying.mytv.requests
 
 import android.os.Handler
 import android.os.Looper
 import android.util.Base64
 import android.util.Log
-import com.google.gson.Gson
-import java.net.URLDecoder
+import com.lizongying.mytv.Utils
 import com.lizongying.mytv.Utils.getDateFormat
 import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.api.Auth
@@ -25,6 +24,7 @@ import com.lizongying.mytv.api.YSPBtraceService
 import com.lizongying.mytv.api.YSPJceService
 import com.lizongying.mytv.api.YSPProtoService
 import com.lizongying.mytv.api.YSPTokenService
+import com.lizongying.mytv.models.TVList
 import com.lizongying.mytv.models.TVViewModel
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.oms.common.proto.pageModel
 import com.lizongying.mytv.proto.Ysp.cn.yangshipin.omstv.common.proto.epgProgramModel
@@ -118,11 +118,17 @@ object Request {
                                 } else {
                                     if (!tvModel.getTV().mustToken) {
                                         fetchAuth(tvModel, cookie)
+                                    } else {
+//                                TODO
                                     }
                                 }
                             } else {
                                 fetchAuth(tvModel, cookie)
                             }
+                        } else {
+                            val err = "认证结果错误"
+                            Log.e(TAG, "$title $err")
+                            tvModel.setErrInfo(err)
                         }
                     }
                 } else {
@@ -137,11 +143,17 @@ object Request {
                             } else {
                                 if (!tvModel.getTV().mustToken) {
                                     fetchAuth(tvModel, cookie)
+                                } else {
+//                                TODO
                                 }
                             }
                         } else {
                             fetchAuth(tvModel, cookie)
                         }
+                    } else {
+                        val err = "认证状态错误"
+                        Log.e(TAG, "$title $err")
+                        tvModel.setErrInfo(err)
                     }
                 }
             }
@@ -158,11 +170,17 @@ object Request {
                         } else {
                             if (!tvModel.getTV().mustToken) {
                                 fetchAuth(tvModel, cookie)
+                            } else {
+//                                TODO
                             }
                         }
                     } else {
                         fetchAuth(tvModel, cookie)
                     }
+                } else {
+                    val err = "认证请求错误"
+                    Log.e(TAG, "$title $err")
+                    tvModel.setErrInfo(err)
                 }
             }
         })
@@ -171,7 +189,7 @@ object Request {
     private fun fetchVideo(tvModel: TVViewModel, cookie: String) {
         cancelCall()
 
-        if (::btraceRunnable.isInitialized) {
+        if (Request::btraceRunnable.isInitialized) {
             handler.removeCallbacks(btraceRunnable)
         }
 
@@ -229,18 +247,25 @@ object Request {
                                         if (!tvModel.getTV().mustToken) {
                                             fetchVideo(tvModel, cookie)
 //                                            fetchAuth(tvModel, cookie)
+                                        } else {
+//                                TODO
                                         }
                                     }
                                 } else {
                                     fetchVideo(tvModel, cookie)
 //                                    fetchAuth(tvModel, cookie)
                                 }
+                            } else {
+                                val err = "结果错误"
+                                Log.e(TAG, "$title $err")
+                                tvModel.setErrInfo(err)
                             }
                         }
                     } else {
                         if (liveInfo?.data?.errinfo != null && liveInfo.data.errinfo == "应版权方要求，暂停提供直播信号，请点击观看其他精彩节目") {
-                            Log.e(TAG, "$title error ${liveInfo.data.errinfo}")
-                            tvModel.setErrInfo(liveInfo.data.errinfo)
+                            val err = "版权错误"
+                            Log.e(TAG, "$title $err")
+                            tvModel.setErrInfo(err)
                         } else {
                             Log.e(TAG, "$title url error $request $liveInfo")
                             if (tvModel.retryTimes < tvModel.retryMaxTimes) {
@@ -255,12 +280,18 @@ object Request {
                                         if (!tvModel.getTV().mustToken) {
                                             fetchVideo(tvModel, cookie)
 //                                            fetchAuth(tvModel, cookie)
+                                        } else {
+//                                TODO
                                         }
                                     }
                                 } else {
                                     fetchVideo(tvModel, cookie)
 //                                    fetchAuth(tvModel, cookie)
                                 }
+                            } else {
+                                val err = "其他错误"
+                                Log.e(TAG, "$title $err")
+                                tvModel.setErrInfo(err)
                             }
                         }
                     }
@@ -278,12 +309,18 @@ object Request {
                                 if (!tvModel.getTV().mustToken) {
                                     fetchVideo(tvModel, cookie)
 //                                    fetchAuth(tvModel, cookie)
+                                } else {
+//                                TODO
                                 }
                             }
                         } else {
                             fetchVideo(tvModel, cookie)
 //                            fetchAuth(tvModel, cookie)
                         }
+                    } else {
+                        val err = "状态错误"
+                        Log.e(TAG, "$title $err")
+                        tvModel.setErrInfo(err)
                     }
                 }
             }
@@ -300,11 +337,17 @@ object Request {
                         } else {
                             if (!tvModel.getTV().mustToken) {
                                 fetchVideo(tvModel, cookie)
+                            } else {
+//                                TODO
                             }
                         }
                     } else {
                         fetchVideo(tvModel, cookie)
                     }
+                } else {
+                    val err = "请求错误"
+                    Log.e(TAG, "$title $err")
+                    tvModel.setErrInfo(err)
                 }
             }
         })
@@ -340,6 +383,8 @@ object Request {
                                 val cookie =
                                     "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
                                 fetchAuth(tvModel, cookie)
+                            } else {
+//                                TODO
                             }
                         }
                     }
@@ -355,6 +400,8 @@ object Request {
                             val cookie =
                                 "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
                             fetchAuth(tvModel, cookie)
+                        } else {
+//                                TODO
                         }
                     }
                 }
@@ -397,6 +444,8 @@ object Request {
                                 val cookie =
                                     "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
                                 fetchVideo(tvModel, cookie)
+                            } else {
+//                                TODO
                             }
                         }
                     }
@@ -412,6 +461,8 @@ object Request {
                             val cookie =
                                 "versionName=99.99.99; versionCode=999999; vplatform=109; platformVersion=Chrome; deviceModel=120; appid=1400421205; yspappid=519748109"
                             fetchVideo(tvModel, cookie)
+                        } else {
+//                                TODO
                         }
                     }
                 }
@@ -447,6 +498,10 @@ object Request {
                     if (tvModel.tokenFHRetryTimes < tvModel.tokenFHRetryMaxTimes) {
                         tvModel.tokenFHRetryTimes++
                         fetchFAuth(tvModel)
+                    } else {
+                        val err = "状态错误"
+                        Log.e(TAG, "$title $err")
+                        tvModel.setErrInfo(err)
                     }
                 }
             }
@@ -456,6 +511,10 @@ object Request {
                 if (tvModel.tokenFHRetryTimes < tvModel.tokenFHRetryMaxTimes) {
                     tvModel.tokenFHRetryTimes++
                     fetchFAuth(tvModel)
+                } else {
+                    val err = "请求错误"
+                    Log.e(TAG, "$title $err")
+                    tvModel.setErrInfo(err)
                 }
             }
         })
@@ -817,6 +876,6 @@ object Request {
     }
 
     fun setRequestListener(listener: RequestListener) {
-        this.listener = listener
+        Request.listener = listener
     }
 }

@@ -4,17 +4,16 @@
 
 ## 使用
 
-下载安装:
-[github](https://github.com/lizongying/my-tv/releases/)
-[gitee](https://gitee.com/lizongying/my-tv/releases/)
-
-小米电视可以使用小米电视助手进行安装
-
-如电视可以启用ADB，也可以通过ADB进行安装：
-
-```shell
-adb install my-tv.apk
-```
+1. 下载
+    * [github](https://github.com/lizongying/my-tv/releases/)
+    * [gitee](https://gitee.com/lizongying/my-tv/releases/)
+2. 安裝
+    * U盘安装
+    * 小米电视可以使用小米电视助手进行安装
+    * 如电视可以启用ADB，也可以通过ADB进行安装
+       ```shell
+       adb install my-tv.apk
+       ```
 
 ![image](./screenshots/img_3.png)
 ![image](./screenshots/img_2.png)
@@ -32,14 +31,11 @@ adb install my-tv.apk
 * 地方频道
 * 收藏夹
 * 海外
-* 1.5.0 无法安装，1.5.1 可以安装
-* 节目增加预告
-* epg更新后菜单更新
 * 隐藏频道
 * 亮度调节
 * 音量调节
-* 错误页
-* 频道列表页只点击一次即可
+* 軟解
+* 自動更新
 
 ## 版权说明
 

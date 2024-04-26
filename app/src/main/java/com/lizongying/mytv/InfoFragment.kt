@@ -52,6 +52,7 @@ class InfoFragment : Fragment() {
         binding.logo.setPadding(application.px2Px(binding.logo.paddingTop))
         binding.main.layoutParams.width = application.px2Px(binding.main.layoutParams.width)
         binding.main.setPadding(application.px2Px(binding.main.paddingTop))
+
         val layoutParamsMain = binding.main.layoutParams as ViewGroup.MarginLayoutParams
         layoutParamsMain.leftMargin = application.px2Px(binding.main.marginLeft)
         binding.main.layoutParams = layoutParamsMain
@@ -59,6 +60,7 @@ class InfoFragment : Fragment() {
         val layoutParamsDesc = binding.desc.layoutParams as ViewGroup.MarginLayoutParams
         layoutParamsDesc.topMargin = application.px2Px(binding.desc.marginTop)
         binding.desc.layoutParams = layoutParamsDesc
+
         binding.title.textSize = application.px2PxFont(binding.title.textSize)
         binding.desc.textSize = application.px2PxFont(binding.desc.textSize)
 

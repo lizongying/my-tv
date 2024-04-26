@@ -78,9 +78,17 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
 
                     override fun onPlayerError(error: PlaybackException) {
                         super.onPlayerError(error)
-
                         Log.e(TAG, "PlaybackException $error")
+                        val err = "播放错误"
+                        tvViewModel?.setErrInfo(err)
                         tvViewModel?.changed("retry")
+                    }
+
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        super.onIsPlayingChanged(isPlaying)
+                        if (isPlaying) {
+                            tvViewModel?.setErrInfo("")
+                        }
                     }
                 })
             }

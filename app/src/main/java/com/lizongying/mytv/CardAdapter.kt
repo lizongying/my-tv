@@ -1,8 +1,11 @@
 package com.lizongying.mytv
 
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.ScaleAnimation
 import androidx.core.view.marginTop
@@ -12,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.lizongying.mytv.databinding.CardBinding
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
+import kotlin.math.abs
 
 
 class CardAdapter(
@@ -45,6 +49,7 @@ class CardAdapter(
         binding.desc.layoutParams = layoutParams
 
         val cardView = binding.root
+        cardView.isClickable = true
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
         return ViewHolder(cardView, binding)
@@ -55,14 +60,14 @@ class CardAdapter(
         recyclerView.invalidate()
     }
 
-    private fun startScaleAnimation(view: View, fromScale: Float, toScale: Float, duration: Long) {
+    private fun startScaleAnimation(view: View) {
         val scaleAnimation = ScaleAnimation(
-            fromScale, toScale,
-            fromScale, toScale,
+            0.9f, 1.0f,
+            0.9f, 1.0f,
             ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
             ScaleAnimation.RELATIVE_TO_SELF, 0.5f
         )
-        scaleAnimation.duration = duration
+        scaleAnimation.duration = 200
         scaleAnimation.fillAfter = false
         view.startAnimation(scaleAnimation)
     }
@@ -80,7 +85,7 @@ class CardAdapter(
                 focused = cardView
 
                 if (focusable) {
-                    startScaleAnimation(cardView, 0.9f, 1.0f, 200)
+                    startScaleAnimation(cardView)
                     viewHolder.focus(true)
                 }
             } else {
@@ -92,6 +97,34 @@ class CardAdapter(
 
         cardView.setOnClickListener { _ ->
             listener?.onItemClicked(item)
+        }
+
+        var downX = 0f
+        var downY = 0f
+        val touchSlop = ViewConfiguration.get(cardView.context).scaledTouchSlop
+
+        cardView.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = event.x
+                    downY = event.y
+                    true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    val upX = event.x
+                    val upY = event.y
+                    val deltaX = abs(upX - downX)
+                    val deltaY = abs(upY - downY)
+                    if (deltaX < touchSlop && deltaY < touchSlop) {
+                        // 如果位移量小于阈值，则执行点击操作
+                        cardView.performClick()
+                    }
+                    true
+                }
+
+                else -> false
+            }
         }
 
         cardView.setOnKeyListener { _, keyCode, event: KeyEvent? ->
@@ -128,6 +161,33 @@ class CardAdapter(
                 binding.main.setBackgroundResource(R.drawable.rounded_light_bottom)
             } else {
                 binding.main.setBackgroundResource(R.drawable.rounded_dark_bottom)
+            }
+        }
+    }
+
+    fun updateEPG() {
+        for (i in 0 until recyclerView.childCount) {
+            val childView = recyclerView.getChildAt(i)
+
+            val viewHolder = recyclerView.getChildViewHolder(childView) as ViewHolder
+
+            if (viewHolder.view.tag != null && viewHolder.view.tag is TVViewModel) {
+                val tvViewModel = viewHolder.view.tag as TVViewModel
+
+                val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
+
+                if (!epg.isNullOrEmpty()) {
+                    val title = epg.last().title
+                    if (viewHolder.binding.desc.text != title) {
+                        viewHolder.binding.desc.text = title
+                        Log.i(TAG, "updateEPG $title")
+                    }
+                } else {
+                    if (viewHolder.binding.desc.text != "") {
+                        viewHolder.binding.desc.text = ""
+                        Log.i(TAG, "updateEPG")
+                    }
+                }
             }
         }
     }

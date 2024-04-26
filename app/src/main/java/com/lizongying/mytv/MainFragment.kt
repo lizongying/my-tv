@@ -20,8 +20,10 @@ import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.databinding.MenuBinding
 import com.lizongying.mytv.databinding.RowBinding
 import com.lizongying.mytv.models.ProgramType
+import com.lizongying.mytv.models.TVList
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
+import com.lizongying.mytv.requests.Request
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -183,8 +185,13 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     if (tvViewModel.errInfo.value != null
                         && tvViewModel.getTV().id == itemPosition
                     ) {
-                        Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT)
-                            .show()
+                        if (tvViewModel.errInfo.value == "") {
+                            (activity as? MainActivity)?.showPlayerFragment()
+                            (activity as? MainActivity)?.hideErrorFragment()
+                        } else {
+                            (activity as? MainActivity)?.hidePlayerFragment()
+                            (activity as? MainActivity)?.showErrorFragment(tvViewModel.errInfo.value.toString())
+                        }
                     }
                 }
                 tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
@@ -266,8 +273,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     override fun onItemHasFocus(tvViewModel: TVViewModel) {
-        tvListViewModel.setItemPositionCurrent(tvViewModel.getTV().id)
-
         val row = tvViewModel.getRowPosition()
 
         for (i in rowList) {
@@ -283,7 +288,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     }
 
     override fun onItemClicked(tvViewModel: TVViewModel) {
-        Log.i(TAG, "onItemClicked")
         if (this.isHidden) {
             (activity as? MainActivity)?.switchMainFragment()
             return
@@ -293,6 +297,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             itemPosition = tvViewModel.getTV().id
             tvListViewModel.setItemPosition(itemPosition)
             tvListViewModel.getTVViewModel(itemPosition)?.changed("menu")
+            Log.i(TAG, "onItemClicked ${tvViewModel.getTV().id}")
         }
         (activity as? MainActivity)?.switchMainFragment()
     }
@@ -410,8 +415,9 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             Log.i(TAG, "toPosition $rowPosition $itemPosition")
             for (i in rowList) {
                 if (i.tag as Int == rowPosition) {
-                    ((i as RecyclerView).adapter as CardAdapter).focusable = true
-                    ((i as RecyclerView).adapter as CardAdapter).toPosition(itemPosition!!)
+                    ((i as RecyclerView).adapter as CardAdapter).updateEPG()
+                    (i.adapter as CardAdapter).focusable = true
+                    (i.adapter as CardAdapter).toPosition(itemPosition!!)
                     break
                 }
             }

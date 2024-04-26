@@ -1,4 +1,4 @@
-package com.lizongying.mytv
+package com.lizongying.mytv.api
 
 import android.content.Context
 
