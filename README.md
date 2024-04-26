@@ -4,17 +4,16 @@
 
 ## 使用
 
-下载安装:
-[github](https://github.com/lizongying/my-tv/releases/)
-[gitee](https://gitee.com/lizongying/my-tv/releases/)
-
-小米电视可以使用小米电视助手进行安装
-
-如电视可以启用ADB，也可以通过ADB进行安装：
-
-```shell
-adb install my-tv.apk
-```
+1. 下载
+    * [github](https://github.com/lizongying/my-tv/releases/)
+    * [gitee](https://gitee.com/lizongying/my-tv/releases/)
+2. 安裝
+    * U盘安装
+    * 小米电视可以使用小米电视助手进行安装
+    * 如电视可以启用ADB，也可以通过ADB进行安装
+       ```shell
+       adb install my-tv.apk
+       ```
 
 ![image](./screenshots/img_3.png)
 ![image](./screenshots/img_2.png)
@@ -32,12 +31,11 @@ adb install my-tv.apk
 * 地方频道
 * 收藏夹
 * 海外
-* 节目增加预告
-* 频道列表优化
-* 自动更新
-* 显示时间
-* 软解
-* 不同分辨率
+* 隐藏频道
+* 亮度调节
+* 音量调节
+* 軟解
+* 自動更新
 
 無法自啟的設備：
 斐讯N1盒子，[Phicomm] Phicomm p230 (Android 7.1.2)
@@ -46,6 +44,8 @@ adb install my-tv.apk
 中国移动盒子(新魔百和M302A) 4.4.2
 
 ## 版权说明
+
+[LICENSE](./LICENSE)
 
 本项目仅供学习研究，禁止用于商业用途，请于下载二十四小时内删除。
 
