@@ -5,8 +5,8 @@
 ## 使用
 
 1. 下载
-    * [github](https://github.com/lizongying/my-tv/releases/)
     * [gitee](https://gitee.com/lizongying/my-tv/releases/)
+    * [github](https://github.com/lizongying/my-tv/releases/)
 2. 安裝
     * U盘安装
     * 小米电视可以使用小米电视助手进行安装
@@ -15,9 +15,17 @@
        adb install my-tv.apk
        ```
 
-![image](./screenshots/img_3.png)
-![image](./screenshots/img_2.png)
-![image](./screenshots/img_1.png)
+<p align="center">
+  <img src="https://raw.gitmirror.com/lizongying/my-tv/main/screenshots/img_1.png">
+</p>
+
+<p align="center">
+  <img src="https://raw.gitmirror.com/lizongying/my-tv/main/screenshots/img_2.png">
+</p>
+
+<p align="center">
+  <img src="https://raw.gitmirror.com/lizongying/my-tv/main/screenshots/img_3.png">
+</p>
 
 ## 更新日志
 
@@ -55,4 +63,6 @@
 
 ## 赞赏
 
-![image](./screenshots/appreciate.jpeg)
+<p align="center">
+  <img src="https://raw.gitmirror.com/lizongying/my-tv/main/screenshots/appreciate.jpeg">
+</p>
