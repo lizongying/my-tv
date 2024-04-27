@@ -6,7 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginRight
+import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import com.lizongying.mytv.Utils.getDateFormat
@@ -36,7 +36,7 @@ class TimeFragment : Fragment() {
             val x =
                 ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
             val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.rightMargin += x
+            originalLayoutParams.marginEnd += x
             binding.time.layoutParams = originalLayoutParams
         }
 
@@ -52,7 +52,7 @@ class TimeFragment : Fragment() {
         binding.time.layoutParams.height = application.px2Px(binding.time.layoutParams.height)
         val layoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin = application.px2Px(binding.time.marginTop)
-        layoutParams.rightMargin = application.px2Px(binding.time.marginRight)
+        layoutParams.marginEnd = application.px2Px(binding.time.marginEnd)
         binding.time.layoutParams = layoutParams
         binding.content.textSize = application.px2PxFont(binding.content.textSize)
 

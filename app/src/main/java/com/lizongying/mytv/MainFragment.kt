@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.marginBottom
-import androidx.core.view.marginLeft
+import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -61,8 +61,8 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.leftMargin += x
-            originalLayoutParams.rightMargin += x
+            originalLayoutParams.marginStart += x
+            originalLayoutParams.marginEnd += x
             binding.scroll.layoutParams = originalLayoutParams
 
             Log.i(
@@ -166,7 +166,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     itemBinding.header.layoutParams as ViewGroup.MarginLayoutParams
                 layoutParamsHeader.topMargin = application.px2Px(itemBinding.header.marginTop)
                 layoutParamsHeader.bottomMargin = application.px2Px(itemBinding.header.marginBottom)
-                layoutParamsHeader.leftMargin = application.px2Px(itemBinding.header.marginLeft)
+                layoutParamsHeader.marginStart = application.px2Px(itemBinding.header.marginStart)
                 itemBinding.header.layoutParams = layoutParamsHeader
                 itemBinding.header.textSize = application.px2PxFont(itemBinding.header.textSize)
 

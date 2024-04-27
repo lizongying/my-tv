@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.marginBottom
-import androidx.core.view.marginLeft
+import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
@@ -54,7 +54,7 @@ class InfoFragment : Fragment() {
         binding.main.setPadding(application.px2Px(binding.main.paddingTop))
 
         val layoutParamsMain = binding.main.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsMain.leftMargin = application.px2Px(binding.main.marginLeft)
+        layoutParamsMain.marginStart = application.px2Px(binding.main.marginStart)
         binding.main.layoutParams = layoutParamsMain
 
         val layoutParamsDesc = binding.desc.layoutParams as ViewGroup.MarginLayoutParams

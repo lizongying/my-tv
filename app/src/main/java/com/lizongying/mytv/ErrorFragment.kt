@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginLeft
+import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import com.lizongying.mytv.databinding.ErrorBinding
@@ -23,10 +23,6 @@ class ErrorFragment : Fragment() {
 
         binding.logo.layoutParams.width = application.px2Px(binding.logo.layoutParams.width)
         binding.logo.layoutParams.height = application.px2Px(binding.logo.layoutParams.height)
-
-        val layoutParamsMain = binding.main.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsMain.leftMargin = application.px2Px(binding.main.marginLeft)
-        binding.main.layoutParams = layoutParamsMain
 
         val layoutParams = binding.msg.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin = application.px2Px(binding.msg.marginTop)

@@ -6,7 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginRight
+import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import com.lizongying.mytv.databinding.ChannelBinding
@@ -40,7 +40,7 @@ class ChannelFragment : Fragment() {
                 ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.channel.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.rightMargin += x
+            originalLayoutParams.marginEnd += x
             binding.channel.layoutParams = originalLayoutParams
         }
 
@@ -57,7 +57,7 @@ class ChannelFragment : Fragment() {
         binding.channel.layoutParams.height = application.px2Px(binding.channel.layoutParams.height)
         val layoutParams = binding.channel.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin = application.px2Px(binding.channel.marginTop)
-        layoutParams.rightMargin = application.px2Px(binding.channel.marginRight)
+        layoutParams.marginEnd = application.px2Px(binding.channel.marginEnd)
         binding.channel.layoutParams = layoutParams
         binding.content.textSize = application.px2PxFont(binding.content.textSize)
 
