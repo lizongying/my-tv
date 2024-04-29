@@ -3,6 +3,7 @@ package com.lizongying.mytv.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.lizongying.mytv.SP
 
 class TVListViewModel : ViewModel() {
 
@@ -30,6 +31,7 @@ class TVListViewModel : ViewModel() {
 
     fun setItemPosition(position: Int) {
         _itemPosition.value = position
+        SP.itemPosition = position
     }
 
     fun size(): Int {

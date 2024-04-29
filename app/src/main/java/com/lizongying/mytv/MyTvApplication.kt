@@ -12,8 +12,12 @@ class MyTvApplication : Application() {
     private lateinit var displayMetrics: DisplayMetrics
     private lateinit var realDisplayMetrics: DisplayMetrics
 
+    private lateinit var windowManager: WindowManager
+
     private var width = 0
     private var height = 0
+    private var shouldWidth = 0
+    private var shouldHeight = 0
     private var deviation = 0
     private var ratio = 1.0
     private var density = 2.0f
@@ -24,7 +28,7 @@ class MyTvApplication : Application() {
 
         displayMetrics = DisplayMetrics()
         realDisplayMetrics = DisplayMetrics()
-        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         windowManager.defaultDisplay.getRealMetrics(realDisplayMetrics)
 
@@ -44,6 +48,16 @@ class MyTvApplication : Application() {
             height * 2 / 1080.0 / density
         }
 
+        if ((width.toDouble() / height) < (16.0 / 9.0)) {
+            ratio = width * 2 / 1920.0 / density
+            shouldWidth = width
+            shouldHeight = (width * 9.0 / 16.0).toInt()
+        } else {
+            ratio = height * 2 / 1080.0 / density
+            shouldHeight = height
+            shouldWidth = (height * 16.0 / 9.0).toInt()
+        }
+
         deviation = width - Resources.getSystem().displayMetrics.widthPixels
         scale = Resources.getSystem().displayMetrics.scaledDensity
     }
@@ -56,16 +70,24 @@ class MyTvApplication : Application() {
         return realDisplayMetrics
     }
 
+    fun shouldWidthPx(): Int {
+        return shouldWidth
+    }
+
+    fun shouldHeightPx(): Int {
+        return shouldHeight
+    }
+
     fun getWidth(): Int {
         return width
     }
 
-    fun getDeviation(): Int {
-        return deviation
-    }
-
     fun getHeight(): Int {
         return height
+    }
+
+    fun getDeviation(): Int {
+        return deviation
     }
 
     fun getRatio(): Double {

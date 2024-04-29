@@ -11,7 +11,10 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -29,6 +32,8 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private var ready = 0
     private val playerFragment = PlayerFragment()
     private val errorFragment = ErrorFragment()
+
+    //    private val loadingFragment = LoadingFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
     private val channelFragment = ChannelFragment()
@@ -56,25 +61,34 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
         Request.setRequestListener(this)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        window.decorView.systemUiVisibility =
+            SYSTEM_UI_FLAG_FULLSCREEN or
+                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//            window.statusBarColor = Color.TRANSPARENT
+//            window.navigationBarColor = Color.TRANSPARENT
+//        }
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
                 .add(R.id.main_browse_fragment, errorFragment)
+//                .add(R.id.main_browse_fragment, loadingFragment)
                 .add(R.id.main_browse_fragment, timeFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
                 .hide(errorFragment)
+//                .hide(loadingFragment)
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())

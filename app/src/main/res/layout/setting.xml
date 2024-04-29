@@ -13,8 +13,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="20dp"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:background="@drawable/rounded_dark_left"
             >
             <TextView

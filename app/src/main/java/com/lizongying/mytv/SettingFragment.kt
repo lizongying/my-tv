@@ -101,9 +101,9 @@ class SettingFragment : DialogFragment() {
         )
         binding.name.textSize = application.px2PxFont(binding.name.textSize)
         binding.version.textSize = application.px2PxFont(binding.version.textSize)
-        val layoutParamsDesc = binding.version.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsDesc.topMargin = application.px2Px(binding.version.marginTop)
-        binding.version.layoutParams = layoutParamsDesc
+        val layoutParamsVersion = binding.version.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsVersion.topMargin = application.px2Px(binding.version.marginTop)
+        binding.version.layoutParams = layoutParamsVersion
 
         binding.checkVersion.textSize = application.px2PxFont(binding.checkVersion.textSize)
         val layoutParamsCheckVersion =

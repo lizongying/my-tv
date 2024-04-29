@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/menu"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:clickable="true"
     android:focusable="false"
-    >
-    <ScrollView
-        android:id="@+id/scroll"
+    android:gravity="center"
+>
+
+    <FrameLayout
+        android:id="@+id/menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-    </ScrollView>
-</FrameLayout>
+        android:layout_height="match_parent"
+>
+
+            <ScrollView
+                android:id="@+id/scroll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+             >
+                <LinearLayout
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
+            </ScrollView>
+
+    </FrameLayout>
+</LinearLayout>

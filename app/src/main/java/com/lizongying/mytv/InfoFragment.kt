@@ -30,24 +30,14 @@ class InfoFragment : Fragment() {
         _binding = InfoBinding.inflate(inflater, container, false)
 
         val application = requireActivity().applicationContext as MyTvApplication
-        val width = application.getWidth()
-        val height = application.getHeight()
-
-        val ratio = 16f / 9f
-
-        if (width.toFloat() / height < ratio) {
-            val y =
-                ((height - Resources.getSystem().displayMetrics.widthPixels / ratio) / 2).toInt()
-            val originalLayoutParams = binding.info.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.bottomMargin += y
-            binding.info.layoutParams = originalLayoutParams
-        }
 
         binding.info.layoutParams.width = application.px2Px(binding.info.layoutParams.width)
         binding.info.layoutParams.height = application.px2Px(binding.info.layoutParams.height)
+
         val layoutParams = binding.info.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.bottomMargin = application.px2Px(binding.info.marginBottom)
         binding.info.layoutParams = layoutParams
+
         binding.logo.layoutParams.width = application.px2Px(binding.logo.layoutParams.width)
         binding.logo.setPadding(application.px2Px(binding.logo.paddingTop))
         binding.main.layoutParams.width = application.px2Px(binding.main.layoutParams.width)
@@ -64,6 +54,9 @@ class InfoFragment : Fragment() {
         binding.title.textSize = application.px2PxFont(binding.title.textSize)
         binding.desc.textSize = application.px2PxFont(binding.desc.textSize)
 
+        binding.container.layoutParams.width = application.shouldWidthPx()
+        binding.container.layoutParams.height = application.shouldHeightPx()
+
         _binding!!.root.visibility = View.GONE
 
         (activity as MainActivity).fragmentReady("InfoFragment")
@@ -71,6 +64,9 @@ class InfoFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
+        if (_binding == null) {
+            return
+        }
         binding.title.text = tvViewModel.getTV().title
 
         Glide.with(this)

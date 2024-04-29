@@ -27,34 +27,18 @@ class TimeFragment : Fragment() {
 
         val application = requireActivity().applicationContext as MyTvApplication
 
-        val width = application.getWidth()
-        val height = application.getHeight()
-
-        val ratio = 16f / 9f
-
-        if (width.toFloat() / height > ratio) {
-            val x =
-                ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
-            val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.marginEnd += x
-            binding.time.layoutParams = originalLayoutParams
-        }
-
-        if (width.toFloat() / height < ratio) {
-            val y =
-                ((height - Resources.getSystem().displayMetrics.widthPixels / ratio) / 2).toInt()
-            val originalLayoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.topMargin += y
-            binding.time.layoutParams = originalLayoutParams
-        }
-
         binding.time.layoutParams.width = application.px2Px(binding.time.layoutParams.width)
         binding.time.layoutParams.height = application.px2Px(binding.time.layoutParams.height)
+
         val layoutParams = binding.time.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin = application.px2Px(binding.time.marginTop)
         layoutParams.marginEnd = application.px2Px(binding.time.marginEnd)
         binding.time.layoutParams = layoutParams
+
         binding.content.textSize = application.px2PxFont(binding.content.textSize)
+
+        binding.main.layoutParams.width = application.shouldWidthPx()
+        binding.main.layoutParams.height = application.shouldHeightPx()
 
         (activity as MainActivity).fragmentReady("TimeFragment")
         return binding.root

@@ -1,5 +1,6 @@
 <resources>
 
     <style name="Theme.MyTV" parent="@style/Theme.Leanback">
+        <item name="android:fitsSystemWindows">false</item>
     </style>
 </resources>

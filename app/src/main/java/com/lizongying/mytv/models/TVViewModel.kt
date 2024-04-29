@@ -16,6 +16,8 @@ class TVViewModel(private var tv: TV) : ViewModel() {
 
     var retryTimes = 0
     var retryMaxTimes = 8
+    var authYSPRetryTimes = 0
+    var authYSPRetryMaxTimes = 3
     var tokenYSPRetryTimes = 0
     var tokenYSPRetryMaxTimes = 0
     var tokenFHRetryTimes = 0

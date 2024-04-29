@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -51,37 +52,10 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
         application = requireActivity().applicationContext as MyTvApplication
 
-        val width = application.getWidth()
-        val height = application.getHeight()
+        binding.menu.layoutParams.width = application.shouldWidthPx()
+        binding.menu.layoutParams.height = application.shouldHeightPx()
 
-        val ratio = 16f / 9f
-
-        if (width.toFloat() / height > ratio) {
-            val x =
-                ((Resources.getSystem().displayMetrics.widthPixels - height * ratio) / 2).toInt()
-            val originalLayoutParams =
-                binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.marginStart += x
-            originalLayoutParams.marginEnd += x
-            binding.scroll.layoutParams = originalLayoutParams
-
-            Log.i(
-                TAG,
-                "binding.scroll ${Resources.getSystem().displayMetrics.widthPixels} ${height * ratio}"
-            )
-        }
-
-        if (width.toFloat() / height < ratio) {
-            val y =
-                ((height - Resources.getSystem().displayMetrics.widthPixels / ratio) / 2).toInt()
-            val originalLayoutParams =
-                binding.scroll.layoutParams as ViewGroup.MarginLayoutParams
-            originalLayoutParams.topMargin += y
-            originalLayoutParams.bottomMargin += y
-            binding.scroll.layoutParams = originalLayoutParams
-        }
-
-        binding.menu.setOnClickListener {
+        binding.container.setOnClickListener {
             hideSelf()
         }
 
@@ -278,7 +252,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         for (i in rowList) {
             if (i.tag as Int != row) {
                 ((i as RecyclerView).adapter as CardAdapter).focusable = false
-                ((i as RecyclerView).adapter as CardAdapter).clear()
+                (i.adapter as CardAdapter).clear()
             } else {
                 ((i as RecyclerView).adapter as CardAdapter).focusable = true
             }
@@ -433,13 +407,6 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
-    }
-
-    override fun onStop() {
-        Log.i(TAG, "onStop")
-        super.onStop()
-        SP.itemPosition = itemPosition
-        Log.i(TAG, "$POSITION $itemPosition saved")
     }
 
     override fun onDestroy() {
