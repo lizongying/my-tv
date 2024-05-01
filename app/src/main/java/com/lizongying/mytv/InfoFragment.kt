@@ -59,7 +59,7 @@ class InfoFragment : Fragment() {
 
         _binding!!.root.visibility = View.GONE
 
-        (activity as MainActivity).fragmentReady("InfoFragment")
+        (activity as MainActivity).fragmentReady(TAG)
         return binding.root
     }
 

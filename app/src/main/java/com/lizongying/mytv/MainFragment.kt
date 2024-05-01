@@ -205,11 +205,11 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                     }
                 }
             }
-            (activity as MainActivity).fragmentReady("MainFragment")
+            (activity as MainActivity).fragmentReady(TAG)
         }
     }
 
-    fun changeStyle() {
+    fun changeMenu() {
         if (SP.grid) {
             for (i in rowList) {
                 if (i is RecyclerView) {

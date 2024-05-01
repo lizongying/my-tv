@@ -17,6 +17,7 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
@@ -65,6 +66,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
         Request.setRequestListener(this)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val lp = window.attributes
+            lp.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.setAttributes(lp)
+        }
+
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.decorView.systemUiVisibility =
@@ -89,28 +97,32 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .hide(mainFragment)
                 .hide(errorFragment)
 //                .hide(loadingFragment)
+                .hide(timeFragment)
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val connectivityManager =
-                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            connectivityManager.registerDefaultNetworkCallback(object :
-                ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
-                    if (this@MainActivity.isNetworkConnected) {
-                        Log.i(TAG, "net isNetworkConnected")
-                        ready++
-                    }
-                }
-            })
-        } else {
-            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
-            ready++
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            val connectivityManager =
+//                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//            connectivityManager.registerDefaultNetworkCallback(object :
+//                ConnectivityManager.NetworkCallback() {
+//                override fun onAvailable(network: Network) {
+//                    super.onAvailable(network)
+//                    Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
+//                    if (this@MainActivity.isNetworkConnected) {
+//                        Log.i(TAG, "net isNetworkConnected")
+//                        ready++
+//                    }
+//                }
+//            })
+//        } else {
+//            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
+//            ready++
+//        }
+
+        showTime()
+        mainFragment.changeMenu()
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -211,6 +223,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
         showTime()
+        mainFragment.changeMenu()
     }
 
     fun settingNeverHide() {
@@ -238,20 +251,37 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun fragmentReady(tag: String) {
         ready++
         Log.i(TAG, "ready $tag $ready ")
-        if (ready == 8) {
+        if (ready == 7) {
             mainFragment.fragmentReady()
-            showTime()
         }
     }
 
     private fun showTime() {
-        Log.i(TAG, "showTime ${SP.time}")
         if (SP.time) {
-            timeFragment.show()
+            showFragment(timeFragment)
         } else {
-            timeFragment.hide()
+            hideFragment(timeFragment)
         }
-        mainFragment.changeStyle()
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        if (!fragment.isHidden) {
+            return
+        }
+
+        supportFragmentManager.beginTransaction()
+            .show(fragment)
+            .commitNow()
+    }
+
+    private fun hideFragment(fragment: Fragment) {
+        if (fragment.isHidden) {
+            return
+        }
+
+        supportFragmentManager.beginTransaction()
+            .hide(fragment)
+            .commitNow()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -326,6 +356,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         if (settingFragment.isVisible) {
             settingFragment.dismiss()
             showTime()
+            mainFragment.changeMenu()
         }
     }
 

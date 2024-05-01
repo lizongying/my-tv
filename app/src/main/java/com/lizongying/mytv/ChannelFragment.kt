@@ -43,7 +43,7 @@ class ChannelFragment : Fragment() {
         binding.main.layoutParams.width = application.shouldWidthPx()
         binding.main.layoutParams.height = application.shouldHeightPx()
 
-        (activity as MainActivity).fragmentReady("ChannelFragment")
+        (activity as MainActivity).fragmentReady(TAG)
         return binding.root
     }
 

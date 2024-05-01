@@ -93,7 +93,7 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
                 })
             }
         })
-        (activity as MainActivity).fragmentReady("PlayerFragment")
+        (activity as MainActivity).fragmentReady(TAG)
         return _binding!!.root
     }
 
@@ -154,7 +154,7 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
     }
 
     companion object {
-        private const val TAG = "PlaybackVideoFragment"
+        private const val TAG = "PlayerFragment"
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {

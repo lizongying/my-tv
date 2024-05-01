@@ -119,7 +119,9 @@ object Request {
                                     if (!tvModel.getTV().mustToken) {
                                         fetchAuth(tvModel, cookie)
                                     } else {
-//                                TODO
+                                        val err = "错误"
+                                        Log.e(TAG, "$title $err")
+                                        tvModel.setErrInfo(err)
                                     }
                                 }
                             } else {
@@ -144,7 +146,9 @@ object Request {
                                 if (!tvModel.getTV().mustToken) {
                                     fetchAuth(tvModel, cookie)
                                 } else {
-//                                TODO
+                                    val err = "错误"
+                                    Log.e(TAG, "$title $err")
+                                    tvModel.setErrInfo(err)
                                 }
                             }
                         } else {
@@ -171,7 +175,9 @@ object Request {
                             if (!tvModel.getTV().mustToken) {
                                 fetchAuth(tvModel, cookie)
                             } else {
-//                                TODO
+                                val err = "错误"
+                                Log.e(TAG, "$title $err")
+                                tvModel.setErrInfo(err)
                             }
                         }
                     } else {
@@ -241,19 +247,30 @@ object Request {
                                     if (needToken && tvModel.tokenYSPRetryTimes < tvModel.tokenYSPRetryMaxTimes) {
                                         tvModel.tokenYSPRetryTimes++
                                         tvModel.needGetToken = true
-                                        fetchVideo(tvModel)
-//                                        fetchAuth(tvModel)
+                                        if (needAuth) {
+                                            fetchAuth(tvModel)
+                                        } else {
+                                            fetchVideo(tvModel)
+                                        }
                                     } else {
                                         if (!tvModel.getTV().mustToken) {
-                                            fetchVideo(tvModel, cookie)
-//                                            fetchAuth(tvModel, cookie)
+                                            if (needAuth) {
+                                                fetchAuth(tvModel, cookie)
+                                            } else {
+                                                fetchVideo(tvModel, cookie)
+                                            }
                                         } else {
-//                                TODO
+                                            val err = "错误"
+                                            Log.e(TAG, "$title $err")
+                                            tvModel.setErrInfo(err)
                                         }
                                     }
                                 } else {
-                                    fetchVideo(tvModel, cookie)
-//                                    fetchAuth(tvModel, cookie)
+                                    if (needAuth) {
+                                        fetchAuth(tvModel, cookie)
+                                    } else {
+                                        fetchVideo(tvModel, cookie)
+                                    }
                                 }
                             } else {
                                 val err = "结果错误"
@@ -274,19 +291,30 @@ object Request {
                                     if (needToken && tvModel.tokenYSPRetryTimes < tvModel.tokenYSPRetryMaxTimes) {
                                         tvModel.tokenYSPRetryTimes++
                                         tvModel.needGetToken = true
-                                        fetchVideo(tvModel)
-//                                        fetchAuth(tvModel)
+                                        if (needAuth) {
+                                            fetchAuth(tvModel)
+                                        } else {
+                                            fetchVideo(tvModel)
+                                        }
                                     } else {
                                         if (!tvModel.getTV().mustToken) {
-                                            fetchVideo(tvModel, cookie)
-//                                            fetchAuth(tvModel, cookie)
+                                            if (needAuth) {
+                                                fetchAuth(tvModel, cookie)
+                                            } else {
+                                                fetchVideo(tvModel, cookie)
+                                            }
                                         } else {
-//                                TODO
+                                            val err = "错误"
+                                            Log.e(TAG, "$title $err")
+                                            tvModel.setErrInfo(err)
                                         }
                                     }
                                 } else {
-                                    fetchVideo(tvModel, cookie)
-//                                    fetchAuth(tvModel, cookie)
+                                    if (needAuth) {
+                                        fetchAuth(tvModel, cookie)
+                                    } else {
+                                        fetchVideo(tvModel, cookie)
+                                    }
                                 }
                             } else {
                                 val err = "其他错误"
@@ -303,19 +331,30 @@ object Request {
                             if (needToken && tvModel.tokenYSPRetryTimes < tvModel.tokenYSPRetryMaxTimes) {
                                 tvModel.tokenYSPRetryTimes++
                                 tvModel.needGetToken = true
-                                fetchVideo(tvModel)
-//                                fetchAuth(tvModel)
+                                if (needAuth) {
+                                    fetchAuth(tvModel, cookie)
+                                } else {
+                                    fetchVideo(tvModel, cookie)
+                                }
                             } else {
                                 if (!tvModel.getTV().mustToken) {
-                                    fetchVideo(tvModel, cookie)
-//                                    fetchAuth(tvModel, cookie)
+                                    if (needAuth) {
+                                        fetchAuth(tvModel, cookie)
+                                    } else {
+                                        fetchVideo(tvModel, cookie)
+                                    }
                                 } else {
-//                                TODO
+                                    val err = "错误"
+                                    Log.e(TAG, "$title $err")
+                                    tvModel.setErrInfo(err)
                                 }
                             }
                         } else {
-                            fetchVideo(tvModel, cookie)
-//                            fetchAuth(tvModel, cookie)
+                            if (needAuth) {
+                                fetchAuth(tvModel, cookie)
+                            } else {
+                                fetchVideo(tvModel, cookie)
+                            }
                         }
                     } else {
                         val err = "状态错误"
