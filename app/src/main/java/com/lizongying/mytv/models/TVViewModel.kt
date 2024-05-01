@@ -66,6 +66,10 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     }
 
     fun changed(from: String) {
+        retryTimes = 0
+        authYSPRetryTimes = 0
+        tokenYSPRetryTimes = 0
+        tokenFHRetryTimes = 0
         _change.value = from
     }
 
