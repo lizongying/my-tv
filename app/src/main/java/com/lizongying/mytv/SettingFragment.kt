@@ -87,7 +87,7 @@ class SettingFragment : DialogFragment() {
             }
         }
 
-        updateManager = UpdateManager(context, this, context.appVersionCode)
+        updateManager = UpdateManager(context, context.appVersionCode)
         binding.checkVersion.setOnClickListener(
             OnClickListenerCheckVersion(
                 activity as MainActivity,

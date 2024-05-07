@@ -2,12 +2,15 @@ package com.lizongying.mytv
 
 import android.content.res.Resources
 import android.os.Build
+import android.util.Log
 import android.util.TypedValue
 import com.google.gson.Gson
 import com.lizongying.mytv.api.TimeResponse
 import com.lizongying.mytv.requests.Request
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Interceptor
+import okhttp3.Response
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -47,6 +50,20 @@ object Utils {
         }
     }
 
+    class RetryInterceptor(private val maxRetry: Int) : Interceptor {
+        @Throws(IOException::class)
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request()
+            var response = chain.proceed(request)
+            var tryCount = 0
+            while (!response.isSuccessful && tryCount < maxRetry) {
+                tryCount++
+                response = chain.proceed(request)
+            }
+            return response
+        }
+    }
+
     /**
      * 从服务器获取时间戳
      * @return Long 时间戳
@@ -55,7 +72,9 @@ object Utils {
         return withContext(Dispatchers.IO) {
             val client = okhttp3.OkHttpClient.Builder()
                 .connectTimeout(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-                .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS).build()
+                .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+                .addInterceptor(RetryInterceptor(3))
+                .build()
             val request = okhttp3.Request.Builder()
                 .url("https://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp")
                 .build()

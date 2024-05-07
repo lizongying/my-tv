@@ -173,6 +173,7 @@ class ApiClient {
     }
 
     companion object {
-        const val HOST = "https://gitee.com/lizongying/my-tv/"
+        const val HOST = "https://gitee.com/lizongying/my-tv/raw/"
+        const val DOWNLOAD_HOST = "https://gitee.com/lizongying/my-tv/releases/download/"
     }
 }
