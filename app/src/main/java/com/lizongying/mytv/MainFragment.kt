@@ -1,7 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.res.Resources
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -162,8 +160,10 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                         if (tvViewModel.errInfo.value == "") {
                             (activity as? MainActivity)?.showPlayerFragment()
                             (activity as? MainActivity)?.hideErrorFragment()
+                            (activity as? MainActivity)?.hideLoadingFragment()
                         } else {
                             (activity as? MainActivity)?.hidePlayerFragment()
+                            (activity as? MainActivity)?.hideLoadingFragment()
                             (activity as? MainActivity)?.showErrorFragment(tvViewModel.errInfo.value.toString())
                         }
                     }

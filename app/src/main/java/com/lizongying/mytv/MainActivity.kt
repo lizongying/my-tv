@@ -1,8 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -34,7 +31,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val playerFragment = PlayerFragment()
     private val errorFragment = ErrorFragment()
 
-    //    private val loadingFragment = LoadingFragment()
+    private val loadingFragment = LoadingFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
     private val channelFragment = ChannelFragment()
@@ -86,7 +83,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 //        }
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
+            val transaction = supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
                 .add(R.id.main_browse_fragment, errorFragment)
 //                .add(R.id.main_browse_fragment, loadingFragment)
@@ -96,9 +93,14 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
                 .hide(errorFragment)
-//                .hide(loadingFragment)
-                .hide(timeFragment)
-                .commit()
+
+            if (!SP.time) {
+                transaction.hide(timeFragment)
+            } else {
+                transaction.show(timeFragment)
+            }
+
+            transaction.commitNow()
         }
         gestureDetector = GestureDetector(this, GestureListener())
 
@@ -120,9 +122,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 //            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
 //            ready++
 //        }
-
-        showTime()
-        mainFragment.changeMenu()
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -150,6 +149,14 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         supportFragmentManager.beginTransaction()
             .hide(errorFragment)
             .commit()
+    }
+
+    fun showLoadingFragment() {
+        showFragment(loadingFragment)
+    }
+
+    fun hideLoadingFragment() {
+        hideFragment(loadingFragment)
     }
 
     fun showPlayerFragment() {
@@ -222,8 +229,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
-        showTime()
-        mainFragment.changeMenu()
     }
 
     fun settingNeverHide() {
@@ -342,14 +347,12 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             return
         }
 
-        Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
-        if (!settingFragment.isVisible) {
-            settingFragment.show(supportFragmentManager, "setting")
-            settingDelayHide()
-        } else {
-            handler.removeCallbacks(hideSetting)
-            settingFragment.dismiss()
+        if (settingFragment.isVisible) {
+            return
         }
+
+        settingFragment.show(supportFragmentManager, TAG)
+        settingDelayHide()
     }
 
     private val hideSetting = Runnable {
@@ -421,6 +424,11 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         }, 2000)
     }
 
+    private fun active() {
+        if (settingFragment.isVisible) {
+            settingDelayHide()
+        }
+    }
 
     fun onKey(keyCode: Int): Boolean {
         Log.i(TAG, "keyCode $keyCode")
@@ -511,6 +519,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_ENTER -> {
+                active()
                 switchMainFragment()
             }
 
@@ -519,6 +528,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_UP -> {
+                active()
                 channelUp()
             }
 
@@ -527,6 +537,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
+                active()
                 channelDown()
             }
 
@@ -535,6 +546,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
+                active()
                 if (mainFragment.isHidden && !settingFragment.isVisible) {
                     switchMainFragment()
                     return true
@@ -542,6 +554,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                active()
                 if (mainFragment.isHidden && !settingFragment.isVisible) {
                     showSetting()
                     return true
@@ -570,6 +583,12 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
+    }
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        mainFragment.changeMenu()
+
         if (!mainFragment.isHidden) {
             handler.postDelayed(hideMain, delayHideMain)
         }

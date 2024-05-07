@@ -1,5 +1,6 @@
 package com.lizongying.mytv
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,11 @@ class SettingFragment : DialogFragment() {
         dialog?.window?.apply {
             addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                attributes.layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                setAttributes(attributes)
+            }
         }
     }
 
