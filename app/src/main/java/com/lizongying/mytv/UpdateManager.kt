@@ -18,7 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.lizongying.mytv.api.ApiClient
-import com.lizongying.mytv.api.ReleaseV2
 import com.lizongying.mytv.requests.ReleaseRequest
 import com.lizongying.mytv.requests.ReleaseResponse
 import kotlinx.coroutines.CoroutineScope
