@@ -4,6 +4,7 @@ package com.lizongying.mytv.api
 import android.os.Build
 import android.util.Log
 import com.lizongying.mytv.jce.JceConverterFactory
+import com.lizongying.mytv.requests.ReleaseService
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
@@ -47,7 +48,7 @@ class ApiClient {
 
     val releaseService: ReleaseService by lazy {
         Retrofit.Builder()
-            .baseUrl(myUrl)
+            .baseUrl(HOST)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(ReleaseService::class.java)
@@ -169,5 +170,9 @@ class ApiClient {
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
+    }
+
+    companion object {
+        const val HOST = "https://gitee.com/lizongying/my-tv/"
     }
 }

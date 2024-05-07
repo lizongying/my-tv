@@ -17,8 +17,10 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.api.ReleaseV2
 import com.lizongying.mytv.requests.ReleaseRequest
+import com.lizongying.mytv.requests.ReleaseResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,8 +34,8 @@ class UpdateManager(
 ) :
     ConfirmationFragment.ConfirmationListener {
 
-    private var myRequest = ReleaseRequest()
-    private var release: ReleaseV2? = null
+    private var releaseRequest = ReleaseRequest()
+    private var release: ReleaseResponse? = null
 
     private var downloadReceiver: DownloadReceiver? = null
 
@@ -44,11 +46,11 @@ class UpdateManager(
         CoroutineScope(Dispatchers.Main).launch {
             var text = "版本获取失败"
             try {
-                release = myRequest.getRelease()
-                Log.i(TAG, "versionCode $versionCode ${release?.c}")
-                if (release?.c != null) {
-                    text = if (release?.c!! > versionCode) {
-                        "最新版本：${release?.n}\n${release?.d ?: ""}"
+                release = releaseRequest.getRelease()
+                Log.i(TAG, "versionCode $versionCode ${release?.version_code}")
+                if (release?.version_code != null) {
+                    text = if (release?.version_code!! >= versionCode) {
+                        "最新版本：${release?.version_name}}"
                     } else {
                         "已是最新版本，不需要更新"
                     }
@@ -88,20 +90,24 @@ class UpdateManager(
     }
 
 
-    private fun startDownload(release: ReleaseV2) {
-        val apkFileName = "my-tv-${release.n}.apk"
+    private fun startDownload(release: ReleaseResponse) {
+        val apkFileName = "my-tv-${release.version_name}.apk"
         Log.i(TAG, "apkFileName $apkFileName")
         val downloadManager =
             context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val request = Request(Uri.parse(release.u))
-        Log.i(TAG, "url ${Uri.parse(release.u)}")
+        val request =
+            Request(Uri.parse("${ApiClient.HOST}/release/download/${release.version_name}/my-tv-${release.version_name}.apk"))
+        Log.i(
+            TAG,
+            "url ${Uri.parse("${ApiClient.HOST}/release/download/${release.version_name}/my-tv-0-${release.version_name}.apk")}"
+        )
         context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.mkdirs()
         request.setDestinationInExternalFilesDir(
             context,
             Environment.DIRECTORY_DOWNLOADS,
             apkFileName
         )
-        request.setTitle("${settingFragment.resources.getString(R.string.app_name)} ${release.n}")
+        request.setTitle("${settingFragment.resources.getString(R.string.app_name)} ${release.version_name}")
         request.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setAllowedOverRoaming(false)
         request.setMimeType("application/vnd.android.package-archive")
