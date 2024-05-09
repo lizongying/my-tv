@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.app.Activity
 import android.app.DownloadManager
 import android.app.DownloadManager.Request
 import android.content.BroadcastReceiver
@@ -14,9 +13,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.PermissionChecker
-import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.FragmentActivity
 import com.lizongying.mytv.api.ApiClient
 import com.lizongying.mytv.requests.ReleaseRequest
@@ -39,9 +35,6 @@ class UpdateManager(
     private var downloadReceiver: DownloadReceiver? = null
 
     fun checkAndUpdate() {
-        if (!haveStoragePermission()) {
-            return
-        }
         CoroutineScope(Dispatchers.Main).launch {
             var text = "版本获取失败"
             var update = false
@@ -68,36 +61,7 @@ class UpdateManager(
         dialog.show((context as FragmentActivity).supportFragmentManager, TAG)
     }
 
-    private fun haveStoragePermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                === PermissionChecker.PERMISSION_GRANTED
-            ) {
-                Log.e("Permission error", "You have permission")
-                return true
-            } else {
-                Log.e("Permission error", "You have asked for permission")
-                ActivityCompat.requestPermissions(
-                    context as Activity, arrayOf(
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ), 1
-                )
-                return false
-            }
-        } else { //you don't need to worry about these stuff below api level 23
-            Log.e("Permission error", "You already have the permission")
-            return true
-        }
-    }
-
-
     private fun startDownload(release: ReleaseResponse) {
-        val packageInstaller = context.packageManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!packageInstaller.canRequestPackageInstalls()) {
-            }
-        }
-
         val apkName = "my-tv"
         val apkFileName = "$apkName-${release.version_name}.apk"
         Log.i(TAG, "apkFileName $apkFileName")

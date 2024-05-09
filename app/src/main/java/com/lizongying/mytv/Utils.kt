@@ -2,7 +2,6 @@ package com.lizongying.mytv
 
 import android.content.res.Resources
 import android.os.Build
-import android.util.Log
 import android.util.TypedValue
 import com.google.gson.Gson
 import com.lizongying.mytv.api.TimeResponse
@@ -37,13 +36,14 @@ object Utils {
     }
 
     suspend fun init() {
-        var currentTimeMillis: Long = 0
         try {
-            currentTimeMillis = getTimestampFromServer()
+            val currentTimeMillis = getTimestampFromServer()
+            if (currentTimeMillis > 0) {
+                between = System.currentTimeMillis() - currentTimeMillis
+            }
         } catch (e: Exception) {
             println("Failed to retrieve timestamp from server: ${e.message}")
         }
-        between = System.currentTimeMillis() - currentTimeMillis
 
         withContext(Dispatchers.Main) {
             listener?.onRequestFinished(null)
@@ -71,8 +71,6 @@ object Utils {
     private suspend fun getTimestampFromServer(): Long {
         return withContext(Dispatchers.IO) {
             val client = okhttp3.OkHttpClient.Builder()
-                .connectTimeout(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-                .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
                 .addInterceptor(RetryInterceptor(3))
                 .build()
             val request = okhttp3.Request.Builder()
@@ -85,7 +83,6 @@ object Utils {
                     Gson().fromJson(string, TimeResponse::class.java).data.t.toLong()
                 }
             } catch (e: IOException) {
-                // Handle network errors
                 throw IOException("Error during network request", e)
             }
         }

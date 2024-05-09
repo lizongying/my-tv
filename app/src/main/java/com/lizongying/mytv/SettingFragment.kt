@@ -1,11 +1,16 @@
 package com.lizongying.mytv
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.DialogFragment
@@ -87,13 +92,10 @@ class SettingFragment : DialogFragment() {
             }
         }
 
-        updateManager = UpdateManager(context, context.appVersionCode)
-        binding.checkVersion.setOnClickListener(
-            OnClickListenerCheckVersion(
-                activity as MainActivity,
-                updateManager
-            )
-        )
+        binding.checkVersion.setOnClickListener {
+            (activity as MainActivity).settingDelayHide()
+            requestInstallPermissions()
+        }
 
         val application = requireActivity().applicationContext as MyTvApplication
 
@@ -162,20 +164,63 @@ class SettingFragment : DialogFragment() {
         return binding.root
     }
 
-    fun setVersionName(versionName: String) {
-        if (_binding != null) {
-            binding.versionName.text = versionName
+    private fun requestInstallPermissions() {
+        val context = requireContext()
+        val permissionsList: MutableList<String> = ArrayList()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.packageManager.canRequestPackageInstalls()) {
+            permissionsList.add(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+
+        if (permissionsList.isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                permissionsList.toTypedArray<String>(),
+                PERMISSIONS_REQUEST_CODE
+            )
+        } else {
+            UpdateManager(context, context.appVersionCode).checkAndUpdate()
         }
     }
 
-    internal class OnClickListenerCheckVersion(
-        private val mainActivity: MainActivity,
-        private val updateManager: UpdateManager
-    ) :
-        View.OnClickListener {
-        override fun onClick(view: View?) {
-            mainActivity.settingDelayHide()
-            updateManager.checkAndUpdate()
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            var allPermissionsGranted = true
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false
+                    break
+                }
+            }
+            if (allPermissionsGranted) {
+                val context = requireContext()
+                UpdateManager(context, context.appVersionCode).checkAndUpdate()
+            } else {
+                Toast.makeText(context, "权限授权失败", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -186,6 +231,7 @@ class SettingFragment : DialogFragment() {
 
     companion object {
         const val TAG = "SettingFragment"
+        const val PERMISSIONS_REQUEST_CODE = 1
     }
 }
 
