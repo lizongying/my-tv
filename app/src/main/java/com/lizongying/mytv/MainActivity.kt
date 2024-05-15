@@ -22,7 +22,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-
+import kotlin.system.exitProcess
 
 class MainActivity : FragmentActivity(), Request.RequestListener {
 
@@ -340,7 +340,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         }
 
         if (doubleBackToExitPressedOnce) {
-            super.onBackPressed()
+             exitProcess(0)
             return
         }
 
