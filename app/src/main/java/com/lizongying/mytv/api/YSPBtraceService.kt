@@ -87,8 +87,8 @@ interface YSPBtraceService {
         "referer: https://www.yangshipin.cn/",
     )
     fun kvcollect3(
-        @Field("BossId") BossId: String = "9141",
-        @Field("Pwd") Pwd: String = "1137850982",
+        @Field("BossId") BossId: String = "9150",
+        @Field("Pwd") Pwd: String = "1999332929",
         @Field("prog") prog: String = "", //
         @Field("playno") playno: String = "", //
         @Field("guid") guid: String = "", //
@@ -102,7 +102,7 @@ interface YSPBtraceService {
         @Field("firstreport") firstreport: String = "-",
         @Field("sUrl") sUrl: String = "", //
         @Field("sRef") sRef: String = "-",
-        @Field("fplayerver") fplayerver: String = "100",
+        @Field("fplayerver") fplayerver: String = "180",
         @Field("livepid") livepid: String = "",
         @Field("viewid") viewid: String = "",
         @Field("seq") seq: String = "",
@@ -118,8 +118,8 @@ interface YSPBtraceService {
         @Field("_dc") _dc: String = "",
         @Field("live_type") live_type: String = "-",
         @Field("ftime") ftime: String = "",
-        @Field("url") url: String = "",
-        @Field("rand_str") rand_str: String = "", //
-        @Field("signature") signature: String = "",
+//        @Field("url") url: String = "",
+//        @Field("rand_str") rand_str: String = "", //
+//        @Field("signature") signature: String = "",
     ): Call<Void>
 }

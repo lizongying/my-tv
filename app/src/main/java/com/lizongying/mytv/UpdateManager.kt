@@ -64,7 +64,6 @@ class UpdateManager(
     private fun startDownload(release: ReleaseResponse) {
         val apkName = "my-tv"
         val apkFileName = "$apkName-${release.version_name}.apk"
-        Log.i(TAG, "apkFileName $apkFileName")
         val downloadManager =
             context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request =

@@ -13,12 +13,12 @@ object SP {
     // If use channel num to select channel or not
     private const val KEY_CHANNEL_NUM = "channel_num"
 
-    private const val KEY_TIME = "time"
+    const val KEY_TIME = "time"
 
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
 
-    private const val KEY_GRID = "grid"
+    const val KEY_GRID = "grid"
 
     // Position in list of the selected channel item
     private const val KEY_POSITION = "position"
@@ -28,11 +28,17 @@ object SP {
 
     private lateinit var sp: SharedPreferences
 
+    private var listener: OnSharedPreferenceChangeListener? = null
+
     /**
      * The method must be invoked as early as possible(At least before using the keys)
      */
     fun init(context: Context) {
         sp = context.getSharedPreferences(SP_FILE_NAME, Context.MODE_PRIVATE)
+    }
+
+    fun setOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        this.listener = listener
     }
 
     var channelReversal: Boolean
@@ -53,7 +59,12 @@ object SP {
 
     var grid: Boolean
         get() = sp.getBoolean(KEY_GRID, false)
-        set(value) = sp.edit().putBoolean(KEY_GRID, value).apply()
+        set(value) {
+            if (value != this.grid) {
+                sp.edit().putBoolean(KEY_GRID, value).apply()
+                listener?.onSharedPreferenceChanged(KEY_GRID)
+            }
+        }
 
     var itemPosition: Int
         get() = sp.getInt(KEY_POSITION, 0)

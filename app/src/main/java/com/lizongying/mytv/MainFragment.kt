@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -133,6 +134,21 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
                 itemBinding.row.setOnClickListener {
                     hideSelf()
                 }
+
+                itemBinding.items.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+                    override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                        hideSelf()
+                        return false
+                    }
+
+                    override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                        TODO("Not yet implemented")
+                    }
+                })
 
                 val layoutParamsHeader =
                     itemBinding.header.layoutParams as ViewGroup.MarginLayoutParams

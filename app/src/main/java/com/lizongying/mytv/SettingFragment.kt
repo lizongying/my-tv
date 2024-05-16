@@ -161,6 +161,8 @@ class SettingFragment : DialogFragment() {
             requireActivity().finishAffinity()
         }
 
+        updateManager = UpdateManager(context, context.appVersionCode)
+
         return binding.root
     }
 
@@ -197,7 +199,7 @@ class SettingFragment : DialogFragment() {
                 PERMISSIONS_REQUEST_CODE
             )
         } else {
-            UpdateManager(context, context.appVersionCode).checkAndUpdate()
+            updateManager.checkAndUpdate()
         }
     }
 
@@ -216,8 +218,7 @@ class SettingFragment : DialogFragment() {
                 }
             }
             if (allPermissionsGranted) {
-                val context = requireContext()
-                UpdateManager(context, context.appVersionCode).checkAndUpdate()
+                updateManager.checkAndUpdate()
             } else {
                 Toast.makeText(context, "权限授权失败", Toast.LENGTH_LONG).show()
             }

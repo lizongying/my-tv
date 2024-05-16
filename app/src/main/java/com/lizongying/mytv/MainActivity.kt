@@ -25,7 +25,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
-class MainActivity : FragmentActivity(), Request.RequestListener {
+class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPreferenceChangeListener {
 
     private var ready = 0
     private val playerFragment = PlayerFragment()
@@ -122,6 +122,8 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 //            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
 //            ready++
 //        }
+
+        SP.setOnSharedPreferenceChangeListener(this)
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
@@ -358,8 +360,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val hideSetting = Runnable {
         if (settingFragment.isVisible) {
             settingFragment.dismiss()
-            showTime()
-            mainFragment.changeMenu()
         }
     }
 
@@ -499,7 +499,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             }
 
             KeyEvent.KEYCODE_UNKNOWN -> {
-                showSetting()
+//                showSetting()
                 return true
             }
 
@@ -611,5 +611,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     private companion object {
         const val TAG = "MainActivity"
+    }
+
+    override fun onSharedPreferenceChanged(key: String) {
+        Log.i(TAG, "$key changed")
+        when (key) {
+            SP.KEY_GRID -> mainFragment.changeMenu()
+            SP.KEY_TIME -> showTime()
+        }
     }
 }

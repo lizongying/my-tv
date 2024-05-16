@@ -700,7 +700,7 @@ object Request {
             seq = tvModel.seq,
             durl = url,
             url = url,
-            _dc = randomNumber,
+//            _dc = "",
         )
 
         val e =
@@ -732,7 +732,7 @@ object Request {
         val guid = YSP.getGuid()
         val pid = tvModel.getTV().pid
         val sid = tvModel.getTV().sid
-        val randomNumber = Random.nextDouble()
+//        val randomNumber = Random.nextDouble()
         val url = tvModel.getTV().videoUrl.first()
 
         val r = KvcollectRequest2(
@@ -747,12 +747,12 @@ object Request {
             seq = tvModel.seq,
             durl = url,
             url = url,
-            _dc = randomNumber,
+            _dc = "",
         )
 
-        val e =
-            "BossId=${r.BossId}&Pwd=${r.Pwd}&_dc=${r._dc}&cdn=${r.cdn}&cmd=${r.cmd}&defn=${r.defn}&downspeed=${r.downspeed}&durl=${r.durl}&errcode=${r.errcode}&fact1=${r.fact1}&firstreport=${r.firstreport}&fplayerver=${r.fplayerver}&ftime=${r.ftime}&geturltime=${r.geturltime}&guid=${r.guid}&hc_openid=${r.hc_openid}&hh_ua=${r.hh_ua}&live_type=${r.live_type}&livepid=${r.livepid}&login_type=${r.login_type}&open_id=${r.open_id}&openid=${r.openid}&platform=${r.platform}&playno=${r.playno}&prd=${r.prd}&prog=${r.prog}&rand_str=${r.rand_str}&sRef=${r.sRef}&sUrl=${r.sUrl}&sdtfrom=${r.sdtfrom}&seq=${r.seq}&url=${r.url}&viewid=${r.viewid}"
-        r.signature = YSP.getAuthSignature(e)
+//        val e =
+//            "BossId=${r.BossId}&Pwd=${r.Pwd}&_dc=${r._dc}&cdn=${r.cdn}&cmd=${r.cmd}&defn=${r.defn}&downspeed=${r.downspeed}&durl=${r.durl}&errcode=${r.errcode}&fact1=${r.fact1}&firstreport=${r.firstreport}&fplayerver=${r.fplayerver}&ftime=${r.ftime}&geturltime=${r.geturltime}&guid=${r.guid}&hc_openid=${r.hc_openid}&hh_ua=${r.hh_ua}&live_type=${r.live_type}&livepid=${r.livepid}&login_type=${r.login_type}&open_id=${r.open_id}&openid=${r.openid}&platform=${r.platform}&playno=${r.playno}&prd=${r.prd}&prog=${r.prog}&rand_str=${r.rand_str}&sRef=${r.sRef}&sUrl=${r.sUrl}&sdtfrom=${r.sdtfrom}&seq=${r.seq}&url=${r.url}&viewid=${r.viewid}"
+//        r.signature = YSP.getAuthSignature(e)
 
         callBtracePage = yspBtraceService3.kvcollect3(
             guid = r.guid,
@@ -761,18 +761,18 @@ object Request {
             livepid = r.livepid,
             sUrl = r.sUrl,
             playno = r.playno,
-            rand_str = r.rand_str,
+//            rand_str = r.rand_str,
             ftime = r.ftime,
             seq = "${r.seq}",
             durl = r.durl,
-            url = r.url,
+//            url = r.url,
             _dc = "${r._dc}",
-            signature = r.signature
+//            signature = r.signature
         )
         callBtracePage?.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(TAG, "$title kvcollect success")
+                    Log.i(TAG, "$title kvcollect success")
                 } else {
                     Log.e(TAG, "$title kvcollect status error")
                 }

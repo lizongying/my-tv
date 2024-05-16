@@ -15,6 +15,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -52,10 +53,16 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
 
         playerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
+            @OptIn(UnstableApi::class)
             override fun onGlobalLayout() {
                 playerView!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+//                val renderersFactory = context?.let { DefaultRenderersFactory(it) }
+//                renderersFactory?.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+
                 playerView!!.player = activity?.let {
                     ExoPlayer.Builder(it)
+//                        .setRenderersFactory(renderersFactory!!)
                         .build()
                 }
                 playerView!!.player?.playWhenReady = true

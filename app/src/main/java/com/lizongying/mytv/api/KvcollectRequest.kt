@@ -1,17 +1,17 @@
 package com.lizongying.mytv.api
 
 data class KvcollectRequest(
-    val BossId: Int = 2727,
-    val Pwd: Int = 1424084450,
+    val BossId: Int = 99150,
+    val Pwd: Int = 1999332929,
     val cdn: String = "waibao",
     val cmd: Int = 263,
     val defn: String = "fhd",
-    val downspeed: Double = 10.0,
+    val downspeed: Int = 10,
     val durl: String = "", //
     val errcode: String = "",
     val fact1: String = "ysp_pc_live_b",
     val firstreport: Int = 0,
-    val fplayerver: String = "100",
+    val fplayerver: String = "180",
     val ftime: String = "", //
     val geturltime: Int = 0,
     val guid: String = "", //
@@ -39,17 +39,17 @@ data class KvcollectRequest(
 
 
 data class KvcollectRequest2(
-    val BossId: Int = 2727,
-    val Pwd: Int = 1424084450,
+    val BossId: Int = 99150,
+    val Pwd: Int = 1999332929,
     val cdn: String = "waibao",
     val cmd: Int = 263,
     val defn: String = "fhd",
-    val downspeed: String = "10",
+    val downspeed: Int = 10,
     val durl: String = "", //
     val errcode: String = "",
     val fact1: String = "ysp_pc_live_b",
     val firstreport: Int = 0,
-    val fplayerver: String = "100",
+    val fplayerver: String = "180",
     val ftime: String = "", //
     val geturltime: Int = 0,
     val guid: String = "", //
@@ -68,9 +68,9 @@ data class KvcollectRequest2(
     val sRef: String = "",
     val sUrl: String = "", //
     val sdtfrom: String = "ysp_pc_01",
-    val seq: Int = 9, //
+    val seq: Int = 0, //
     var signature: String = "",
     val url: String = "", //
     val viewid: String = "", //
-    val _dc: Double = 0.0,
+    val _dc: String = "",
 )
