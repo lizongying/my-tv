@@ -2,6 +2,7 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -43,10 +44,13 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     private lateinit var application: MyTvApplication
 
+    private lateinit var gestureDetector: GestureDetector
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        var context = requireContext()
         _binding = MenuBinding.inflate(inflater, container, false)
 
         application = requireActivity().applicationContext as MyTvApplication
@@ -58,7 +62,17 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
             hideSelf()
         }
 
+        gestureDetector = GestureDetector(context, GestureListener())
+
         return binding.root
+    }
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            Log.i(TAG, "onSingleTapConfirmed")
+            hideSelf()
+            return true
+        }
     }
 
     private fun hideSelf() {
@@ -137,7 +151,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
                 itemBinding.items.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
                     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                        hideSelf()
+                        gestureDetector.onTouchEvent(e)
                         return false
                     }
 

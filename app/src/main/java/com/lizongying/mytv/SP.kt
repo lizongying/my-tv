@@ -51,7 +51,12 @@ object SP {
 
     var time: Boolean
         get() = sp.getBoolean(KEY_TIME, true)
-        set(value) = sp.edit().putBoolean(KEY_TIME, value).apply()
+        set(value) {
+            if (value != this.time) {
+                sp.edit().putBoolean(KEY_TIME, value).apply()
+                listener?.onSharedPreferenceChanged(KEY_TIME)
+            }
+        }
 
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)
