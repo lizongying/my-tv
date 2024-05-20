@@ -37,6 +37,13 @@ jobs:
           # override default build-tools version (29.0.3) -- optional
           BUILD_TOOLS_VERSION: "34.0.0"
 
+      - name: Get History
+        id: get_history
+        run: |
+          chmod +x history.sh
+          output=$(./history.sh)
+          echo "$output" > history.md
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -47,6 +54,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+          body_path: history.md
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -57,3 +65,18 @@ jobs:
           asset_path: ${{ steps.sign_app.outputs.signedReleaseFile }}
           asset_name: my-tv-${{ github.ref_name }}.apk
           asset_content_type: application/vnd.android.package-archive
+
+      - name: Gitee Create Release
+        run: |
+          latest_commit=$(git rev-parse HEAD)
+          history=$(cat history.md)
+          curl -v POST https://gitee.com/api/v5/repos/${{ github.repository }}/releases \
+          -H "Content-Type: application/json" \
+          -d '{
+            "access_token": "${{ secrets.GITEE_ACCESS_TOKEN}}",
+            "tag_name": "${{ github.ref_name }}",
+            "name": "Release ${{ github.ref_name }}",
+            "body": "'"$history"'",
+            "prerelease": false,
+            "target_commitish": "'"$latest_commit"'"
+          }'

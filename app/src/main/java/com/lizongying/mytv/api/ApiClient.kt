@@ -24,6 +24,7 @@ class ApiClient {
     private val protoUrl = "https://capi.yangshipin.cn/"
     private val traceUrl = "https://btrace.yangshipin.cn/"
     private val trace2Url = "https://aatc-api.yangshipin.cn/"
+    private val tokenUrl = "https://h5access.yangshipin.cn/"
     private val trace3Url = "https://dtrace.ysp.cctv.cn/"
     private val jceUrl = "https://jacc.ysp.cctv.cn/"
     private val fUrl = "https://m.fengshows.com/"
@@ -76,6 +77,14 @@ class ApiClient {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(YSPBtraceService::class.java)
+    }
+
+    val yspToken2Service: YSPApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(tokenUrl)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(YSPApiService::class.java)
     }
 
     val yspBtraceService3: YSPBtraceService by lazy {
@@ -157,7 +166,7 @@ class ApiClient {
             val sslContext = SSLContext.getInstance("SSL")
             sslContext.init(null, trustAllCerts, java.security.SecureRandom())
 
-            val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress("10.0.2.2", 8888))
+//            val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress("10.0.2.2", 8888))
 
             val builder = OkHttpClient.Builder()
                 .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)

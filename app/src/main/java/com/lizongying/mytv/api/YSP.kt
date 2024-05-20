@@ -1,9 +1,11 @@
 package com.lizongying.mytv.api
 
 import android.content.Context
+import android.util.Log
 import com.lizongying.mytv.SP
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel
+import java.security.MessageDigest
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -52,6 +54,13 @@ object YSP {
 
     private var appid = "ysp_pc"
     var token = ""
+    var token2 = ""
+
+    var yspsdkinput = ""
+    var openapi_signature = ""
+
+    var nseqId = 1
+    var nrequest_id = ""
 
     private var encryptor = Encryptor()
 
@@ -75,8 +84,41 @@ object YSP {
 
         cKey =
             encryptor.encrypt(cnlid, timeStr, appVer, guid, platform)
+        randStr = getRand()
         signature = getSignature()
         return """{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","rand_str":"$randStr","channel":"$channel","defn":"$defn","signature":"$signature"}"""
+    }
+
+    fun getTokenData(tvModel: TVViewModel) {
+        livepid = tvModel.getTV().pid
+        cnlid = tvModel.getTV().sid
+        defn = "fhd"
+
+        randStr = getRand()
+
+        if (tvModel.retryTimes > 0) {
+            guid = newGuid()
+        }
+
+        cKey =
+            encryptor.encrypt(cnlid, timeStr, appVer, guid, platform)
+
+        Log.i(TAG,"yspsdkinput ${"""{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","channel":"$channel","defn":"$defn"}"""}" )
+
+        yspsdkinput = md("adjust=$adjust&app_version=$appVersion&appVer=$appVer&channel=$channel&cKey=$cKey&cmd=$cmd&cnlid=$cnlid&defn=$defn&devid=$devid&dtype=$dtype&encryptVer=$encryptVer&guid=$guid&livepid=$livepid&otype=$otype&platform=$platform&sphttps=$sphttps&stream=$stream")
+
+        nseqId++
+
+        nrequest_id =  "999999" + getRand() + getTimeStr()
+
+        openapi_signature = md("yspappid:519748109;host:www.yangshipin.cn;protocol:https:;token:$token2;input:$yspsdkinput-$guid-$nseqId-$nrequest_id;")
+    }
+
+    fun md(str:String):String {
+        val md = MessageDigest.getInstance("MD5")
+        md.update(str.toByteArray())
+        val digest = md.digest()
+        return digest.let { it -> it.joinToString("") { "%02x".format(it) } }
     }
 
     fun getAuthData(tvModel: TVViewModel): String {
@@ -92,7 +134,7 @@ object YSP {
         return """pid=$livepid&guid=$guid&appid=$appid&rand_str=$randStr&signature=$signature"""
     }
 
-    private fun getTimeStr(): String {
+    fun getTimeStr(): String {
         return getDateTimestamp().toString()
     }
 

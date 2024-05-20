@@ -50,7 +50,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        var context = requireContext()
+        val context = requireContext()
         _binding = MenuBinding.inflate(inflater, container, false)
 
         application = requireActivity().applicationContext as MyTvApplication
