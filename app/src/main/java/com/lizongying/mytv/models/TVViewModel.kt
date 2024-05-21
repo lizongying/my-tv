@@ -15,7 +15,7 @@ class TVViewModel(private var tv: TV) : ViewModel() {
     private var itemPosition: Int = 0
 
     var retryTimes = 0
-    var retryMaxTimes = 1
+    var retryMaxTimes = 8
     var authYSPRetryTimes = 0
     var authYSPRetryMaxTimes = 3
     var tokenYSPRetryTimes = 0

@@ -34,7 +34,7 @@ class CardAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val binding = CardBinding.inflate(inflater, parent, false)
 
-        val application = mainFragment.requireActivity().applicationContext as MyTvApplication
+        val application = mainFragment.requireActivity().applicationContext as MyTVApplication
 
         binding.card.layoutParams.width = application.px2Px(binding.card.layoutParams.width)
         binding.card.layoutParams.height = application.px2Px(binding.card.layoutParams.height)

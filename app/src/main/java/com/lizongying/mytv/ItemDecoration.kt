@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private var application: MyTvApplication
+    private var application: MyTVApplication
 
     init {
-        application = context.applicationContext as MyTvApplication
+        application = context.applicationContext as MyTVApplication
     }
 
     override fun getItemOffsets(

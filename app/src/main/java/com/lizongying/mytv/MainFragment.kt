@@ -42,7 +42,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
 
     private var lastVideoUrl = ""
 
-    private lateinit var application: MyTvApplication
+    private lateinit var application: MyTVApplication
 
     private lateinit var gestureDetector: GestureDetector
 
@@ -53,7 +53,7 @@ class MainFragment : Fragment(), CardAdapter.ItemListener {
         val context = requireContext()
         _binding = MenuBinding.inflate(inflater, container, false)
 
-        application = requireActivity().applicationContext as MyTvApplication
+        application = requireActivity().applicationContext as MyTVApplication
 
         binding.menu.layoutParams.width = application.shouldWidthPx()
         binding.menu.layoutParams.height = application.shouldHeightPx()

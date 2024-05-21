@@ -1,7 +1,6 @@
 package com.lizongying.mytv.api
 
 import android.content.Context
-import android.util.Log
 import com.lizongying.mytv.SP
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel
@@ -103,18 +102,18 @@ object YSP {
         cKey =
             encryptor.encrypt(cnlid, timeStr, appVer, guid, platform)
 
-        Log.i(TAG,"yspsdkinput ${"""{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","channel":"$channel","defn":"$defn"}"""}" )
-
-        yspsdkinput = md("adjust=$adjust&app_version=$appVersion&appVer=$appVer&channel=$channel&cKey=$cKey&cmd=$cmd&cnlid=$cnlid&defn=$defn&devid=$devid&dtype=$dtype&encryptVer=$encryptVer&guid=$guid&livepid=$livepid&otype=$otype&platform=$platform&sphttps=$sphttps&stream=$stream")
+        yspsdkinput =
+            md("adjust=$adjust&app_version=$appVersion&appVer=$appVer&channel=$channel&cKey=$cKey&cmd=$cmd&cnlid=$cnlid&defn=$defn&devid=$devid&dtype=$dtype&encryptVer=$encryptVer&guid=$guid&livepid=$livepid&otype=$otype&platform=$platform&sphttps=$sphttps&stream=$stream")
 
         nseqId++
 
-        nrequest_id =  "999999" + getRand() + getTimeStr()
+        nrequest_id = "999999" + getRand() + getTimeStr()
 
-        openapi_signature = md("yspappid:519748109;host:www.yangshipin.cn;protocol:https:;token:$token2;input:$yspsdkinput-$guid-$nseqId-$nrequest_id;")
+        openapi_signature =
+            md("yspappid:519748109;host:www.yangshipin.cn;protocol:https:;token:$token2;input:$yspsdkinput-$guid-$nseqId-$nrequest_id;")
     }
 
-    fun md(str:String):String {
+    fun md(str: String): String {
         val md = MessageDigest.getInstance("MD5")
         md.update(str.toByteArray())
         val digest = md.digest()
@@ -148,6 +147,7 @@ object YSP {
         var guid = SP.guid
         if (guid.length < 18) {
             guid = generateGuid()
+            this.guid = guid
             SP.guid = guid
         }
         return guid

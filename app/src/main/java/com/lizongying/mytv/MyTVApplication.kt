@@ -8,7 +8,7 @@ import android.view.WindowManager
 import androidx.multidex.MultiDex
 
 
-class MyTvApplication : Application() {
+class MyTVApplication : Application() {
     private lateinit var displayMetrics: DisplayMetrics
     private lateinit var realDisplayMetrics: DisplayMetrics
 

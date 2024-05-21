@@ -24,7 +24,7 @@ class TimeFragment : Fragment() {
     ): View {
         _binding = TimeBinding.inflate(inflater, container, false)
 
-        val application = requireActivity().applicationContext as MyTvApplication
+        val application = requireActivity().applicationContext as MyTVApplication
 
         binding.time.layoutParams.width = application.px2Px(binding.time.layoutParams.width)
         binding.time.layoutParams.height = application.px2Px(binding.time.layoutParams.height)

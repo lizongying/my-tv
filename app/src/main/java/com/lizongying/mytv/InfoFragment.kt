@@ -29,7 +29,7 @@ class InfoFragment : Fragment() {
     ): View {
         _binding = InfoBinding.inflate(inflater, container, false)
 
-        val application = requireActivity().applicationContext as MyTvApplication
+        val application = requireActivity().applicationContext as MyTVApplication
 
         binding.info.layoutParams.width = application.px2Px(binding.info.layoutParams.width)
         binding.info.layoutParams.height = application.px2Px(binding.info.layoutParams.height)

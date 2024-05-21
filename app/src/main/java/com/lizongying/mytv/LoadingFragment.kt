@@ -17,7 +17,7 @@ class LoadingFragment : Fragment() {
     ): View {
         _binding = LoadingBinding.inflate(inflater, container, false)
 
-        val application = requireActivity().applicationContext as MyTvApplication
+        val application = requireActivity().applicationContext as MyTVApplication
 
         binding.bar.layoutParams.width = application.px2Px(binding.bar.layoutParams.width)
         binding.bar.layoutParams.height = application.px2Px(binding.bar.layoutParams.height)

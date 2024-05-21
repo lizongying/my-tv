@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -50,7 +51,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
         Utils.setRequestListener(this)
     }
 
-    private fun syncTime() {
+    fun syncTime() {
         lifecycleScope.launch(Dispatchers.IO) {
             val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
             utilsJob.start()
@@ -59,15 +60,23 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        Request.setRequestListener(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val lp = window.attributes
             lp.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             window.setAttributes(lp)
+        }
+
+
+        window.decorView.apply {
+            systemUiVisibility =
+                SYSTEM_UI_FLAG_FULLSCREEN or
+                        SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                        SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                        View.SYSTEM_UI_FLAG_IMMERSIVE
         }
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -81,6 +90,10 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
 //            window.statusBarColor = Color.TRANSPARENT
 //            window.navigationBarColor = Color.TRANSPARENT
 //        }
+
+        setContentView(R.layout.activity_main)
+
+        Request.setRequestListener(this)
 
         if (savedInstanceState == null) {
             val transaction = supportFragmentManager.beginTransaction()

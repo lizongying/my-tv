@@ -56,6 +56,13 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <Button
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/clear"
+                />
+            <Button
                 android:id="@+id/exit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

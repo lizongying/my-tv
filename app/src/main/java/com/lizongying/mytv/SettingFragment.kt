@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.DialogFragment
+import com.lizongying.mytv.api.YSP
 import com.lizongying.mytv.databinding.SettingBinding
 
 
@@ -97,7 +98,14 @@ class SettingFragment : DialogFragment() {
             requestInstallPermissions()
         }
 
-        val application = requireActivity().applicationContext as MyTvApplication
+        binding.clear.setOnClickListener {
+            (requireActivity() as MainActivity).syncTime()
+            SP.guid = ""
+            YSP.getGuid()
+        }
+
+        val application = requireActivity().applicationContext as MyTVApplication
+        val textSize = application.px2PxFont(binding.switchChannelReversal.textSize)
 
         binding.content.layoutParams.width =
             application.px2Px(binding.content.layoutParams.width)
@@ -108,51 +116,41 @@ class SettingFragment : DialogFragment() {
             application.px2Px(binding.content.paddingBottom)
         )
         binding.name.textSize = application.px2PxFont(binding.name.textSize)
-        binding.version.textSize = application.px2PxFont(binding.version.textSize)
+        binding.version.textSize = textSize
         val layoutParamsVersion = binding.version.layoutParams as ViewGroup.MarginLayoutParams
         layoutParamsVersion.topMargin = application.px2Px(binding.version.marginTop)
         binding.version.layoutParams = layoutParamsVersion
 
-        binding.checkVersion.textSize = application.px2PxFont(binding.checkVersion.textSize)
+        binding.checkVersion.textSize = textSize
         val layoutParamsCheckVersion =
             binding.checkVersion.layoutParams as ViewGroup.MarginLayoutParams
         layoutParamsCheckVersion.marginEnd = application.px2Px(binding.checkVersion.marginEnd)
         binding.checkVersion.layoutParams = layoutParamsCheckVersion
 
-        binding.versionName.textSize = application.px2PxFont(binding.versionName.textSize)
+        binding.versionName.textSize = textSize
 
-        binding.exit.textSize = application.px2PxFont(binding.exit.textSize)
+        binding.clear.textSize = textSize
+        binding.exit.textSize = textSize
 
-        binding.switchChannelReversal.textSize =
-            application.px2PxFont(binding.switchChannelReversal.textSize)
-        val layoutParamsChannelReversal =
+        val layoutParamsChannelSwitch =
             binding.switchChannelReversal.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsChannelReversal.topMargin =
+        layoutParamsChannelSwitch.topMargin =
             application.px2Px(binding.switchChannelReversal.marginTop)
-        binding.switchChannelReversal.layoutParams = layoutParamsChannelReversal
 
-        binding.switchChannelNum.textSize = application.px2PxFont(binding.switchChannelNum.textSize)
-        val layoutParamsChannelNum =
-            binding.switchChannelNum.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsChannelNum.topMargin = application.px2Px(binding.switchChannelNum.marginTop)
-        binding.switchChannelNum.layoutParams = layoutParamsChannelNum
+        binding.switchChannelReversal.textSize = textSize
+        binding.switchChannelReversal.layoutParams = layoutParamsChannelSwitch
 
-        binding.switchTime.textSize = application.px2PxFont(binding.switchTime.textSize)
-        val layoutParamsTime = binding.switchTime.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsTime.topMargin = application.px2Px(binding.switchTime.marginTop)
-        binding.switchTime.layoutParams = layoutParamsTime
+        binding.switchChannelNum.textSize = textSize
+        binding.switchChannelNum.layoutParams = layoutParamsChannelSwitch
 
-        binding.switchBootStartup.textSize =
-            application.px2PxFont(binding.switchBootStartup.textSize)
-        val layoutParamsBootStartup =
-            binding.switchBootStartup.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsBootStartup.topMargin = application.px2Px(binding.switchBootStartup.marginTop)
-        binding.switchBootStartup.layoutParams = layoutParamsBootStartup
+        binding.switchTime.textSize = textSize
+        binding.switchTime.layoutParams = layoutParamsChannelSwitch
 
-        binding.switchGrid.textSize = application.px2PxFont(binding.switchGrid.textSize)
-        val layoutParamsGrid = binding.switchGrid.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParamsGrid.topMargin = application.px2Px(binding.switchGrid.marginTop)
-        binding.switchGrid.layoutParams = layoutParamsGrid
+        binding.switchBootStartup.textSize = textSize
+        binding.switchBootStartup.layoutParams = layoutParamsChannelSwitch
+
+        binding.switchGrid.textSize = textSize
+        binding.switchGrid.layoutParams = layoutParamsChannelSwitch
 
         binding.appreciate.layoutParams.width =
             application.px2Px(binding.appreciate.layoutParams.width)

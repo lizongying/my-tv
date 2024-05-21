@@ -28,7 +28,7 @@ class ChannelFragment : Fragment() {
         _binding = ChannelBinding.inflate(inflater, container, false)
         _binding!!.root.visibility = View.GONE
 
-        val application = requireActivity().applicationContext as MyTvApplication
+        val application = requireActivity().applicationContext as MyTVApplication
 
         binding.channel.layoutParams.width = application.px2Px(binding.channel.layoutParams.width)
         binding.channel.layoutParams.height = application.px2Px(binding.channel.layoutParams.height)

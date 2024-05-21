@@ -19,7 +19,7 @@ class ErrorFragment : Fragment() {
     ): View {
         _binding = ErrorBinding.inflate(inflater, container, false)
 
-        val application = requireActivity().applicationContext as MyTvApplication
+        val application = requireActivity().applicationContext as MyTVApplication
 
         binding.logo.layoutParams.width = application.px2Px(binding.logo.layoutParams.width)
         binding.logo.layoutParams.height = application.px2Px(binding.logo.layoutParams.height)
