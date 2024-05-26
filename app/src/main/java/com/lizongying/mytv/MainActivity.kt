@@ -45,7 +45,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
 
     private val handler = Handler()
     private val delayHideMain: Long = 10000
-    private val delayHideSetting: Long = 10000
+    private val delayHideSetting: Long = 15000
 
     init {
         Utils.setRequestListener(this)

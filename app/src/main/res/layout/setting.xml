@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/setting"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        >
         <LinearLayout
             android:id="@+id/content"
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:background="@drawable/rounded_dark_left"
@@ -105,11 +109,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-        <ImageView
-            android:id="@+id/appreciate"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/appreciate"
-            android:background="@drawable/rounded_white_right" />
-    </LinearLayout>
-</FrameLayout>
+    </ScrollView>
+    <ImageView
+        android:id="@+id/appreciate"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/appreciate"
+        android:background="@drawable/rounded_white_right" />
+</LinearLayout>
