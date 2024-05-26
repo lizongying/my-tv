@@ -116,7 +116,9 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
     // Gson 2.10.1 and older: API level 19
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit2_version") {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
     implementation "com.squareup.retrofit2:converter-protobuf:$retrofit2_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
 
