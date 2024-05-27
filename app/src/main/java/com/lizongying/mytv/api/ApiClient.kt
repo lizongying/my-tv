@@ -3,6 +3,7 @@ package com.lizongying.mytv.api
 
 import android.os.Build
 import android.util.Log
+import com.google.gson.Gson
 import com.lizongying.mytv.jce.JceConverterFactory
 import com.lizongying.mytv.requests.ReleaseService
 import okhttp3.ConnectionSpec
@@ -11,8 +12,6 @@ import okhttp3.TlsVersion
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.protobuf.ProtoConverterFactory
-import java.net.InetSocketAddress
-import java.net.Proxy
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
@@ -30,12 +29,13 @@ class ApiClient {
     private val fUrl = "https://m.fengshows.com/"
 
     private var okHttpClient = getUnsafeOkHttpClient()
+    private var gson = Gson()
 
     val yspApiService: YSPApiService by lazy {
         Retrofit.Builder()
             .baseUrl(yspUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(YSPApiService::class.java)
     }
 
@@ -43,7 +43,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(myUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(YSPTokenService::class.java)
     }
 
@@ -51,7 +51,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(HOST)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(ReleaseService::class.java)
     }
 
@@ -67,7 +67,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(traceUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(YSPBtraceService::class.java)
     }
 
@@ -75,7 +75,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(trace2Url)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(YSPBtraceService::class.java)
     }
 
@@ -83,7 +83,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(tokenUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(YSPApiService::class.java)
     }
 
@@ -91,7 +91,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(trace3Url)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(YSPBtraceService::class.java)
     }
 
@@ -107,7 +107,7 @@ class ApiClient {
         Retrofit.Builder()
             .baseUrl(fUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(FAuthService::class.java)
     }
 

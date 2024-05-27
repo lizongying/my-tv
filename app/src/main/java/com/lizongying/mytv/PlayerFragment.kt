@@ -3,8 +3,6 @@ package com.lizongying.mytv
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -15,25 +13,18 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.lizongying.mytv.databinding.PlayerBinding
 import com.lizongying.mytv.models.TVViewModel
 
 
-class PlayerFragment : Fragment(), SurfaceHolder.Callback {
+class PlayerFragment : Fragment() {
 
     private var _binding: PlayerBinding? = null
     private var playerView: PlayerView? = null
     private var tvViewModel: TVViewModel? = null
     private val aspectRatio = 16f / 9f
-
-
-    private lateinit var surfaceView: SurfaceView
-    private lateinit var surfaceHolder: SurfaceHolder
-    private var exoPlayer: SimpleExoPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,15 +32,7 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
     ): View {
         _binding = PlayerBinding.inflate(inflater, container, false)
 
-        if (Utils.isTmallDevice()) {
-            _binding!!.playerView.visibility = View.GONE
-            surfaceView = _binding!!.surfaceView
-            surfaceHolder = surfaceView.holder
-            surfaceHolder.addCallback(this)
-        } else {
-            _binding!!.surfaceView.visibility = View.GONE
-            playerView = _binding!!.playerView
-        }
+        playerView = _binding!!.playerView
 
         playerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
@@ -111,10 +94,6 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
             setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
             prepare()
         }
-        exoPlayer?.run {
-            setMediaItem(com.google.android.exoplayer2.MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
-            prepare()
-        }
     }
 
     override fun onStart() {
@@ -124,11 +103,6 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
             Log.i(TAG, "replay")
             playerView!!.player?.prepare()
             playerView!!.player?.play()
-        }
-        if (exoPlayer?.isPlaying == false) {
-            Log.i(TAG, "replay")
-            exoPlayer?.prepare()
-            exoPlayer?.play()
         }
     }
 
@@ -142,9 +116,6 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
         if (playerView != null && playerView!!.player?.isPlaying == true) {
             playerView!!.player?.stop()
         }
-        if (exoPlayer?.isPlaying == true) {
-            exoPlayer?.stop()
-        }
     }
 
     override fun onDestroy() {
@@ -152,7 +123,6 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
         if (playerView != null) {
             playerView!!.player?.release()
         }
-        exoPlayer?.release()
     }
 
     override fun onDestroyView() {
@@ -162,17 +132,5 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
 
     companion object {
         private const val TAG = "PlayerFragment"
-    }
-
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        exoPlayer = SimpleExoPlayer.Builder(requireContext()).build()
-        exoPlayer?.setVideoSurfaceHolder(surfaceHolder)
-        exoPlayer?.playWhenReady = true
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
     }
 }
