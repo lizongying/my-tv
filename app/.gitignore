@@ -4,3 +4,4 @@
 /CMakeFiles/
 /Makefile
 /src/main/cpp/native.c
+/src/main/cpp/aes.c

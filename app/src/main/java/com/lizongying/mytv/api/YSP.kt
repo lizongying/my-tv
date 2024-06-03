@@ -1,6 +1,7 @@
 package com.lizongying.mytv.api
 
 import android.content.Context
+import android.util.Log
 import com.lizongying.mytv.SP
 import com.lizongying.mytv.Utils.getDateTimestamp
 import com.lizongying.mytv.models.TVViewModel
@@ -57,6 +58,7 @@ object YSP {
 
     var yspsdkinput = ""
     var openapi_signature = ""
+    var yspticket = ""
 
     var nseqId = 1
     var nrequest_id = ""
@@ -85,6 +87,8 @@ object YSP {
             encryptor.encrypt(cnlid, timeStr, appVer, guid, platform)
         randStr = getRand()
         signature = getSignature()
+        yspticket = encryptor.encrypt2("$livepid&$timeStr&$guid&519748109").lowercase()
+
         return """{"cnlid":"$cnlid","livepid":"$livepid","stream":"$stream","guid":"$guid","cKey":"$cKey","adjust":$adjust,"sphttps":"$sphttps","platform":"$platform","cmd":"$cmd","encryptVer":"$encryptVer","dtype":"$dtype","devid":"$devid","otype":"$otype","appVer":"$appVer","app_version":"$appVersion","rand_str":"$randStr","channel":"$channel","defn":"$defn","signature":"$signature"}"""
     }
 

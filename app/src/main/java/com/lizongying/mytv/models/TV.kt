@@ -15,6 +15,7 @@ data class TV(
     var programType: ProgramType,
     var needToken: Boolean = false,
     var mustToken: Boolean = false,
+    var volume: Float = 0.1F,
 ) : Serializable {
 
     override fun toString(): String {

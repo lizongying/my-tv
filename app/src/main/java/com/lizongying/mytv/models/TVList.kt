@@ -21,7 +21,8 @@ object TVList {
                     "2022576801",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -34,7 +35,8 @@ object TVList {
                     "2022576701",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -47,7 +49,8 @@ object TVList {
                     "2022576501",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = true
+                    mustToken = true,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -60,7 +63,8 @@ object TVList {
                     "2022576601",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -73,7 +77,8 @@ object TVList {
                     "2022576401",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -86,7 +91,8 @@ object TVList {
                     "2013693901",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = true
+                    mustToken = true,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -99,7 +105,8 @@ object TVList {
                     "2022576201",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -112,7 +119,8 @@ object TVList {
                     "2022576101",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = true
+                    mustToken = true,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -125,7 +133,8 @@ object TVList {
                     "2022576001",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -138,7 +147,8 @@ object TVList {
                     "2022573001",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -151,7 +161,8 @@ object TVList {
                     "2022575901",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -164,7 +175,8 @@ object TVList {
                     "2022575801",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -177,7 +189,8 @@ object TVList {
                     "2022575701",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -190,7 +203,8 @@ object TVList {
                     "2022575601",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -203,7 +217,8 @@ object TVList {
                     "2022575501",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -216,7 +231,8 @@ object TVList {
                     "2022575401",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -229,7 +245,8 @@ object TVList {
                     "2022575301",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -242,7 +259,8 @@ object TVList {
                     "2022576301",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -255,7 +273,8 @@ object TVList {
                     "2022575201",
                     ProgramType.Y_PROTO,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -268,7 +287,8 @@ object TVList {
                     "2020603421",
                     ProgramType.Y_JCE,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.8F
                 ),
                 TV(
                     0,
@@ -738,7 +758,8 @@ object TVList {
                     "2019927403",
                     ProgramType.Y_JCE,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -751,7 +772,8 @@ object TVList {
                     "2022606701",
                     ProgramType.Y_JCE,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.8F
                 ),
                 TV(
                     0,
@@ -764,7 +786,8 @@ object TVList {
                     "2022823801",
                     ProgramType.Y_JCE,
                     true,
-                    mustToken = false
+                    mustToken = false,
+                    0.6F
                 ),
             ),
             "港澳台" to listOf(
@@ -779,7 +802,8 @@ object TVList {
                     "",
                     ProgramType.F,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.7F
                 ),
                 TV(
                     0,
@@ -792,7 +816,8 @@ object TVList {
                     "",
                     ProgramType.F,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.7F
                 ),
                 TV(
                     0,
@@ -805,7 +830,8 @@ object TVList {
                     "",
                     ProgramType.F,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.7F
                 ),
             ),
             "国际" to listOf(
@@ -820,7 +846,8 @@ object TVList {
                     "2022575001",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -833,7 +860,8 @@ object TVList {
                     "2022574901",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -846,7 +874,8 @@ object TVList {
                     "2022574801",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -859,7 +888,8 @@ object TVList {
                     "2022574601",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -872,7 +902,8 @@ object TVList {
                     "2022571701",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
                 TV(
                     0,
@@ -885,7 +916,8 @@ object TVList {
                     "2022574701",
                     ProgramType.Y_PROTO,
                     false,
-                    mustToken = false
+                    mustToken = false,
+                    0.5F
                 ),
             )
         )

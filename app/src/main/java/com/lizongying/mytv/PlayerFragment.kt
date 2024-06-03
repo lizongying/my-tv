@@ -93,6 +93,7 @@ class PlayerFragment : Fragment() {
         playerView?.player?.run {
             setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
             prepare()
+            volume = tvViewModel.getTV().volume
         }
     }
 

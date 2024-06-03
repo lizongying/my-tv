@@ -316,10 +316,11 @@ object Request {
         val request = LiveInfoRequest(data)
         call = request.let {
             yspApiService.getLiveInfo(
-                "guid=${YSP.getGuid()}; gr_user_id=261eecf2-0ce4-4316-a6a1-7171e3de7389; $cookie; newLogin=1; nseqId=${YSP.nseqId}; nrequest-id=${YSP.nrequest_id}",
+                "guid=${YSP.getGuid()}; gr_user_id=1; $cookie; newLogin=1; nseqId=${YSP.nseqId}; nrequest-id=${YSP.nrequest_id}",
                 YSP.token,
                 YSP.yspsdkinput,
                 YSP.openapi_signature,
+                YSP.yspticket,
                 "${YSP.nseqId}",
                 YSP.nrequest_id,
                 "519748109",

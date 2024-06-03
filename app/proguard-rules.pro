@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.google.gson.** { *; }
+-dontwarn com.google.gson.**
+
+-keep class com.google.guava.** { *; }
+-dontwarn com.google.guava.**

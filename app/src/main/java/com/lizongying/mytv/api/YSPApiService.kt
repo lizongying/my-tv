@@ -22,6 +22,7 @@ interface YSPApiService {
         @Header("Yspplayertoken") token: String,
         @Header("Yspsdkinput") Yspsdkinput: String,
         @Header("yspsdksign") yspsdksign: String,
+        @Header("Yspticket") Yspticket: String,
         @Header("Seqid") Seqid: String,
         @Header("Request-Id") RequestId: String,
         @Header("Yspappid") Yspappid: String="519748109",

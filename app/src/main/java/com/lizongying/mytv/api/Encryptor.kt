@@ -7,6 +7,8 @@ class Encryptor {
 
     external fun encrypt(t: String, e: String, r: String, n: String, i: String): String
 
+    external fun encrypt2(t: String): String
+
     external fun hash(data: ByteArray): ByteArray?
 
     external fun hash2(data: ByteArray): ByteArray?

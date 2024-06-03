@@ -98,6 +98,10 @@ static def VersionName() {
     }
 }
 
+def gson_version = "2.10.1"
+def failureaccess_version = "1.0.2"
+def guava_version = "33.2.1-android"
+
 dependencies {
 
 //    minSdk17
@@ -106,11 +110,13 @@ dependencies {
     implementation "androidx.media3:media3-ui:$media3_version"
 
     // For media playback using ExoPlayer
-    implementation ("com.google.guava:guava:31.1-android")
-    implementation ("androidx.media3:media3-common:$media3_version") {
-        exclude group: 'com.google.common', module: 'guava'
+    implementation("com.google.guava:failureaccess:$failureaccess_version")
+    implementation("com.google.guava:guava:$guava_version")
+    implementation("androidx.media3:media3-common:$media3_version") {
+        exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'com.google.guava', module: 'failureaccess'
     }
-    implementation ("androidx.media3:media3-exoplayer:$media3_version")
+    implementation("androidx.media3:media3-exoplayer:$media3_version")
 
     // For HLS playback support with ExoPlayer
     implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
@@ -120,7 +126,7 @@ dependencies {
 
     implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
     // Gson 2.10.1 and older: API level 19
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:$gson_version")
     implementation("com.squareup.retrofit2:converter-gson:$retrofit2_version") {
         exclude group: 'com.google.code.gson', module: 'gson'
     }
@@ -144,7 +150,19 @@ dependencies {
 
 configurations.configureEach {
     resolutionStrategy {
-        force 'com.google.code.gson:gson:2.10.1'
-        force 'com.google.guava:guava:31.1-android'
+        force("com.google.code.gson:gson:$gson_version")
+        force "com.google.guava:failureaccess:$failureaccess_version"
+        force "com.google.guava:guava:$guava_version"
+        eachDependency { details ->
+            if (details.requested.group == 'com.google.code.gson') {
+                details.useVersion "$gson_version"
+            }
+            if (details.requested.group == 'com.google.guava' && details.requested.name == 'failureaccess') {
+                details.useVersion "$failureaccess_version"
+            }
+            if (details.requested.group == 'com.google.guava' && details.requested.name == 'guava') {
+                details.useVersion "$guava_version"
+            }
+        }
     }
 }

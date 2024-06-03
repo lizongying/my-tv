@@ -21,7 +21,9 @@ if (IS_SO_BUILD)
             SHARED
 
             # Provides a relative path to your source file(s).
-            src/main/cpp/native.c)
+            src/main/cpp/native.c
+            src/main/cpp/aes.c
+    )
 
     # 设置编译输出路径
     set_target_properties(
