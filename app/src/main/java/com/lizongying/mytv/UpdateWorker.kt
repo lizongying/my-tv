@@ -123,16 +123,13 @@ class UpdateWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
         if (apkFile.exists()) {
             val apkUri: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                FileProvider.getUriForFile(context, context.packageName + ".fileprovider", apkFile)
-                    .apply {
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    }
+                FileProvider.getUriForFile(context, "${context.packageName}.provider", apkFile)
             } else {
                 Uri.parse("file://${apkFile.absolutePath}")
-//                Uri.fromFile(apkFile)
             }
-//            val apkUri = Uri.parse("file://$apkFile")
+
             Log.i(TAG, "apkUri $apkUri")
+
             val installIntent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(apkUri, "application/vnd.android.package-archive")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
