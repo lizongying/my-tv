@@ -98,71 +98,26 @@ static def VersionName() {
     }
 }
 
-def gson_version = "2.10.1"
-def failureaccess_version = "1.0.2"
-def guava_version = "33.2.1-android"
-
 dependencies {
-
-//    minSdk17
-    def media3_version = "1.2.1"
-
-    implementation "androidx.media3:media3-ui:$media3_version"
-
-    // For media playback using ExoPlayer
-    implementation("com.google.guava:failureaccess:$failureaccess_version")
-    implementation("com.google.guava:guava:$guava_version")
-    implementation("androidx.media3:media3-common:$media3_version") {
-        exclude group: 'com.google.guava', module: 'guava'
-        exclude group: 'com.google.guava', module: 'failureaccess'
-    }
-    implementation("androidx.media3:media3-exoplayer:$media3_version")
-
-    // For HLS playback support with ExoPlayer
-    implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
-
-    // 21:2.9.0 17:2.6.4
-    def retrofit2_version = "2.6.4"
-
-    implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
-    // Gson 2.10.1 and older: API level 19
-    implementation("com.google.code.gson:gson:$gson_version")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofit2_version") {
-        exclude group: 'com.google.code.gson', module: 'gson'
-    }
-    implementation "com.squareup.retrofit2:converter-protobuf:$retrofit2_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
-
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation 'androidx.core:core-ktx:1.11.0-beta02'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.leanback:leanback:1.2.0-alpha02'
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
-
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
-}
-
-configurations.configureEach {
-    resolutionStrategy {
-        force("com.google.code.gson:gson:$gson_version")
-        force "com.google.guava:failureaccess:$failureaccess_version"
-        force "com.google.guava:guava:$guava_version"
-        eachDependency { details ->
-            if (details.requested.group == 'com.google.code.gson') {
-                details.useVersion "$gson_version"
-            }
-            if (details.requested.group == 'com.google.guava' && details.requested.name == 'failureaccess') {
-                details.useVersion "$failureaccess_version"
-            }
-            if (details.requested.group == 'com.google.guava' && details.requested.name == 'guava') {
-                details.useVersion "$guava_version"
-            }
-        }
-    }
+    implementation(libs.media3.ui)
+    implementation(libs.failureaccess)
+    implementation(libs.guava)
+    implementation(libs.media3.common)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.hls)
+    implementation(libs.protobuf.kotlin)
+    implementation(libs.gson)
+    implementation(libs.converter.gson)
+    implementation(libs.converter.protobuf)
+    implementation(libs.retrofit)
+    implementation(libs.glide)
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.core.ktx)
+    implementation(libs.multidex)
+    implementation(libs.leanback)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.constraintlayout)
+    implementation(libs.serialization.json)
+    implementation(libs.coroutines.android)
+    implementation(libs.javax.annotation.api)
 }

@@ -1,0 +1,40 @@
+[versions]
+media3 = "1.2.1" # minSdk17
+gson = "2.10.1" # 2.10.1 and older: API level 19
+failureaccess = "1.0.2"
+guava = "33.2.1-android"
+retrofit = "2.6.4" # 21:2.9.0 17:2.6.4
+protobuf = "3.25.1"
+glide = "4.11.0"
+work = "2.9.0"
+core_ktx = "1.11.0-beta02"
+multidex = "2.0.1"
+leanback = "1.2.0-alpha02"
+lifecycle = "2.6.2"
+constraintlayout = "2.1.4"
+serialization = "1.6.2"
+coroutines = "1.8.0-RC"
+javax_annotation = "1.3.2"
+
+[libraries]
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
+media3-common = { module = "androidx.media3:media3-common", version.ref = "media3" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+failureaccess = { module = "com.google.guava:failureaccess", version.ref = "failureaccess" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+converter-protobuf = { module = "com.squareup.retrofit2:converter-protobuf", version.ref = "retrofit" }
+protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobuf" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "core_ktx" }
+multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+leanback = { module = "androidx.leanback:leanback", version.ref = "leanback" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+javax-annotation-api = { module = "javax.annotation:javax.annotation-api", version.ref = "javax_annotation" }
