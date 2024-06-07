@@ -31,7 +31,7 @@ class UpdateManager(
                 release = releaseRequest.getRelease()
                 val code = release?.version_code
                 if (code != null) {
-                    if (code.toLong() > versionCode) {
+                    if (code.toLong() >= versionCode) {
                         text = "最新版本：${release?.version_name}"
                         update = true
                     } else {

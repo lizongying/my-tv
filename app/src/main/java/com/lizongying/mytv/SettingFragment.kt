@@ -6,11 +6,14 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.DialogFragment
@@ -158,6 +161,21 @@ class SettingFragment : DialogFragment() {
         binding.exit.setOnClickListener {
             requireActivity().finishAffinity()
         }
+
+//        val myViewModel = application.myViewModel
+//        application.myViewModel.downloadProgress.observe(viewLifecycleOwner) { _ ->
+//            val downloadProgress = myViewModel.downloadProgress.value
+//            if (downloadProgress != null) {
+//                if (downloadProgress == 100) {
+//                    binding.progressBar.visibility = GONE
+//                } else {
+//                    if (!binding.progressBar.isVisible) {
+//                        binding.progressBar.visibility = VISIBLE
+//                    }
+//                    binding.progressBar.progress = downloadProgress
+//                }
+//            }
+//        }
 
         updateManager = UpdateManager(context, context.appVersionCode)
 

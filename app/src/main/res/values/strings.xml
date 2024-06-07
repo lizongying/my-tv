@@ -8,4 +8,5 @@
     <string name="title_time">显示时间</string>
     <string name="clear">恢复默认</string>
     <string name="exit">退出应用</string>
+    <string name="start_update">开始更新</string>
 </resources>

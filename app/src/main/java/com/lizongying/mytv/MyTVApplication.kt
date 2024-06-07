@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.multidex.MultiDex
+import com.lizongying.mytv.models.MyViewModel
 
 
 class MyTVApplication : Application() {
@@ -22,6 +25,8 @@ class MyTVApplication : Application() {
     private var ratio = 1.0
     private var density = 2.0f
     private var scale = 1.0f
+
+    lateinit var myViewModel: MyViewModel
 
     override fun onCreate() {
         super.onCreate()
@@ -60,6 +65,11 @@ class MyTVApplication : Application() {
 
         deviation = width - Resources.getSystem().displayMetrics.widthPixels
         scale = Resources.getSystem().displayMetrics.scaledDensity
+
+        myViewModel = ViewModelProvider(
+            ViewModelStore(),
+            ViewModelProvider.NewInstanceFactory()
+        )[MyViewModel::class.java]
     }
 
     fun getDisplayMetrics(): DisplayMetrics {
