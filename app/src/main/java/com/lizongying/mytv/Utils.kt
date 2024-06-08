@@ -2,6 +2,7 @@ package com.lizongying.mytv
 
 import android.content.res.Resources
 import android.os.Build
+import android.util.Log
 import android.util.TypedValue
 import com.google.gson.Gson
 import com.lizongying.mytv.api.TimeResponse
@@ -17,6 +18,10 @@ import java.util.Locale
 
 object Utils {
     private var between: Long = 0
+
+    private var a: String = ""
+    var b: String = ""
+    private var c: String = ""
 
     private var listener: Request.RequestListener? = null
 
@@ -43,6 +48,31 @@ object Utils {
             }
         } catch (e: Exception) {
             println("Failed to retrieve timestamp from server: ${e.message}")
+        }
+
+        var x = ""
+        try {
+            x = getNothing()
+        } catch (e: Exception) {
+            x = ""
+            println("a ${e.message}")
+        }
+
+        if (x != "") {
+            try {
+                x = getNothing2(x)
+            } catch (e: Exception) {
+                x = ""
+                println("b ${e.message}")
+            }
+        }
+
+        if (x != "") {
+            try {
+                getNothing3(x)
+            } catch (e: Exception) {
+                println("b ${e.message}")
+            }
         }
 
         withContext(Dispatchers.Main) {
@@ -81,6 +111,115 @@ object Utils {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
                     val string = response.body()?.string()
                     Gson().fromJson(string, TimeResponse::class.java).data.t.toLong()
+                }
+            } catch (e: IOException) {
+                throw IOException("Error during network request", e)
+            }
+        }
+    }
+
+    private val regex = Regex("""chunk-vendors\.([^.]+)\.js""")
+
+    private suspend fun getNothing(): String {
+        return withContext(Dispatchers.IO) {
+            val client = okhttp3.OkHttpClient.Builder()
+                .addInterceptor(RetryInterceptor(3))
+                .build()
+            val request = okhttp3.Request.Builder()
+                .url("https://www.yangshipin.cn")
+                .build()
+            try {
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    val string = response.body()?.string()
+
+                    val matchResult = string?.let { regex.find(it) }
+                    var x = ""
+                    if (matchResult != null) {
+                        x = matchResult.groupValues[1]
+                    }
+                    x
+                }
+            } catch (e: IOException) {
+                throw IOException("Error during network request", e)
+            }
+        }
+    }
+
+    private val regex2 = Regex(""""ysp_tx"[^:]+:"([^"]+)[^:]+:"([^"]+)""")
+
+    private val regex3 = Regex(""""(https[^"]+wasm([^"]+))""")
+
+    private suspend fun getNothing2(x: String): String {
+        return withContext(Dispatchers.IO) {
+            val client = okhttp3.OkHttpClient.Builder()
+                .addInterceptor(RetryInterceptor(3))
+                .build()
+
+            val request = okhttp3.Request.Builder()
+                .url("https://www.yangshipin.cn/js/chunk-vendors.$x.js")
+                .build()
+            try {
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    val string = response.body()?.string()
+
+                    val matches = string?.let { regex2.findAll(it) }
+
+                    var matchResult = matches?.lastOrNull()
+
+                    if (matchResult != null) {
+                        val (aa, bb) = matchResult.destructured
+                        a = aa
+                        b = bb
+                    }
+
+                    matchResult = string?.let { regex3.find(it) }
+
+                    if (matchResult != null) {
+                        val (cc) = matchResult.destructured
+                        c = cc
+                        Log.i("", "ccccc $c")
+                    }
+                    c
+                }
+            } catch (e: IOException) {
+                throw IOException("Error during network request", e)
+            }
+        }
+    }
+
+    private suspend fun getNothing3(x: String): String {
+        return withContext(Dispatchers.IO) {
+            val client = okhttp3.OkHttpClient.Builder()
+                .addInterceptor(RetryInterceptor(3))
+                .build()
+
+            val request = okhttp3.Request.Builder()
+                .url("https://www.yangshipin.cn/js/chunk-vendors.$x.js")
+                .build()
+            try {
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    val string = response.body()?.string()
+
+                    val matches = string?.let { regex2.findAll(it) }
+
+                    var matchResult = matches?.lastOrNull()
+
+                    if (matchResult != null) {
+                        val (aa, bb) = matchResult.destructured
+                        a = aa
+                        b = bb
+                    }
+
+                    matchResult = string?.let { regex3.find(it) }
+
+                    if (matchResult != null) {
+                        val (cc) = matchResult.destructured
+                        c = cc
+                    }
+                    c
                 }
             } catch (e: IOException) {
                 throw IOException("Error during network request", e)

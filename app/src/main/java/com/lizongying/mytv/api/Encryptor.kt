@@ -13,6 +13,8 @@ class Encryptor {
 
     external fun hash2(data: ByteArray): ByteArray?
 
+    external fun hash3(data: ByteArray): ByteArray?
+
     companion object {
         init {
             System.loadLibrary("native")
