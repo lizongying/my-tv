@@ -54,7 +54,6 @@ class SettingFragment : DialogFragment() {
         val context = requireContext() // It‘s safe to get context here.
         _binding = SettingBinding.inflate(inflater, container, false)
         binding.versionName.text = "当前版本: v${context.appVersionName}"
-        binding.version.text = "https://github.com/lizongying/my-tv"
 
         binding.switchChannelReversal.run {
             isChecked = SP.channelReversal
@@ -93,6 +92,26 @@ class SettingFragment : DialogFragment() {
             setOnCheckedChangeListener { _, isChecked ->
                 SP.grid = isChecked
                 (activity as MainActivity).settingDelayHide()
+            }
+        }
+
+        binding.switchUpdateUrl.run {
+            isChecked = SP.grid
+            setOnCheckedChangeListener { _, isChecked ->
+                SP.grid = isChecked
+                (activity as MainActivity).settingDelayHide()
+
+                if (true == isChecked) {
+                    binding.version.text = "https://gitee.com/lizongying/my-tv"
+                } else {
+                    binding.version.text = "https://github.com/lizongying/my-tv"
+                }
+            }
+
+            if (true == isChecked) {
+                binding.version.text = "https://gitee.com/lizongying/my-tv"
+            } else {
+                binding.version.text = "https://github.com/lizongying/my-tv"
             }
         }
 
@@ -155,6 +174,9 @@ class SettingFragment : DialogFragment() {
         binding.switchGrid.textSize = textSize
         binding.switchGrid.layoutParams = layoutParamsChannelSwitch
 
+        binding.switchUpdateUrl.textSize = textSize
+        binding.switchUpdateUrl.layoutParams = layoutParamsChannelSwitch
+
         binding.appreciate.layoutParams.width =
             application.px2Px(binding.appreciate.layoutParams.width)
 
@@ -183,40 +205,41 @@ class SettingFragment : DialogFragment() {
     }
 
     private fun requestInstallPermissions() {
-        val context = requireContext()
-        val permissionsList: MutableList<String> = ArrayList()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.packageManager.canRequestPackageInstalls()) {
-            permissionsList.add(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-
-        if (permissionsList.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                permissionsList.toTypedArray<String>(),
-                PERMISSIONS_REQUEST_CODE
-            )
-        } else {
-            updateManager.checkAndUpdate()
-        }
+//        val context = requireContext()
+//        val permissionsList = mutableListOf<String>()
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.packageManager.canRequestPackageInstalls()) {
+//            permissionsList.add(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+//            ContextCompat.checkSelfPermission(
+//                context,
+//                Manifest.permission.READ_EXTERNAL_STORAGE
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+//            ContextCompat.checkSelfPermission(
+//                context,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//        }
+//
+//        if (permissionsList.isNotEmpty()) {
+//            ActivityCompat.requestPermissions(
+//                requireActivity(),
+//                permissionsList.toTypedArray(),
+//                PERMISSIONS_REQUEST_CODE
+//            )
+//        } else {
+//            updateManager.checkAndUpdate()
+//        }
+        updateManager.checkAndUpdate()
     }
 
     override fun onRequestPermissionsResult(

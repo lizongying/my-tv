@@ -6,6 +6,7 @@
     <string name="title_boot_startup">开机自启</string>
     <string name="title_grid">频道列表采用网格样式</string>
     <string name="title_time">显示时间</string>
+    <string name="update_url">更新地址，关闭全球，打开中国</string>
     <string name="clear">恢复默认</string>
     <string name="exit">退出应用</string>
     <string name="start_update">开始更新</string>
