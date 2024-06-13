@@ -54,7 +54,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
     private val handler = Handler()
     private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 15000
-    private val PERMISSION_REQUEST_CODE = 1
 
     init {
         Utils.setRequestListener(this)
@@ -99,9 +98,9 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
             }
             logFile.startCapturingToFile(outputFile)
 
-            Log.d("FileCreation", "File created: ${outputFile.absolutePath}")
+            Log.d(TAG, "File created: ${outputFile.absolutePath}")
         } catch (e: Exception) {
-            Log.e("FileCreation", "Error creating file", e)
+            Log.e(TAG, "Error creating file", e)
         }
 
         window.decorView.apply {
@@ -659,6 +658,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
 
     private companion object {
         const val TAG = "MainActivity"
+        const val PERMISSION_REQUEST_CODE = 1
     }
 
     override fun onSharedPreferenceChanged(key: String) {
