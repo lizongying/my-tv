@@ -1,7 +1,9 @@
 package com.lizongying.mytv
 
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -15,6 +17,8 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +28,11 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import android.Manifest
 
 class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPreferenceChangeListener {
 
@@ -68,6 +76,32 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
             window.setAttributes(lp)
         }
 
+        // 检查并请求权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Toast.makeText(this, "应用需要写入存储的权限以保存日志文件。", Toast.LENGTH_LONG).show()
+            } else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+            }
+        }
+
+        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        val currentTime = dateFormat.format(Date())
+        val fileName = "myTvLogFile_$currentTime.txt"
+
+        try {
+            val downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val outputFile = File(downloadsDirectory, fileName)
+
+            if (!outputFile.exists()) {
+                outputFile.createNewFile()
+            }
+            logFile.startCapturingToFile(outputFile)
+
+            Log.d(TAG, "File created: ${outputFile.absolutePath}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error creating file", e)
+        }
 
         window.decorView.apply {
             systemUiVisibility =
@@ -624,6 +658,7 @@ class MainActivity : FragmentActivity(), Request.RequestListener, OnSharedPrefer
 
     private companion object {
         const val TAG = "MainActivity"
+        const val PERMISSION_REQUEST_CODE = 1
     }
 
     override fun onSharedPreferenceChanged(key: String) {
