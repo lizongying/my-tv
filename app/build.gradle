@@ -100,9 +100,6 @@ static def VersionName() {
 
 dependencies {
     implementation(libs.media3.ui)
-    implementation(libs.failureaccess)
-    implementation(libs.guava)
-    implementation(libs.media3.common)
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.hls)
     implementation(libs.protobuf.kotlin)

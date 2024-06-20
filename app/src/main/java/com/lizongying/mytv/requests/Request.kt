@@ -334,21 +334,8 @@ object Request {
                     val liveInfo = response.body()
 
                     if (liveInfo?.data?.playurl != null) {
-                        val chanll = liveInfo.data.chanll
-                        val decodedBytes = Base64.decode(
-                            chanll.substring(9, chanll.length - 3),
-                            Base64.DEFAULT
-                        )
-                        val decodedString = String(decodedBytes)
-                        val matchResult = regex.find(decodedString)
-                        if (matchResult != null) {
-                            val (key, iv) = matchResult.destructured
-                            val keyBytes = Base64.decode(key, Base64.DEFAULT)
-                            val ivBytes = Base64.decode(iv, Base64.DEFAULT)
-                            val url = liveInfo.data.playurl + "&revoi=" + encryptTripleDES(
-                                keyBytes + byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0),
-                                ivBytes
-                            ).uppercase() + liveInfo.data.extended_param
+                        if (liveInfo.data.extended_param != null) {
+                            val url = liveInfo.data.playurl + "&revoi=" + liveInfo.data.extended_param
                             Log.d(TAG, "$title url $url")
                             tvModel.addVideoUrl(url)
                             tvModel.allReady()

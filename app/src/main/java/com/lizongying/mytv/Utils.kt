@@ -67,13 +67,13 @@ object Utils {
             }
         }
 
-        if (x != "") {
-            try {
-                getNothing3(x)
-            } catch (e: Exception) {
-                println("b ${e.message}")
-            }
-        }
+//        if (x != "") {
+//            try {
+//                getNothing3(x)
+//            } catch (e: Exception) {
+//                println("b ${e.message}")
+//            }
+//        }
 
         withContext(Dispatchers.Main) {
             listener?.onRequestFinished(null)
