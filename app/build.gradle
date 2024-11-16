@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.lizongying.mytv"
-        minSdk 21
+        minSdk 15
         targetSdk 33
         versionCode VersionCode()
         versionName VersionName()
