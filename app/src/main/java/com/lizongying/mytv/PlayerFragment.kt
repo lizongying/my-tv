@@ -61,7 +61,8 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
                 playerView!!.player?.playWhenReady = true
                 playerView!!.player?.addListener(object : Player.Listener {
                     override fun onVideoSizeChanged(videoSize: VideoSize) {
-                        val ratio = playerView?.measuredWidth?.div(playerView?.measuredHeight!!)
+                        val ratio = playerView?.measuredWidth?.toFloat()
+                            ?.div(playerView?.measuredHeight!!)
                         if (ratio != null) {
                             val layoutParams = playerView?.layoutParams
                             if (ratio < aspectRatio) {

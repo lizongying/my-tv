@@ -41,7 +41,7 @@ class ChannelFragment : Fragment() {
 
         val ratio = 16f / 9f
 
-        if (screenWidth / screenHeight > ratio) {
+        if (screenWidth.toFloat() / screenHeight > ratio) {
             val x = ((screenWidth - screenHeight * ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.channelFragment.layoutParams as ViewGroup.MarginLayoutParams
@@ -49,7 +49,7 @@ class ChannelFragment : Fragment() {
             binding.channelFragment.layoutParams = originalLayoutParams
         }
 
-        if (screenWidth / screenHeight < ratio) {
+        if (screenWidth.toFloat() / screenHeight < ratio) {
             val y = ((screenHeight - screenWidth / ratio) / 2).toInt()
             val originalLayoutParams =
                 binding.channelFragment.layoutParams as ViewGroup.MarginLayoutParams

@@ -22,7 +22,6 @@ import com.lizongying.mytv.requests.MyRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 
 class UpdateManager(
@@ -190,15 +189,18 @@ class UpdateManager(
         }
 
         private fun installNewVersion() {
+            // A content:// URI from DownloadManager points at the file we actually downloaded
+            // and avoids FileUriExposedException on Android 7+
+            val downloadManager =
+                context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val apkUri = downloadManager.getUriForDownloadedFile(downloadReference)
+            if (apkUri == null) {
+                Log.e(TAG, "$apkFileName download failed")
+                return
+            }
             val installIntent = Intent(Intent.ACTION_VIEW)
-            val apkUri = Uri.fromFile(
-                File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                    apkFileName
-                )
-            )
             installIntent.setDataAndType(apkUri, "application/vnd.android.package-archive")
-            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context.startActivity(installIntent)
         }
     }

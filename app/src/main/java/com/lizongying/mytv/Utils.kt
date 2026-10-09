@@ -31,13 +31,13 @@ object Utils {
     }
 
     suspend fun init() {
-        var currentTimeMillis: Long = 0
         try {
-            currentTimeMillis = getTimestampFromServer()
+            val currentTimeMillis = getTimestampFromServer()
+            between = System.currentTimeMillis() - currentTimeMillis
         } catch (e: Exception) {
+            // Keep using the device clock instead of falling back to 1970
             println("Failed to retrieve timestamp from server: ${e.message}")
         }
-        between = System.currentTimeMillis() - currentTimeMillis
     }
 
     /**

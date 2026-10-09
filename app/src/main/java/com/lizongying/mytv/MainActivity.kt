@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 class MainActivity : FragmentActivity(), Request.RequestListener {
 
     private var ready = 0
+    private var networkReady = false
     private val playerFragment = PlayerFragment()
     private val mainFragment = MainFragment()
     private val infoFragment = InfoFragment()
@@ -93,13 +94,14 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                     Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
                     if (this@MainActivity.isNetworkConnected) {
                         Log.i(TAG, "net isNetworkConnected")
-                        ready++
+                        // Callback runs on a binder thread and may fire for every network change
+                        runOnUiThread { onNetworkReady() }
                     }
                 }
             })
         } else {
             Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
-            ready++
+            onNetworkReady()
         }
 
     }
@@ -201,10 +203,18 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         }
     }
 
+    private fun onNetworkReady() {
+        if (networkReady) {
+            return
+        }
+        networkReady = true
+        fragmentReady("Network")
+    }
+
     fun fragmentReady(tag: String) {
         ready++
         Log.i(TAG, "ready $tag $ready ")
-        if (ready == 6) {
+        if (ready == READY_COUNT) {
             mainFragment.fragmentReady()
             showTime()
         }
@@ -520,5 +530,8 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     private companion object {
         const val TAG = "MainActivity"
+
+        // PlayerFragment, TimeFragment, InfoFragment, ChannelFragment, MainFragment and Network
+        const val READY_COUNT = 6
     }
 }

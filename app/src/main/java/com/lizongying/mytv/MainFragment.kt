@@ -180,10 +180,11 @@ class MainFragment : BrowseSupportFragment() {
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             if (tvViewModel != null) {
                 if (tvViewModel.videoUrl.value!!.size > 1) {
-                    val videoIndex = tvViewModel.videoIndex.value?.minus(1)
+                    var videoIndex = tvViewModel.videoIndex.value!! - 1
                     if (videoIndex == -1) {
-                        tvViewModel.setVideoIndex(tvViewModel.videoUrl.value!!.size - 1)
+                        videoIndex = tvViewModel.videoUrl.value!!.size - 1
                     }
+                    tvViewModel.setVideoIndex(videoIndex)
                     tvViewModel.changed()
                 }
             }
@@ -195,10 +196,11 @@ class MainFragment : BrowseSupportFragment() {
             val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
             if (tvViewModel != null) {
                 if (tvViewModel.videoUrl.value!!.size > 1) {
-                    val videoIndex = tvViewModel.videoIndex.value?.plus(1)
+                    var videoIndex = tvViewModel.videoIndex.value!! + 1
                     if (videoIndex == tvViewModel.videoUrl.value!!.size) {
-                        tvViewModel.setVideoIndex(0)
+                        videoIndex = 0
                     }
+                    tvViewModel.setVideoIndex(videoIndex)
                     tvViewModel.changed()
                 }
             }
