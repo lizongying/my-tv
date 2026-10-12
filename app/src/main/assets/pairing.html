@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>看电视 · 手机配置</title><link rel="stylesheet" href="/pairing.css"><script src="/pairing.js" defer></script></head>
+<body><main><header><div class="mark" aria-hidden="true">TV</div><div><p class="eyebrow">看电视 · 本机配置</p><h1>让电视自己维护节目源</h1></div></header>
+<p class="intro">配置直接保存到这台电视。此页面仅在临时配对期间开放，保存后自动关闭。</p>
+<div id="status" role="status" aria-live="polite">正在连接电视…</div>
+<form id="config" autocomplete="off">
+<section><h2>维护方式</h2><label class="check"><input type="checkbox" id="enabled" checked><span>自主发现直播、更新订阅并检测线路</span></label><label>检查间隔<select id="intervalHours"><option value="6">每 6 小时</option><option value="12">每 12 小时</option><option value="24">每天</option></select></label><p class="hint">自主爬虫默认开启，不需要 AI Key：从内置电视台网站发现频道，也会自动读取公开 GitHub / GitLab / 极狐仓库目录，发现 TXT / M3U 节目单；解析网页、脚本和公开播放器请求，抽检媒体后收录。每轮最多读取 20 页、解析 3 个播放器；进度会保存。电视需开机联网。待机、省电或强制停止应用可能推迟任务，重新打开 APP 会补查。</p></section>
+<section><h2>AI 维护助手</h2><label class="check"><input type="checkbox" id="aiEnabled"><span>启用 AI 补充发现公开直播来源</span></label><p class="hint">找源工具全部内置，无需部署服务或另配搜索密钥。停止播放、进入后台后自动查找；返回观看时暂停后续查找。官方 DeepSeek 自动使用原生联网搜索，并轮换央视、卫视与各地频道主题。每日最多 12 次找源 / 连接测试请求，搜索还可能产生服务商内部调用费用；图片巡检额度另计。</p>
+<label>API 地址<input id="endpoint" type="url" inputmode="url" spellcheck="false" placeholder="https://你的服务地址/v1" maxlength="2048"></label><p class="hint">沿用原 API 地址和密钥即可。官方 DeepSeek 会自动接入原生联网搜索；其他 Chat Completions 服务保留网页搜索筛选方式。必须使用 HTTPS。</p>
+<label>模型名称<input id="model" type="text" spellcheck="false" placeholder="填写 API 服务商提供的模型名称" maxlength="128"></label>
+<label>API Key<input id="key" type="password" autocomplete="new-password" spellcheck="false" placeholder="输入密钥" maxlength="4096"></label><p id="keyState" class="hint">密钥加密存储在电视中，不会回显。</p><label class="check"><input type="checkbox" id="clearKey"><span>清除电视里已保存的 Key</span></label>
+<button type="button" id="test" class="secondary">测试 API 连接</button></section>
+<section><h2>自动补齐真实台标</h2><label class="check"><input type="checkbox" id="logoLookupEnabled" checked><span>按频道名称查找台标图片</span></label><label>下载图片缓存上限<select id="logoImageMb"><option value="2">2 MB</option><option value="5" selected>5 MB</option><option value="10">10 MB</option></select></label><p class="hint">常用央视和卫视内置 120 个台标原图，其他频道从公开台标库补齐；节目单原有图片地址会保留。停止观看后自动下载并缓存，不需要 AI 密钥或模型请求。频道名称通过明确别名匹配，央视 5 与央视 5+ 分开。失败图片 24 小时后重试，已缓存图片每周检查更新；达到容量后先清理较旧的下载图片。找不到时显示备用电视图标，频道名称另行显示。台标只显示在节目列表和节目提示，不会覆盖视频或影响广告巡检。</p></section>
+<section><h2>扩展直播来源</h2><label>订阅地址或公开网页<textarea id="sources" rows="5" spellcheck="false" placeholder="每行一个 HTTP/HTTPS 地址，最多 20 个。支持 M3U、TXT、含公开订阅链接的网页。"></textarea></label><p class="hint">不限 GitHub。可填电视台公开页面、公开直播列表或自己维护的订阅。发现 GitHub / GitLab / 极狐的仓库或 raw 链接后，会自动读取目录中的其他 TXT / M3U 文件；支持分批续查和去重，不需手动逐个导入。初始入口用于启动发现，不等于搜遍互联网。公开播放器可通过内置网页组件执行脚本并解析请求；不需要额外部署。动态地址会检查媒体及 M3U8 更新，画面和台标由巡检继续验证。需要登录、专网或 DRM 授权的源不保证可用。</p></section>
+<section><h2>屏蔽广告或错误线路</h2><label>屏蔽的完整线路地址或域名<textarea id="blocked" rows="3" spellcheck="false" placeholder="每行一项。留空可恢复此前屏蔽的线路。"></textarea></label><p class="hint">也可在电视里屏蔽当前播放线路。电视台节目本身的广告无法保证去掉。</p><p class="hint">黑屏或失效线路：在电视源维护页点击“检测并移除无效线路”。连续 3 次间隔检测失败才移除；“查看 / 恢复已移除线路”可撤销。此检测不调用 AI，不消耗模型额度。</p></section>
+<div class="footer"><button type="submit" id="save">保存到电视并结束配对</button><p class="hint">仅在可信家庭 Wi‑Fi 中操作。本地网页使用 HTTP，不等同于端到端加密连接。</p></div>
+</form><noscript>请用启用 JavaScript 的手机浏览器打开二维码地址。</noscript><p class="hint">台标与纯广告画面巡检在电视维护页打开，DeepSeek 模型请用 deepseek-flash。截图会发给所配置的 API，图片识别有独立每日限额和费用；默认两轮新证据确认无台标纯广告后自动屏蔽，可在电视关闭自动屏蔽。</p>
+</main></body></html>

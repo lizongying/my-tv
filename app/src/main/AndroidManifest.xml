@@ -10,21 +10,24 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MyApplication"
-        android:allowBackup="true"
-        android:banner="@drawable/banner"
-        android:icon="@drawable/logo"
+        android:allowBackup="false"
+        android:banner="@drawable/kan_banner"
+        android:icon="@drawable/kan_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:logo="@drawable/logo"
+        android:logo="@drawable/kan_logo"
         android:networkSecurityConfig="@xml/network"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyTV"
         android:usesCleartextTraffic="true">
+        <activity android:name=".agent.AutoVisionActivity" android:exported="false" android:screenOrientation="landscape" />
+        <activity android:name=".agent.MemoryActivity" android:exported="false" android:screenOrientation="landscape" />
+        <activity android:name=".agent.VisionActivity" android:exported="false" android:screenOrientation="landscape" />
+        <activity android:name=".agent.AgentActivity" android:exported="false" android:screenOrientation="landscape" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -52,6 +52,11 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <Button
+                android:id="@+id/agent_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AI 维护 / 手机扫码配置" />
+            <Button
                 android:id="@+id/exit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,10 +88,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/appreciate"
-            android:background="@color/white" />
+
     </LinearLayout>
 </FrameLayout>
