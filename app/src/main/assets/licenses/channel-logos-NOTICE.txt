@@ -1,0 +1,5 @@
+频道台标来自 fanmingming/live 公开图标库；保留原 PNG 图案，未用生成文字替代。
+https://github.com/fanmingming/live
+https://github.com/fanmingming/live/tree/main/tv
+项目使用 GPL-3.0，完整许可见 fanmingming-live-GPL-3.0.txt。台标所代表的名称与标志属于对应电视台。
+读取日期：2026-10-11。匹配使用明确频道别名，不采用模糊前缀。

@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-12",
+  "upstream": "lizongying/my-tv",
+  "upstream_commit": "d65ac508eb56d454d565d7a53df35fa4d5403720",
+  "branch": "kan-dianshi",
+  "unit_tests": {
+    "tests": 253,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 131,
+  "independent_build_passed": true,
+  "application_code_and_assets_match_delivered_v190": true,
+  "source_changed_for_portable_test_output_only": true,
+  "real_android16_tested": false,
+  "staged_secret_scan_passed": true,
+  "tracked_files": 533,
+  "tracked_bytes": 43072444
+}
