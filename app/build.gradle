@@ -4,7 +4,7 @@ plugins {
 }
 
 // 版本号规则：{major}.{YYMM}.{BUILD_ID}
-// major 在 version.json 中手动维护；YYMM 取构建时的年月（固定东八区，避免 CI 与本地跨月不一致）；
+// major 在 gradle.properties 的 app.majorVersion 中维护；YYMM 取构建时的年月（固定东八区，避免 CI 与本地跨月不一致）；
 // BUILD_ID 由 CI 传入 -PbuildNumber=${{ github.run_number }}，本地回退到提交数。
 def appVersion = DetectVersion()
 
@@ -44,24 +44,24 @@ android {
 }
 
 def DetectVersion() {
+    def major = VersionMajor()
     def yymm = new Date().format("yyMM", TimeZone.getTimeZone("Asia/Shanghai"))
     def buildId = BuildId()
     def version = [
-            code: yymm.toInteger() * 10000 + buildId,
-            name: "${VersionMajor()}.${yymm}.${buildId}",
+            code: major * 10000000 + yymm.toInteger() * 10000 + buildId,
+            name: "${major}.${yymm}.${buildId}",
     ]
     println("Version ${version.code} ${version.name}")
     return version
 }
 
-// 主版本号在 version.json 中手动维护
+// 主版本号在 gradle.properties 中维护（app.majorVersion）
 def VersionMajor() {
-    try {
-        def json = new groovy.json.JsonSlurper().parse(rootProject.file("version.json"))
-        return json.major as int
-    } catch (ignored) {
-        return 1
+    def fromProperty = project.findProperty("app.majorVersion")
+    if (fromProperty != null && fromProperty.toString().isInteger()) {
+        return fromProperty.toString().toInteger()
     }
+    return 1
 }
 
 // 自增构建号：显式参数 > CI 的 github.run_number > 提交数
