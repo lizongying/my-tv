@@ -72,11 +72,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="v${{ steps.version.outputs.name }}"
-          gh release create "$TAG" "dist/my-tv-${{ steps.version.outputs.name }}.apk" \
-            --title "my-tv ${{ steps.version.outputs.name }}" \
-            --notes "自动构建 $(date -u '+%Y-%m-%d %H:%M:%S') UTC，提交 ${{ github.sha }}" \
-            --target "${{ github.sha }}" \
-            || echo "release $TAG 已存在，跳过"
+          ASSET="dist/my-tv-${{ steps.version.outputs.name }}.apk"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "release $TAG 已存在，覆盖其中的 APK"
+            gh release upload "$TAG" "$ASSET" --clobber
+          else
+            gh release create "$TAG" "$ASSET" \
+              --title "my-tv ${{ steps.version.outputs.name }}" \
+              --notes "自动构建 $(date -u '+%Y-%m-%d %H:%M:%S') UTC，提交 ${{ github.sha }}" \
+              --target "${{ github.sha }}"
+          fi
 
       - name: Gitee Create Release (optional)
         continue-on-error: true
