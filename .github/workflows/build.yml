@@ -1,9 +1,7 @@
-name: build
+name: release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: set up JDK 17
         uses: actions/setup-java@v4
@@ -21,10 +21,29 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Run build with Gradle wrapper
+      - name: Check signing secrets
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+        run: |
+          if [ -z "$KEYSTORE" ]; then
+            echo "::error::缺少签名 secrets：KEYSTORE / KEYSTORE_PASSWORD / ALIAS / ALIAS_PASSWORD"
+            exit 1
+          fi
+
+      - name: Unit test
+        run: ./gradlew testDebugUnitTest -PbuildNumber=${{ github.run_number }}
+
+      - name: Assemble release
         run: ./gradlew assembleRelease -PbuildNumber=${{ github.run_number }}
 
-      - name: Sign app APK
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION=$(python3 -c "import json;print(json.load(open('app/build/outputs/apk/release/output-metadata.json'))['elements'][0]['versionName'])")
+          echo "name=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "versionName=$VERSION"
+
+      - name: Sign APK
         id: sign_app
         uses: r0adkll/sign-android-release@v1
         with:
@@ -34,40 +53,41 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ALIAS_PASSWORD }}
         env:
-          # override default build-tools version (29.0.3) -- optional
           BUILD_TOOLS_VERSION: "34.0.0"
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          body: Release ${{ github.ref_name }}
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.sign_app.outputs.signedReleaseFile }}
-          asset_name: my-tv-${{ github.ref_name }}.apk
-          asset_content_type: application/vnd.android.package-archive
-
-      - name: Gitee Create Release
+      - name: Rename APK with version
         run: |
-          latest_commit=$(git rev-parse HEAD)
-          curl -v POST https://gitee.com/api/v5/repos/${{ github.repository }}/releases \
-          -H "Content-Type: application/json" \
-          -d '{
-            "access_token": "${{ secrets.GITEE_ACCESS_TOKEN}}",
-            "tag_name": "${{ github.ref_name }}",
-            "name": "Release ${{ github.ref_name }}",
-            "prerelease": false,
-            "target_commitish": "'"$latest_commit"'"
-          }'
+          mkdir -p dist
+          cp "${{ steps.sign_app.outputs.signedReleaseFile }}" "dist/my-tv-${{ steps.version.outputs.name }}.apk"
+          ls -l dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-tv-${{ steps.version.outputs.name }}
+          path: dist/my-tv-${{ steps.version.outputs.name }}.apk
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ steps.version.outputs.name }}"
+          gh release create "$TAG" "dist/my-tv-${{ steps.version.outputs.name }}.apk" \
+            --title "my-tv ${{ steps.version.outputs.name }}" \
+            --notes "自动构建 $(date -u '+%Y-%m-%d %H:%M:%S') UTC，提交 ${{ github.sha }}" \
+            --target "${{ github.sha }}" \
+            || echo "release $TAG 已存在，跳过"
+
+      - name: Gitee Create Release (optional)
+        continue-on-error: true
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$GITEE_TOKEN" ]; then
+            echo "未配置 GITEE_ACCESS_TOKEN，跳过 Gitee 发布"
+            exit 0
+          fi
+          SHA=$(git rev-parse HEAD)
+          curl -sS -X POST "https://gitee.com/api/v5/repos/${{ github.repository }}/releases?access_token=$GITEE_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"v${{ steps.version.outputs.name }}\",\"name\":\"my-tv ${{ steps.version.outputs.name }}\",\"prerelease\":false,\"target_commitish\":\"$SHA\"}"

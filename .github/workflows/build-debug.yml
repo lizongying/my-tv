@@ -27,8 +27,21 @@ jobs:
       - name: Assemble debug
         run: ./gradlew assembleDebug -PbuildNumber=${{ github.run_number }}
 
-      - name: Upload APK
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION=$(python3 -c "import json;print(json.load(open('app/build/outputs/apk/debug/output-metadata.json'))['elements'][0]['versionName'])")
+          echo "name=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "versionName=$VERSION"
+
+      - name: Rename APK with version
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk "dist/my-tv-${{ steps.version.outputs.name }}-debug.apk"
+          ls -l dist
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-tv-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: my-tv-${{ steps.version.outputs.name }}-debug
+          path: dist/my-tv-${{ steps.version.outputs.name }}-debug.apk
