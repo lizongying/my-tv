@@ -4,9 +4,10 @@ plugins {
 }
 
 // 版本号规则：{major}.{YYMM}.{BUILD_ID}
-// major 在 gradle.properties 的 app.majorVersion 中维护；YYMM 取构建时的年月（固定东八区，避免 CI 与本地跨月不一致）；
+// release 用 gradle.properties 里的 app.majorVersion；debug 固定 0，保证正式版永远能覆盖调试版。
+// YYMM 取构建时的年月（固定东八区，避免 CI 与本地跨月不一致）；
 // BUILD_ID 由 CI 传入 -PbuildNumber=${{ github.run_number }}，本地回退到提交数。
-def appVersion = DetectVersion()
+def appVersion = DetectVersion(0)
 
 android {
     namespace 'com.lizongying.mytv'
@@ -43,8 +44,18 @@ android {
     }
 }
 
-def DetectVersion() {
-    def major = VersionMajor()
+// debug 用默认配置（major 0）；release 覆盖为 gradle.properties 里的主版本号
+android.applicationVariants.all { variant ->
+    if (variant.buildType.name != "debug") {
+        def version = DetectVersion(VersionMajor())
+        variant.outputs.each { output ->
+            output.versionCodeOverride = version.code
+            output.versionNameOverride = version.name
+        }
+    }
+}
+
+def DetectVersion(major) {
     def yymm = new Date().format("yyMM", TimeZone.getTimeZone("Asia/Shanghai"))
     def buildId = BuildId()
     def version = [
