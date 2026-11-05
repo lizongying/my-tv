@@ -22,10 +22,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Unit test
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest -PbuildNumber=${{ github.run_number }}
 
       - name: Assemble debug
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug -PbuildNumber=${{ github.run_number }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

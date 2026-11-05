@@ -3,6 +3,11 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+// 版本号规则：{major}.{YYMM}.{BUILD_ID}
+// major 在 version.json 中手动维护；YYMM 取构建时的年月（固定东八区，避免 CI 与本地跨月不一致）；
+// BUILD_ID 由 CI 传入 -PbuildNumber=${{ github.run_number }}，本地回退到提交数。
+def appVersion = DetectVersion()
+
 android {
     namespace 'com.lizongying.mytv'
     compileSdk 34
@@ -15,8 +20,8 @@ android {
         applicationId "com.lizongying.mytv"
         minSdk 21
         targetSdk 33
-        versionCode VersionCode()
-        versionName VersionName()
+        versionCode appVersion.code
+        versionName appVersion.name
 
         multiDexEnabled true
     }
@@ -38,51 +43,47 @@ android {
     }
 }
 
-def VersionCode() {
-    return DetectVersion().code
-}
-
-def VersionName() {
-    return DetectVersion().name
-}
-
 def DetectVersion() {
-    // 有 tag 的仓库走 git describe；无 tag（如 fork）回退到 version.json，避免算出 0
-    def version = VersionFromGit() ?: VersionFromFile()
+    def yymm = new Date().format("yyMM", TimeZone.getTimeZone("Asia/Shanghai"))
+    def buildId = BuildId()
+    def version = [
+            code: yymm.toInteger() * 10000 + buildId,
+            name: "${VersionMajor()}.${yymm}.${buildId}",
+    ]
     println("Version ${version.code} ${version.name}")
     return version
 }
 
-// git describe --tags --always：有 tag 时为 v2.1.0 或 v2.1.0-3-gabc1234，无 tag 时为提交短哈希
-def VersionFromGit() {
+// 主版本号在 version.json 中手动维护
+def VersionMajor() {
     try {
-        def process = "git describe --tags --always".execute()
-        process.waitFor()
-        def text = process.text.trim()
-        def matcher = text =~ /^v?(\d+)\.(\d+)\.(\d+)(?:-(\d+))?/
-        if (!matcher.find()) {
-            return null
-        }
-        def patch = matcher.group(4) == null ? 0 : matcher.group(4).toInteger()
-        return [
-                code: matcher.group(1).toInteger() * 16777216 + matcher.group(2).toInteger() * 65536 + matcher.group(3).toInteger() * 256 + patch,
-                name: text.startsWith("v") ? text.substring(1) : text,
-        ]
+        def json = new groovy.json.JsonSlurper().parse(rootProject.file("version.json"))
+        return json.major as int
     } catch (ignored) {
-        return null
+        return 1
     }
 }
 
-def VersionFromFile() {
-    try {
-        def json = new groovy.json.JsonSlurper().parse(rootProject.file("version.json"))
-        return [
-                code: json.version_code as int,
-                name: (json.version_name as String).replaceFirst(/^v/, ""),
-        ]
-    } catch (ignored) {
-        return [code: 1, name: "1.0.0"]
+// 自增构建号：显式参数 > CI 的 github.run_number > 提交数
+def BuildId() {
+    def fromProperty = project.findProperty("buildNumber")
+    if (fromProperty != null && fromProperty.toString().isInteger()) {
+        return fromProperty.toString().toInteger()
     }
+    def fromEnv = System.getenv("GITHUB_RUN_NUMBER")
+    if (fromEnv != null && fromEnv.isInteger()) {
+        return fromEnv.toInteger()
+    }
+    try {
+        def process = "git rev-list --count HEAD".execute()
+        process.waitFor()
+        def text = process.text.trim()
+        if (text.isInteger()) {
+            return text.toInteger()
+        }
+    } catch (ignored) {
+    }
+    return 1
 }
 
 dependencies {
