@@ -26,31 +26,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="当前版本: $versionName\n获取最新: https://github.com/lizongying/my-tv/releases/"
+                android:text="当前版本: $versionName\nhttps://github.com/tvrcgo/my-tv"
                 />
-            <LinearLayout
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <Button
-                    android:id="@+id/check_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/check_version"
-                    />
-                <ProgressBar
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
-                <TextView
-                    android:id="@+id/version_name"
-                    android:text=""
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
             <Button
                 android:id="@+id/exit"
                 android:layout_width="wrap_content"

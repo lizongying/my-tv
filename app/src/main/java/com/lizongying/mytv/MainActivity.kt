@@ -32,7 +32,6 @@ class MainActivity : FragmentActivity() {
     private val channelFragment = ChannelFragment()
     private var timeFragment = TimeFragment()
     private val settingFragment = SettingFragment()
-    private val errorFragment = ErrorFragment()
     private val emptyFragment = EmptyFragment()
     private val sourceFragment = SourceFragment()
 
@@ -67,12 +66,6 @@ class MainActivity : FragmentActivity() {
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
-
-        errorFragment.buttonClickListener = View.OnClickListener {
-            supportFragmentManager.beginTransaction()
-                .remove(errorFragment)
-                .commit()
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val connectivityManager =
@@ -252,14 +245,6 @@ class MainActivity : FragmentActivity() {
             timeFragment.show()
         } else {
             timeFragment.hide()
-        }
-    }
-
-    fun isPlaying() {
-        if (errorFragment.isVisible) {
-            supportFragmentManager.beginTransaction()
-                .remove(errorFragment)
-                .commit()
         }
     }
 

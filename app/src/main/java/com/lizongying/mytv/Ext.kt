@@ -27,20 +27,6 @@ private val Context.packageInfo: PackageInfo
     }
 
 /**
- * Return the version code of the app which is defined in build.gradle.
- * eg:100
- */
-val Context.appVersionCode: Long
-    get() {
-        val packageInfo = this.packageInfo
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            packageInfo.longVersionCode
-        } else {
-            packageInfo.versionCode.toLong()
-        }
-    }
-
-/**
  * Return the version name of the app which is defined in build.gradle.
  * eg:1.0.0
  */

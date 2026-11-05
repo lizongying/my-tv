@@ -14,8 +14,6 @@ class SettingFragment : DialogFragment() {
     private var _binding: SettingBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var updateManager: UpdateManager
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
@@ -36,8 +34,7 @@ class SettingFragment : DialogFragment() {
     ): View {
         val context = requireContext() // It‘s safe to get context here.
         _binding = SettingBinding.inflate(inflater, container, false)
-        binding.versionName.text = "当前版本: v${context.appVersionName}"
-        binding.version.text = "https://github.com/lizongying/my-tv"
+        binding.version.text = "当前版本: v${context.appVersionName}\nhttps://github.com/tvrcgo/my-tv"
 
         binding.switchChannelReversal.run {
             isChecked = SP.channelReversal
@@ -79,36 +76,11 @@ class SettingFragment : DialogFragment() {
             }
         }
 
-        updateManager = UpdateManager(context, this, context.appVersionCode)
-        binding.checkVersion.setOnClickListener(
-            OnClickListenerCheckVersion(
-                activity as MainActivity,
-                updateManager
-            )
-        )
-
         binding.exit.setOnClickListener{
             requireActivity().finishAffinity()
         }
 
         return binding.root
-    }
-
-    fun setVersionName(versionName: String) {
-        if (_binding != null) {
-            binding.versionName.text = versionName
-        }
-    }
-
-    internal class OnClickListenerCheckVersion(
-        private val mainActivity: MainActivity,
-        private val updateManager: UpdateManager
-    ) :
-        View.OnClickListener {
-        override fun onClick(view: View?) {
-            mainActivity.settingDelayHide()
-            updateManager.checkAndUpdate()
-        }
     }
 
     override fun onDestroyView() {

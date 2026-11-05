@@ -17,7 +17,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.lizongying.mytv"
+        applicationId "com.tvrcgo.mytv"
         minSdk 21
         targetSdk 33
         versionCode appVersion.code
@@ -97,11 +97,9 @@ dependencies {
     // For HLS playback support with ExoPlayer
     implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
 
-    // 21:2.11.0 17:2.6.4
-    def retrofit2_version = "2.11.0"
-
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    // 只用到 okhttp 与 gson（拉取 m3u、序列化源配置），不再依赖 retrofit
+    implementation "com.squareup.okhttp3:okhttp:3.14.9"
+    implementation "com.google.code.gson:gson:2.10.1"
 
     implementation 'androidx.leanback:leanback:1.2.0-alpha04'
     
@@ -110,7 +108,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.13.0'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
 
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.13.3'
