@@ -38,28 +38,50 @@ android {
     }
 }
 
-static def VersionCode() {
-    try {
-        def p = "git describe --tags --always"
-        def process = p.execute()
-        process.waitFor()
-        def replace = [v: "", ".": " ", "-": " "]
-        def arr = (process.text.trim().replace(replace) + " 0").split(" ")
-        def versionCode = arr[0].toInteger() * 16777216 + arr[1].toInteger() * 65536 + arr[2].toInteger() * 256 + arr[3].toInteger()
-        println("VersionCode $versionCode")
-        return versionCode
-    } catch (ignored) {
-        return 0
-    }
+def VersionCode() {
+    return DetectVersion().code
 }
 
-static def VersionName() {
+def VersionName() {
+    return DetectVersion().name
+}
+
+def DetectVersion() {
+    // 有 tag 的仓库走 git describe；无 tag（如 fork）回退到 version.json，避免算出 0
+    def version = VersionFromGit() ?: VersionFromFile()
+    println("Version ${version.code} ${version.name}")
+    return version
+}
+
+// git describe --tags --always：有 tag 时为 v2.1.0 或 v2.1.0-3-gabc1234，无 tag 时为提交短哈希
+def VersionFromGit() {
     try {
         def process = "git describe --tags --always".execute()
         process.waitFor()
-        return process.text.trim() - "v"
+        def text = process.text.trim()
+        def matcher = text =~ /^v?(\d+)\.(\d+)\.(\d+)(?:-(\d+))?/
+        if (!matcher.find()) {
+            return null
+        }
+        def patch = matcher.group(4) == null ? 0 : matcher.group(4).toInteger()
+        return [
+                code: matcher.group(1).toInteger() * 16777216 + matcher.group(2).toInteger() * 65536 + matcher.group(3).toInteger() * 256 + patch,
+                name: text.startsWith("v") ? text.substring(1) : text,
+        ]
     } catch (ignored) {
-        return "1.0.0"
+        return null
+    }
+}
+
+def VersionFromFile() {
+    try {
+        def json = new groovy.json.JsonSlurper().parse(rootProject.file("version.json"))
+        return [
+                code: json.version_code as int,
+                name: (json.version_name as String).replaceFirst(/^v/, ""),
+        ]
+    } catch (ignored) {
+        return [code: 1, name: "1.0.0"]
     }
 }
 
