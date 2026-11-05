@@ -25,12 +25,12 @@ class ChannelListBuilderTest {
         val rows = ChannelListBuilder.build(listOf(first, second), channels)
 
         assertEquals(listOf("央视", "卫视"), rows.keys.toList())
-        assertEquals(2, rows["央视"]?.size)
-        assertEquals(1, rows["卫视"]?.size)
-        assertEquals(listOf(0, 1, 2), rows.values.flatten().map { it.id })
-        assertEquals("CCTV-1", rows["央视"]?.get(0)?.title)
-        assertEquals(listOf("http://a/1"), rows["央视"]?.get(0)?.videoUrl)
-        assertEquals("源A", rows["央视"]?.get(0)?.sourceName)
+        assertEquals(listOf("CCTV-1", "CCTV-2"), rows["央视"]?.map { it.title })
+        assertEquals(listOf("湖南卫视"), rows["卫视"]?.map { it.title })
+        assertEquals(listOf(0, 1), rows["央视"]?.map { it.id })
+        assertEquals(listOf(2), rows["卫视"]?.map { it.id })
+        assertEquals(listOf("http://a/1", "http://b/1"), rows["央视"]?.map { it.videoUrl.first() })
+        assertEquals(listOf("源A", "源B"), rows["央视"]?.map { it.sourceName })
     }
 
     @Test

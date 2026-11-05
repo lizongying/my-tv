@@ -104,7 +104,7 @@ class SourceFragment : DialogFragment() {
             render()
             refresh()
         }
-        fragment.show(parentFragmentManager, SourceEditFragment.TAG)
+        fragment.show(requireActivity().supportFragmentManager, SourceEditFragment.TAG)
     }
 
     override fun onDestroyView() {

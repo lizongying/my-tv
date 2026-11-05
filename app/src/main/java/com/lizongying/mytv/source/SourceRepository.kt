@@ -115,9 +115,9 @@ class SourceRepository(private val context: Context) {
         return try {
             client.newCall(HttpRequest.Builder().url(source.url).build()).execute().use { response ->
                 if (!response.isSuccessful) {
-                    return Fetched.Err("HTTP ${response.code}")
+                    return Fetched.Err("HTTP ${response.code()}")
                 }
-                val body = response.body ?: return Fetched.Err("响应为空")
+                val body = response.body() ?: return Fetched.Err("响应为空")
                 val text = readBody(body) ?: return Fetched.Err("内容过大")
                 val channels = M3uParser.parse(text)
                 if (channels.isEmpty()) {

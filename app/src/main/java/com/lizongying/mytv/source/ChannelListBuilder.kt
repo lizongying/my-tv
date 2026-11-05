@@ -10,13 +10,11 @@ object ChannelListBuilder {
     ): Map<String, List<TV>> {
         val showSourceName = sources.size > 1
         val grouped = LinkedHashMap<String, MutableList<TV>>()
-        var id = 0
         for (source in sources) {
             for (channel in channels[source.id].orEmpty()) {
                 val group = channel.group.ifEmpty { M3uParser.FALLBACK_GROUP }
                 grouped.getOrPut(group) { mutableListOf() }.add(
                     TV(
-                        id = id++,
                         title = channel.title,
                         videoUrl = listOf(channel.url),
                         channel = group,
@@ -24,6 +22,13 @@ object ChannelListBuilder {
                         sourceName = if (showSourceName) source.name else "",
                     )
                 )
+            }
+        }
+        // id 必须与列表装配顺序一致（按分组行），否则选台与频道号会错位
+        var id = 0
+        for ((_, list) in grouped) {
+            for (tv in list) {
+                tv.id = id++
             }
         }
         return grouped
