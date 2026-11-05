@@ -18,26 +18,6 @@ android {
         versionCode VersionCode()
         versionName VersionName()
 
-        // This block is different from the one you use to link Gradle
-        // to your CMake or ndk-build script.
-        externalNativeBuild {
-
-            // For ndk-build, instead use the ndkBuild block.
-            cmake {
-                arguments "-DIS_SO_BUILD=${project.hasProperty('IS_SO_BUILD') ? project.IS_SO_BUILD : true}"
-
-                abiFilters "armeabi-v7a", "arm64-v8a"
-            }
-        }
-
-        // Similar to other properties in the defaultConfig block,
-        // you can configure the ndk block for each product flavor
-        // in your build configuration.
-        ndk {
-            // Specifies the ABI configurations of your native
-            // libraries Gradle should build and package with your app.
-            abiFilters "armeabi-v7a", "arm64-v8a"
-        }
         multiDexEnabled true
     }
 
@@ -55,17 +35,6 @@ android {
 
     kotlinOptions {
         jvmTarget = 17
-    }
-
-    // Encapsulates your external native build configurations.
-    externalNativeBuild {
-
-        // Encapsulates your CMake build configurations.
-        cmake {
-
-            // Provides a relative path to your CMake build script.
-            path = file("CMakeLists.txt")
-        }
     }
 }
 
@@ -108,9 +77,7 @@ dependencies {
     // 21:2.11.0 17:2.6.4
     def retrofit2_version = "2.11.0"
 
-    implementation 'com.google.protobuf:protobuf-kotlin:3.25.1'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
-    implementation "com.squareup.retrofit2:converter-protobuf:$retrofit2_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
 
     implementation 'androidx.leanback:leanback:1.2.0-alpha04'
@@ -126,4 +93,6 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.13.3'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.13.3'
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.13.3'
+
+    testImplementation 'junit:junit:4.13.2'
 }

@@ -2,9 +2,6 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -18,11 +15,11 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
-import com.lizongying.mytv.api.YSP
-import com.lizongying.mytv.models.ProgramType
 import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
-import kotlinx.coroutines.Dispatchers
+import com.lizongying.mytv.source.ChannelListBuilder
+import com.lizongying.mytv.source.SourceRepository
+import com.lizongying.mytv.source.SourceStore
 import kotlinx.coroutines.launch
 
 class MainFragment : BrowseSupportFragment() {
@@ -33,36 +30,26 @@ class MainFragment : BrowseSupportFragment() {
 
     var tvListViewModel = TVListViewModel()
 
+    var lastStatuses: List<SourceRepository.SourceStatus> = emptyList()
+        private set
+
     private var lastVideoUrl = ""
+
+    private var playingKey: String? = null
+
+    private var rowsSignature: List<String> = emptyList()
+
+    private var refreshed = false
+
+    private val repository: SourceRepository by lazy {
+        SourceRepository(requireContext().applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         headersState = HEADERS_DISABLED
     }
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-//        rootView?.setOnClickListener {
-//            Log.i(TAG, "main on click")
-//            fragmentManager!!.beginTransaction().hide(this).commit()
-//        }
-//        mainFragment.view?.setOnClickListener {
-//            Log.i(TAG, "mainFragment on click")
-//            fragmentManager!!.beginTransaction().hide(this).commit()
-//        }
-//        getRowsSupportFragment().view?.setOnClickListener {
-//            Log.i(TAG, "getRowsSupportFragment on click")
-//            fragmentManager!!.beginTransaction().hide(this).commit()
-//        }
-//
-//
-//        return rootView
-//    }
 
     override fun onStart() {
         Log.i(TAG, "onStart")
@@ -72,86 +59,32 @@ class MainFragment : BrowseSupportFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activity?.let { YSP.init(it) }
-
-        loadRows()
-
+        bindRows(repository.loadCachedRows())
         setupEventListeners()
-
-        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
-            tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.errInfo.value != null
-                    && tvViewModel.getTV().id == itemPosition
-                ) {
-                    Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT).show()
-                }
-            }
-            tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
-
-                // not first time && channel not change
-                if (tvViewModel.ready.value != null
-                    && tvViewModel.getTV().id == itemPosition
-                    && check(tvViewModel)
-                ) {
-                    Log.i(TAG, "ready ${tvViewModel.getTV().title}")
-                    (activity as? MainActivity)?.play(tvViewModel)
-                }
-            }
-            tvViewModel.change.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.change.value != null) {
-                    val title = tvViewModel.getTV().title
-                    Log.i(TAG, "switch $title")
-                    if (tvViewModel.getTV().pid != "") {
-                        Log.i(TAG, "request $title")
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            tvViewModel.let { Request.fetchData(it) }
-                        }
-                        (activity as? MainActivity)?.showInfoFragment(tvViewModel)
-                        setSelectedPosition(
-                            tvViewModel.getRowPosition(), true,
-                            SelectItemViewHolderTask(tvViewModel.getItemPosition())
-                        )
-                    } else {
-                        if (check(tvViewModel)) {
-                            (activity as? MainActivity)?.play(tvViewModel)
-                            (activity as? MainActivity)?.showInfoFragment(tvViewModel)
-                            setSelectedPosition(
-                                tvViewModel.getRowPosition(), true,
-                                SelectItemViewHolderTask(tvViewModel.getItemPosition())
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
+        refresh()
         (activity as MainActivity).fragmentReady("MainFragment")
-    }
-
-    fun toLastPosition() {
-        setSelectedPosition(
-            selectedPosition, false,
-            SelectItemViewHolderTask(tvListViewModel.maxNum[selectedPosition] - 1)
-        )
-    }
-
-    fun toFirstPosition() {
-        setSelectedPosition(
-            selectedPosition, false,
-            SelectItemViewHolderTask(0)
-        )
     }
 
     override fun startHeadersTransition(withHeaders: Boolean) {
     }
 
-    private fun loadRows() {
-        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+    private fun bindRows(rows: Map<String, List<TV>>?) {
+        val list = rows.orEmpty()
+        val signature = ChannelListBuilder.signature(list)
+        if (signature == rowsSignature) {
+            (activity as? MainActivity)?.showEmpty(emptyMessage(list))
+            return
+        }
 
-        val cardPresenter = CardPresenter(context!!)
+        val previousKey = tvListViewModel.getTVViewModel(itemPosition)?.getTV()?.let { keyOf(it) }
+        releaseObservers()
+
+        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        tvListViewModel = TVListViewModel()
+        val cardPresenter = CardPresenter(requireContext())
 
         var idx: Long = 0
-        for ((k, v) in TVList.list) {
+        for ((k, v) in list) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
             for ((idx2, v1) in v.withIndex()) {
                 val tvViewModel = TVViewModel(v1)
@@ -161,47 +94,101 @@ class MainFragment : BrowseSupportFragment() {
                 listRowAdapter.add(tvViewModel)
             }
             tvListViewModel.maxNum.add(v.size)
-            val header = HeaderItem(idx, k)
-            rowsAdapter!!.add(ListRow(header, listRowAdapter))
+            rowsAdapter!!.add(ListRow(HeaderItem(idx, k), listRowAdapter))
             idx++
         }
 
         adapter = rowsAdapter
+        rowsSignature = signature
 
-        itemPosition = SP.itemPosition
-        if (itemPosition >= tvListViewModel.size()) {
-            itemPosition = 0
+        val restored = previousKey?.let { indexOf(it) } ?: -1
+        itemPosition = if (restored >= 0) {
+            restored
+        } else {
+            SP.itemPosition.coerceIn(0, (tvListViewModel.size() - 1).coerceAtLeast(0))
         }
         tvListViewModel.setItemPosition(itemPosition)
+
+        val playing = playingKey
+        if (playing != null && indexOf(playing) < 0) {
+            playingKey = null
+            (activity as? MainActivity)?.stopPlay()
+        } else if (playingKey == null
+            && tvListViewModel.size() > 0
+            && (activity as? MainActivity)?.isReady() == true
+        ) {
+            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+        }
+
+        observeAll()
+        (activity as? MainActivity)?.showEmpty(emptyMessage(list))
     }
 
-    fun prevSource() {
-        view?.post {
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            if (tvViewModel != null) {
-                if (tvViewModel.videoUrl.value!!.size > 1) {
-                    val videoIndex = tvViewModel.videoIndex.value?.minus(1)
-                    if (videoIndex == -1) {
-                        tvViewModel.setVideoIndex(tvViewModel.videoUrl.value!!.size - 1)
-                    }
-                    tvViewModel.changed()
+    fun refresh(onDone: ((List<SourceRepository.SourceStatus>) -> Unit)? = null) {
+        if (!isAdded) {
+            return
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = repository.refresh()
+            lastStatuses = result.statuses
+            refreshed = true
+            bindRows(result.rows)
+            onDone?.invoke(result.statuses)
+        }
+    }
+
+    private fun observeAll() {
+        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
+            observe(tvViewModel)
+        }
+    }
+
+    private fun observe(tvViewModel: TVViewModel) {
+        tvViewModel.change.observe(viewLifecycleOwner) { _ ->
+            if (tvViewModel.change.value != null) {
+                val title = tvViewModel.getTV().title
+                Log.i(TAG, "switch $title")
+                if (check(tvViewModel)) {
+                    playingKey = keyOf(tvViewModel.getTV())
+                    (activity as? MainActivity)?.play(tvViewModel)
+                    (activity as? MainActivity)?.showInfoFragment(tvViewModel)
                 }
+                setSelectedPosition(
+                    tvViewModel.getRowPosition(), true,
+                    SelectItemViewHolderTask(tvViewModel.getItemPosition())
+                )
             }
         }
     }
 
-    fun nextSource() {
-        view?.post {
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            if (tvViewModel != null) {
-                if (tvViewModel.videoUrl.value!!.size > 1) {
-                    val videoIndex = tvViewModel.videoIndex.value?.plus(1)
-                    if (videoIndex == tvViewModel.videoUrl.value!!.size) {
-                        tvViewModel.setVideoIndex(0)
-                    }
-                    tvViewModel.changed()
-                }
+    private fun releaseObservers() {
+        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
+            tvViewModel.change.removeObservers(viewLifecycleOwner)
+        }
+    }
+
+    private fun keyOf(tv: TV): String {
+        return "${tv.channel}\u0000${tv.title}\u0000${tv.videoUrl.firstOrNull().orEmpty()}"
+    }
+
+    private fun indexOf(key: String): Int {
+        for (i in 0 until tvListViewModel.size()) {
+            val tv = tvListViewModel.getTVViewModel(i)?.getTV() ?: continue
+            if (keyOf(tv) == key) {
+                return i
             }
+        }
+        return -1
+    }
+
+    private fun emptyMessage(list: Map<String, List<TV>>): String {
+        if (list.isNotEmpty()) {
+            return ""
+        }
+        return when {
+            SourceStore.enabled().isEmpty() -> getString(R.string.empty_no_source)
+            refreshed -> getString(R.string.empty_load_failed)
+            else -> getString(R.string.empty_loading)
         }
     }
 
@@ -257,11 +244,10 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     fun fragmentReady() {
-        tvListViewModel.getTVViewModel(itemPosition)?.changed()
-
-        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
-            updateEPG(tvViewModel)
+        if (tvListViewModel.size() == 0) {
+            return
         }
+        tvListViewModel.getTVViewModel(itemPosition)?.changed()
     }
 
     fun play(itemPosition: Int) {
@@ -278,6 +264,9 @@ class MainFragment : BrowseSupportFragment() {
 
     fun prev() {
         view?.post {
+            if (tvListViewModel.size() == 0) {
+                return@post
+            }
             itemPosition--
             if (itemPosition == -1) {
                 itemPosition = tvListViewModel.size() - 1
@@ -289,28 +278,15 @@ class MainFragment : BrowseSupportFragment() {
 
     fun next() {
         view?.post {
+            if (tvListViewModel.size() == 0) {
+                return@post
+            }
             itemPosition++
             if (itemPosition == tvListViewModel.size()) {
                 itemPosition = 0
             }
             tvListViewModel.setItemPosition(itemPosition)
             tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
-    }
-
-    private fun updateEPG(tvViewModel: TVViewModel) {
-        when (tvViewModel.getTV().programType) {
-            ProgramType.Y_PROTO -> {
-                Request.fetchYProtoEPG(tvViewModel)
-            }
-
-            ProgramType.Y_JCE -> {
-                Request.fetchYJceEPG(tvViewModel)
-            }
-
-            ProgramType.F -> {
-                Request.fetchFEPG(tvViewModel)
-            }
         }
     }
 

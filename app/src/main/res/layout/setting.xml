@@ -58,6 +58,12 @@
                 android:layout_marginEnd="10dp"
                 android:text="@string/exit"
                 />
+            <Button
+                android:id="@+id/source_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/title_sources" />
             <Switch
                 android:id="@+id/switch_channel_reversal"
                 android:text="@string/title_channel_reversal"

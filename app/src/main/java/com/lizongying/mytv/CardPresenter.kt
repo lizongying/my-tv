@@ -55,12 +55,7 @@ class CardPresenter(
 //            }
 //        }
 
-        val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
-        if (!epg.isNullOrEmpty()) {
-            cardView.contentText = epg.last().title
-        } else {
-            cardView.contentText = ""
-        }
+        cardView.contentText = tvViewModel.getTV().sourceName
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {

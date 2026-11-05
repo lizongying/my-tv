@@ -7,4 +7,26 @@
     <string name="dismiss_error">好的</string>
     <string name="title_time">显示时间</string>
     <string name="exit">退出</string>
+
+    <string name="title_sources">直播源</string>
+    <string name="source_tip">添加 m3u 地址，启用后在启动时合并成一个频道列表</string>
+    <string name="source_add">添加源</string>
+    <string name="source_refresh">刷新全部</string>
+    <string name="source_close">关闭</string>
+    <string name="source_edit">编辑</string>
+    <string name="source_delete">删除</string>
+    <string name="source_enabled">启用</string>
+    <string name="source_name_hint">名称（可留空，默认取域名）</string>
+    <string name="source_url_hint">m3u 地址（http:// 或 https://）</string>
+    <string name="source_ok">确定</string>
+    <string name="source_cancel">取消</string>
+    <string name="source_empty">还没有添加直播源</string>
+    <string name="source_status_unknown">未刷新</string>
+    <string name="source_status_ok">成功 %1$d 个频道</string>
+    <string name="source_status_fail">失败：%1$s（缓存 %2$d 个）</string>
+
+    <string name="empty_no_source">还没有配置直播源\n按遥控器右键 → 直播源 → 添加 m3u 地址</string>
+    <string name="empty_loading">正在加载直播源…</string>
+    <string name="empty_load_failed">直播源加载失败，请检查网络或源地址</string>
+    <string name="empty_go_settings">去设置</string>
 </resources>

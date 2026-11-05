@@ -71,6 +71,14 @@ class SettingFragment : DialogFragment() {
             }
         }
 
+        binding.sourceEntry.setOnClickListener {
+            (activity as? MainActivity)?.let { activity ->
+                dismissAllowingStateLoss()
+                activity.supportFragmentManager.executePendingTransactions()
+                activity.openSources()
+            }
+        }
+
         updateManager = UpdateManager(context, this, context.appVersionCode)
         binding.checkVersion.setOnClickListener(
             OnClickListenerCheckVersion(

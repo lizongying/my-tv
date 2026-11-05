@@ -3,13 +3,11 @@ package com.lizongying.mytv.api
 
 import android.os.Build
 import android.util.Log
-import com.lizongying.mytv.jce.JceConverterFactory
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.protobuf.ProtoConverterFactory
 import java.net.InetSocketAddress
 import java.net.Proxy
 import javax.net.ssl.SSLContext
@@ -18,32 +16,9 @@ import javax.net.ssl.X509TrustManager
 
 
 class ApiClient {
-    private val yspUrl = "https://player-api.yangshipin.cn/"
     private val myUrl = "https://lyrics.run/"
-    private val protoUrl = "https://capi.yangshipin.cn/"
-    private val traceUrl = "https://btrace.yangshipin.cn/"
-    private val trace2Url = "https://aatc-api.yangshipin.cn/"
-    private val trace3Url = "https://dtrace.ysp.cctv.cn/"
-    private val jceUrl = "https://jacc.ysp.cctv.cn/"
-    private val fUrl = "https://m.fengshows.com/"
 
     private var okHttpClient = getUnsafeOkHttpClient()
-
-    val yspApiService: YSPApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(yspUrl)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(YSPApiService::class.java)
-    }
-
-    val yspTokenService: YSPTokenService by lazy {
-        Retrofit.Builder()
-            .baseUrl(myUrl)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(YSPTokenService::class.java)
-    }
 
     val releaseService: ReleaseService by lazy {
         Retrofit.Builder()
@@ -51,54 +26,6 @@ class ApiClient {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(ReleaseService::class.java)
-    }
-
-    val yspProtoService: YSPProtoService by lazy {
-        Retrofit.Builder()
-            .baseUrl(protoUrl)
-            .client(okHttpClient)
-            .addConverterFactory(ProtoConverterFactory.create())
-            .build().create(YSPProtoService::class.java)
-    }
-
-    val yspBtraceService: YSPBtraceService by lazy {
-        Retrofit.Builder()
-            .baseUrl(traceUrl)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(YSPBtraceService::class.java)
-    }
-
-    val yspBtraceService2: YSPBtraceService by lazy {
-        Retrofit.Builder()
-            .baseUrl(trace2Url)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(YSPBtraceService::class.java)
-    }
-
-    val yspBtraceService3: YSPBtraceService by lazy {
-        Retrofit.Builder()
-            .baseUrl(trace3Url)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(YSPBtraceService::class.java)
-    }
-
-    val yspJceService: YSPJceService by lazy {
-        Retrofit.Builder()
-            .baseUrl(jceUrl)
-            .client(okHttpClient)
-            .addConverterFactory(JceConverterFactory.create())
-            .build().create(YSPJceService::class.java)
-    }
-
-    val fAuthService: FAuthService by lazy {
-        Retrofit.Builder()
-            .baseUrl(fUrl)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(FAuthService::class.java)
     }
 
     private fun enableTls12OnPreLollipop(client: OkHttpClient.Builder): OkHttpClient.Builder {

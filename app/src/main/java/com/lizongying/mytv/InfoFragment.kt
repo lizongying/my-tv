@@ -2,7 +2,6 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,19 +28,16 @@ class InfoFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
-        binding.textView.text = tvViewModel.getTV().title
+        val tv = tvViewModel.getTV()
+        binding.textView.text = tv.title
 
         Glide.with(this)
-            .load(tvViewModel.getTV().logo)
+            .load(tv.logo)
             .into(binding.infoLogo)
 
-        Log.i(TAG, "${tvViewModel.getTV().title} ${tvViewModel.epg.value}")
-        val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
-        if (!epg.isNullOrEmpty()) {
-            binding.infoDesc.text = epg.last().title
-        } else {
-            binding.infoDesc.text = ""
-        }
+        binding.infoDesc.text = listOf(tv.channel, tv.sourceName)
+            .filter { it.isNotEmpty() }
+            .joinToString(" · ")
 
         handler.removeCallbacks(removeRunnable)
         view?.visibility = View.VISIBLE
@@ -65,9 +61,5 @@ class InfoFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val TAG = "InfoFragment"
     }
 }

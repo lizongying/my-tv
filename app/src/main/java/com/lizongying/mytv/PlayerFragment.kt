@@ -33,6 +33,7 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
     private lateinit var surfaceView: SurfaceView
     private lateinit var surfaceHolder: SurfaceHolder
     private var exoPlayer: SimpleExoPlayer? = null
+    private var pendingUrl: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +91,11 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
                         }
                     }
                 })
+                pendingUrl?.let {
+                    pendingUrl = null
+                    playerView?.player?.setMediaItem(MediaItem.fromUri(it))
+                    playerView?.player?.prepare()
+                }
             }
         })
         (activity as MainActivity).fragmentReady("PlayerFragment")
@@ -99,14 +105,23 @@ class PlayerFragment : Fragment(), SurfaceHolder.Callback {
     @OptIn(UnstableApi::class)
     fun play(tvViewModel: TVViewModel) {
         this.tvViewModel = tvViewModel
-        playerView?.player?.run {
-            setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
-            prepare()
+        val url = tvViewModel.getVideoUrlCurrent()
+        val player = playerView?.player
+        if (player != null) {
+            player.setMediaItem(MediaItem.fromUri(url))
+            player.prepare()
+        } else if (playerView != null) {
+            pendingUrl = url
         }
         exoPlayer?.run {
-            setMediaItem(com.google.android.exoplayer2.MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
+            setMediaItem(com.google.android.exoplayer2.MediaItem.fromUri(url))
             prepare()
         }
+    }
+
+    fun stop() {
+        playerView?.player?.stop()
+        exoPlayer?.stop()
     }
 
     override fun onStart() {

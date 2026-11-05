@@ -23,8 +23,8 @@ object SP {
     // Position in list of the selected channel item
     private const val KEY_POSITION = "position"
 
-    // guid
-    private const val KEY_GUID = "guid"
+    // Live sources in json
+    private const val KEY_SOURCES = "sources"
 
     private lateinit var sp: SharedPreferences
 
@@ -59,7 +59,7 @@ object SP {
         get() = sp.getInt(KEY_POSITION, 0)
         set(value) = sp.edit().putInt(KEY_POSITION, value).apply()
 
-    var guid: String
-        get() = sp.getString(KEY_GUID, "") ?: ""
-        set(value) = sp.edit().putString(KEY_GUID, value).apply()
+    var sources: String
+        get() = sp.getString(KEY_SOURCES, "[]") ?: "[]"
+        set(value) = sp.edit().putString(KEY_SOURCES, value).apply()
 }

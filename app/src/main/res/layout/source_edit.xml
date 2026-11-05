@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FF263238"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/edit_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/source_add"
+        android:textColor="#FFEEEEEE"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="520dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/source_name_hint"
+        android:inputType="text"
+        android:singleLine="true"
+        android:textColor="#FFEEEEEE"
+        android:textColorHint="#80EEEEEE"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/edit_url"
+        android:layout_width="520dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/source_url_hint"
+        android:inputType="textUri"
+        android:singleLine="true"
+        android:textColor="#FFEEEEEE"
+        android:textColorHint="#80EEEEEE"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/edit_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="#FFFF7043"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/edit_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/source_ok" />
+
+        <Button
+            android:id="@+id/edit_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/source_cancel" />
+    </LinearLayout>
+</LinearLayout>
