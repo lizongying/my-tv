@@ -51,7 +51,7 @@ class VisionActivity : FragmentActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         val root = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL; setPadding(dp(24), dp(18), dp(24), dp(18)); setBackgroundColor(Color.rgb(18,35,42))
+            orientation = LinearLayout.HORIZONTAL; setPadding(dp(24), dp(18), dp(24), dp(18)); setBackgroundColor(Color.rgb(16,18,20))
         }
         val left = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0,0,dp(20),0) }
         root.addView(ScrollView(this).apply { addView(left) }, LinearLayout.LayoutParams(0,-1,1f))
@@ -108,7 +108,7 @@ class VisionActivity : FragmentActivity() {
     }
     private fun dp(n: Int) = (resources.displayMetrics.density * n).toInt()
     private fun label(s: String, n: Int) = TextView(this).apply { text = s; textSize = n.toFloat(); setTextColor(Color.rgb(230,242,239)); setPadding(0,dp(5),0,dp(5)) }
-    private fun action(s: String, f: () -> Unit) = Button(this).apply { text = s; textSize = 13f; isAllCaps = false; isFocusable = true; minHeight = dp(42); setOnClickListener { f() } }
+    private fun action(s: String, f: () -> Unit) = Button(this).apply { text = s; textSize = 13f; isAllCaps = false; isFocusable = true; minHeight = dp(42); TvStyle.button(this); setOnClickListener { f() } }
     private fun updateUsage() {
         if (usageJob?.isActive == true) return
         usageJob=lifecycleScope.launch {

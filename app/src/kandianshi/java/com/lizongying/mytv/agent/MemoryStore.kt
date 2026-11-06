@@ -7,14 +7,8 @@ import java.io.File
 
 class MemoryStore(private val context: Context) {
     private val prefs = context.getSharedPreferences("agent_memory_settings",Context.MODE_PRIVATE)
-    private fun read(name: String): JSONObject = runCatching {
-        AtomicFile(File(context.filesDir,name)).openRead().bufferedReader().use { JSONObject(it.readText()) }
-    }.getOrDefault(JSONObject())
-    private fun write(name: String, data: JSONObject) {
-        val f = AtomicFile(File(context.filesDir,name)); val out = f.startWrite()
-        try { out.write(data.toString().toByteArray(Charsets.UTF_8)); f.finishWrite(out) }
-        catch(e: Exception) { f.failWrite(out); throw e }
-    }
+    private fun read(name: String): JSONObject = runCatching { JSONObject(BufferedState.read(context,name) ?: "{}") }.getOrDefault(JSONObject())
+    private fun write(name: String, data: JSONObject) { BufferedState.write(context,name,data.toString(),name==RECENT) }
     fun settings() = MemorySettings(prefs.getInt("mib",1).takeIf { it in listOf(1,2,5) } ?: 1,
         prefs.getInt("days",7).takeIf { it in listOf(1,7,30,90) } ?: 7)
     fun configure(settings: MemorySettings) = synchronized(lock) {

@@ -28,7 +28,7 @@ class AutoVisionActivity: FragmentActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.decorView.systemUiVisibility=View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         val content=LinearLayout(this).apply {
-            orientation=LinearLayout.VERTICAL; setPadding(dp(28),dp(16),dp(28),dp(16)); setBackgroundColor(Color.rgb(18,35,42))
+            orientation=LinearLayout.VERTICAL; setPadding(dp(28),dp(16),dp(28),dp(16)); setBackgroundColor(Color.rgb(16,18,20))
         }
         content.addView(label("看电视 · 自动广告巡检",25))
         content.addView(label("默认开启，配置并启用 AI 后自动执行。无需进入手动画面巡检。",15))
@@ -51,7 +51,7 @@ class AutoVisionActivity: FragmentActivity() {
     }
     private fun dp(n: Int)=(resources.displayMetrics.density*n).toInt()
     private fun label(s: String,n: Int)=TextView(this).apply { text=s; textSize=n.toFloat(); setTextColor(Color.rgb(230,242,239)); setPadding(0,dp(6),0,dp(6)) }
-    private fun action(s: String,f: ()->Unit)=Button(this).apply { text=s; textSize=14f; isAllCaps=false; isFocusable=true; setOnClickListener { f() } }
+    private fun action(s: String,f: ()->Unit)=Button(this).apply { text=s; textSize=14f; isAllCaps=false; isFocusable=true; TvStyle.button(this); setOnClickListener { f() } }
     private fun change(f: ()->Unit)=lifecycleScope.launch {
         val result=withContext(Dispatchers.IO) { runCatching { f() } }
         result.exceptionOrNull()?.let { Toast.makeText(this@AutoVisionActivity,it.message ?: "保存失败",Toast.LENGTH_LONG).show() }

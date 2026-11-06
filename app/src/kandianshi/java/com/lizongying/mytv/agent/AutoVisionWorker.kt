@@ -4,14 +4,19 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.SystemClock
 import androidx.work.*
+import androidx.work.ListenableWorker.Result
 import com.lizongying.mytv.TVList
 import kotlinx.coroutines.*
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class AutoVisionWorker(context: Context,params: WorkerParameters): CoroutineWorker(context,params) {
-    override suspend fun doWork(): Result=withContext(Dispatchers.IO) {
-        val c=applicationContext; val settings=AutoVisionSettings(c); val config=AgentConfigStore(c)
+    override suspend fun doWork(): Result=AutoVisionRunner.run(applicationContext,runAttemptCount)
+}
+
+object AutoVisionRunner {
+    suspend fun run(c: Context,attempt: Int=0): Result=withContext(Dispatchers.IO) {
+        val settings=AutoVisionSettings(c); val config=AgentConfigStore(c)
         val cfg=config.load()
         if(!settings.enabled() || !cfg.enabled || !cfg.aiEnabled || config.apiKey().isBlank()) {
             settings.status("等待配置并启用 AI，或自动巡检已关闭"); return@withContext Result.success()
@@ -107,7 +112,7 @@ class AutoVisionWorker(context: Context,params: WorkerParameters): CoroutineWork
             settings.status("自动巡检已暂停，已完成记忆和进度保留"); throw e
         } catch(_: Exception) {
             settings.status("本轮未完成，保留线路和进度，稍后重试")
-            if(runAttemptCount<2) Result.retry() else Result.success()
+            if(attempt<2) Result.retry() else Result.success()
         } finally {
             DecoderGate.releaseLease(lease); VisionStore.runLock.unlock()
         }
@@ -132,11 +137,13 @@ object AutoVisionScheduler {
         wm.enqueueUniquePeriodicWork(PERIODIC,ExistingPeriodicWorkPolicy.UPDATE,task)
     }
     fun nudge(c: Context) {
+        if(MaintenanceService.running) return
         val cfg=AgentConfigStore(c).load()
         if(AutoVisionSettings(c).enabled() && cfg.enabled && cfg.aiEnabled)
             WorkManager.getInstance(c).enqueueUniqueWork(ONCE,ExistingWorkPolicy.KEEP,request(c,2))
     }
     fun continueSoon(c: Context) {
+        if(MaintenanceService.running) return
         WorkManager.getInstance(c).enqueueUniqueWork(ONCE,ExistingWorkPolicy.APPEND_OR_REPLACE,request(c,30))
     }
 }

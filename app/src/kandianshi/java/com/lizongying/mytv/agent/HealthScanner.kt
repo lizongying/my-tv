@@ -47,18 +47,15 @@ object HealthScanner {
     }
 
     private fun file(c: Context) = AtomicFile(File(c.filesDir, "agent-scan.json"))
-    private fun read(c: Context): JSONObject? = runCatching { file(c).openRead().bufferedReader().use { JSONObject(it.readText()) } }.getOrNull()
-    private fun write(c: Context, state: JSONObject) {
-        val f = file(c); val out = f.startWrite()
-        try { out.write(state.toString().toByteArray(Charsets.UTF_8)); f.finishWrite(out) }
-        catch (e: Exception) { f.failWrite(out); throw e }
-    }
+    private fun read(c: Context): JSONObject? = runCatching { BufferedState.read(c,"agent-scan.json")?.let(::JSONObject) }.getOrNull()
+    private fun write(c: Context,state: JSONObject) { BufferedState.write(c,"agent-scan.json",state.toString(),true) }
     private fun status(c: Context, text: String) = c.getSharedPreferences("agent_state", Context.MODE_PRIVATE).edit().putString("scanStatus", text).apply()
 
     suspend fun scan(c: Context, begin: Boolean, generation: Long): Outcome = withContext(Dispatchers.IO) {
         if (!AgentRepository.runLock.tryLock()) return@withContext Outcome.BUSY
         val prefs = c.getSharedPreferences("agent_state", Context.MODE_PRIVATE)
         fun checkSession() {
+            if(DecoderGate.foregroundWanted()) throw ScanDeferred("观看优先，退出播放后继续检测")
             if (prefs.getLong("scanGeneration", 0) != generation) throw CancellationException("检测已停止或重新开始")
         }
         prefs.edit().putLong("runningAt", System.currentTimeMillis()).apply()

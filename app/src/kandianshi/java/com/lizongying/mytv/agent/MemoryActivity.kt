@@ -21,7 +21,7 @@ class MemoryActivity : FragmentActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.decorView.systemUiVisibility=View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         val content=LinearLayout(this).apply {
-            orientation=LinearLayout.VERTICAL; setPadding(dp(30),dp(20),dp(30),dp(20)); setBackgroundColor(Color.rgb(18,35,42))
+            orientation=LinearLayout.VERTICAL; setPadding(dp(30),dp(20),dp(30),dp(20)); setBackgroundColor(Color.rgb(16,18,20))
         }
         content.addView(label("看电视 · 记忆管理",25))
         content.addView(label("确认的纯广告线路永久跳过。普通识别结果会过期，失败来源按 1 小时、6 小时、1 天、3 天、7 天逐步延后重试。",14))
@@ -62,7 +62,7 @@ class MemoryActivity : FragmentActivity() {
         text=s; textSize=n.toFloat(); setTextColor(Color.rgb(230,242,239)); setPadding(0,dp(6),0,dp(6))
     }
     private fun action(s: String,f: ()->Unit)=Button(this).apply {
-        text=s; textSize=14f; isAllCaps=false; isFocusable=true; setOnClickListener { f() }
+        text=s; textSize=14f; isAllCaps=false; isFocusable=true; TvStyle.button(this); setOnClickListener { f() }
     }
     private fun refresh()=lifecycleScope.launch {
         val result=withContext(Dispatchers.IO) { runCatching { AgentRepository.prepareMemory(applicationContext).summary() } }

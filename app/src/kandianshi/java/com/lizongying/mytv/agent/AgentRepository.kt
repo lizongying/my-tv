@@ -28,13 +28,9 @@ object AgentRepository {
     internal val runLock = Mutex()
     private val diskLock = Any()
     private fun prefs(c: Context) = c.getSharedPreferences("agent_state", Context.MODE_PRIVATE)
-    internal fun read(c: Context, name: String): String? = synchronized(diskLock) {
-        runCatching { AtomicFile(File(c.filesDir, name)).openRead().bufferedReader().use { it.readText() } }.getOrNull()
-    }
+    internal fun read(c: Context, name: String): String? = synchronized(diskLock) { BufferedState.read(c,name) }
     internal fun write(c: Context, name: String, value: String) = synchronized(diskLock) {
-        val file = AtomicFile(File(c.filesDir, name)); val out = file.startWrite()
-        try { out.write(value.toByteArray(Charsets.UTF_8)); file.finishWrite(out) }
-        catch (e: Exception) { file.failWrite(out); throw e }
+        BufferedState.write(c,name,value,name=="agent-discovery.json")
     }
 
     fun extraChannels(c: Context): List<PlaylistChannel> = read(c, "agent-playlist.m3u")?.let { SourceTools.parse(it) }.orEmpty()
@@ -64,7 +60,7 @@ object AgentRepository {
                 .thenBy { o.optJSONObject(it)?.optLong("at") ?: 0 }).take(o.length() - 2000).toList()
             oldest.forEach(o::remove)
         }
-        write(c, "agent-health.json", o.toString())
+        BufferedState.write(c,"agent-health.json",o.toString(),previous?.removedAt == next.removedAt || previous==null && next.removedAt==0L)
         if ((previous?.removedAt ?: 0) == 0L && next.removedAt > 0) {
             log(c, "已移除无效线路：" + NetworkPolicy.displayUrl(url).take(100) + "；" + next.reason)
             bumpRevision(c)
@@ -158,10 +154,10 @@ object AgentRepository {
 
     fun discoveryPending(c: Context): Boolean = prefs(c).getInt("discoveryPending", 0) > 0
 
-    suspend fun maintain(c: Context, force: Boolean = false, idleOnly: Boolean = false) = withContext(Dispatchers.IO) {
+    suspend fun maintain(c: Context, force: Boolean = false, idleOnly: Boolean = false, continuous: Boolean = false) = withContext(Dispatchers.IO) {
         val config = AgentConfigStore(c).load(); val state = prefs(c)
         if (!config.enabled && !force) return@withContext
-        if (!force && state.getInt("crawlerVersion",0)>=10800 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < config.intervalHours * 3_600_000L) return@withContext
+        if (!force && state.getInt("crawlerVersion",0)>=10800 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
         if (!runLock.tryLock()) throw ScanDeferred("其他维护正在执行，空闲后续查")
         val deadline = SystemClock.elapsedRealtime() + 270000
         fun withinBudget() = SystemClock.elapsedRealtime() < deadline

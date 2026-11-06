@@ -473,6 +473,14 @@ class MainActivity : FragmentActivity() {
     override fun onStart() {
         Log.i(TAG, "onStart")
         super.onStart()
+        com.lizongying.mytv.agent.MaintenanceService.ensure(this)
+        if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            val notice=getSharedPreferences("notification_prompt",MODE_PRIVATE)
+            if(!notice.getBoolean("asked",false)) {
+                notice.edit().putBoolean("asked",true).apply()
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),110)
+            }
+        }
     }
 
     override fun onResume() {

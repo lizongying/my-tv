@@ -52,7 +52,7 @@ class AgentActivity : FragmentActivity() {
                 refreshing = true
                 lifecycleScope.launch {
                     val text = withContext(Dispatchers.IO) { AgentRepository.status(applicationContext) }
-                    status.text = text
+                    status.text = "后台常驻：" + (if(MaintenanceService.running) "运行中" else "未运行") + "\n" + text
                     refreshing = false
                 }
             }
@@ -64,13 +64,21 @@ class AgentActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        val root = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(dp(24), dp(18), dp(24), dp(18)); setBackgroundColor(Color.rgb(18, 35, 42)) }
+        val root = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(dp(24), dp(18), dp(24), dp(18)); setBackgroundColor(Color.rgb(16, 18, 20)) }
         val left = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, dp(24), 0) }
         val right = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER }
         root.addView(ScrollView(this).apply { addView(left) }, LinearLayout.LayoutParams(0, -1, 1.15f))
         root.addView(right, LinearLayout.LayoutParams(0, -1, 1f))
-        left.addView(label("看电视 · AI 源维护", 25))
-        left.addView(label("找源与巡检全部内置。退出播放后自动找源，返回观看时让出资源。", 13))
+        left.addView(label("看电视 · 频道管家", 28))
+        left.addView(label("退出到桌面继续维护 · 返回观看时优先播放", 13))
+        left.addView(action("常驻维护：" + if(MaintenanceService.enabled(this)) "已开启 · 点击关闭" else "已关闭 · 点击开启") {
+            MaintenanceService.toggle(this)
+            recreate()
+        })
+        left.addView(label("普通进度每 10 分钟合并保存；确认的广告和密钥即时保存。\n强行停止、关机和部分省电策略仍会中断后台。", 13))
+        left.addView(action("系统后台 / 通知权限设置") {
+            startActivity(android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,android.net.Uri.parse("package:"+packageName)))
+        })
         open = action("手机扫码配置 API / Key / 来源") { openPairing() }; left.addView(open)
         left.addView(action("立即自主找源与更新（空闲执行）") {
             AgentScheduler.runNow(applicationContext)
@@ -126,6 +134,7 @@ class AgentActivity : FragmentActivity() {
     }
     private fun action(text: String, block: () -> Unit) = Button(this).apply {
         this.text = text; textSize = 14f; isAllCaps = false; isFocusable = true; minHeight = dp(45)
+        TvStyle.button(this)
         setOnClickListener { block() }
     }
     private fun dp(value: Int) = (resources.displayMetrics.density * value).toInt()

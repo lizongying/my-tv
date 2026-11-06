@@ -9,13 +9,11 @@ import java.io.File
 class VisionStore(private val context: Context, private val planKey: String = "plan") {
     private val file = AtomicFile(File(context.filesDir, "agent-vision.json"))
     private val prefs = context.getSharedPreferences("agent_vision_budget", Context.MODE_PRIVATE)
-    private fun read(): JSONObject = runCatching { file.openRead().bufferedReader().use { JSONObject(it.readText()) } }.getOrDefault(JSONObject())
+    private fun read(): JSONObject = runCatching { JSONObject(BufferedState.read(context,"agent-vision.json") ?: "{}") }.getOrDefault(JSONObject())
     private fun write(o: JSONObject) {
         o.remove("results") // Migrated to the bounded ordinary-memory store.
         check(MemoryPolicy.bytes(o) <= 1024*1024) { "巡检进度超过容量上限，请先清理普通记忆与进度" }
-        val out = file.startWrite()
-        try { out.write(o.toString().toByteArray(Charsets.UTF_8)); file.finishWrite(out) }
-        catch (e: Exception) { file.failWrite(out); throw e }
+        BufferedState.write(context,"agent-vision.json",o.toString(),true)
     }
     fun limit(): Int = prefs.getInt("limit", 10).takeIf { it in setOf(10, 50, 200) } ?: 10
     fun setLimit(limit: Int) { require(limit in setOf(10, 50, 200)); check(prefs.edit().putInt("limit", limit).commit()) }

@@ -27,6 +27,8 @@ class CardPresenter(
         val cardView = viewHolder.view as ImageCardView
 
         cardView.titleText = tvViewModel.getTV().title
+        cardView.findViewById<android.widget.TextView>(androidx.leanback.R.id.title_text)?.apply { setTextColor(Color.WHITE); textSize=18f }
+        cardView.findViewById<android.widget.TextView>(androidx.leanback.R.id.content_text)?.setTextColor(Color.rgb(169,179,191))
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.tag = tvViewModel.videoUrl.value
 
@@ -34,7 +36,17 @@ class CardPresenter(
             ChannelLogo.bind(it, tvViewModel.getTV().title, tvViewModel.getTV().logo)
         }
 
-        cardView.setBackgroundColor(Color.WHITE)
+        cardView.setBackgroundColor(Color.rgb(26,30,35))
+        cardView.setInfoAreaBackgroundColor(Color.rgb(26,30,35))
+        // Preserve Leanback's focus listener and channel-selection behavior.
+        cardView.foreground = android.graphics.drawable.StateListDrawable().apply {
+            addState(intArrayOf(android.R.attr.state_focused),android.graphics.drawable.GradientDrawable().apply {
+                setColor(Color.TRANSPARENT)
+                cornerRadius=12*context.resources.displayMetrics.density
+                setStroke((3*context.resources.displayMetrics.density).toInt(),Color.rgb(83,224,160))
+            })
+            addState(intArrayOf(),android.graphics.drawable.ColorDrawable(Color.TRANSPARENT))
+        }
         cardView.setMainImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
 
 //        cardView.setOnFocusChangeListener { v, hasFocus ->
