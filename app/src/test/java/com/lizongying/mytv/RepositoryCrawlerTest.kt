@@ -51,4 +51,27 @@ class RepositoryCrawlerTest {
     @Test fun repoFileDiscoveryNeedsNeitherApiKeyNorModelOutput() {
         assertTrue(RepositoryCrawler.entries.any { it.url==sample });assertEquals(1,RepositoryCrawler.links(api,"[{\"type\":\"blob\",\"path\":\"HP20230319.txt\"}]").size)
     }
+    private fun collectorTree(vararg paths: String)=JSONObject().put("tree",JSONArray(paths.map { JSONObject().put("type","blob").put("path",it) })).toString()
+    @Test fun collectorReposPreferOnePublishedResultAndSubscriptionInputs() {
+        val tree=RepositoryCrawler.catalogue("https://github.com/testtff/TV")!!
+        val body=collectorTree("config/config.ini","config/rtp/广东_电信.txt","config/demo.txt","config/blacklist.txt","output/result.m3u","output/result.txt","result.txt","main.py")
+        val links=RepositoryCrawler.links(tree,body)
+        assertEquals(setOf("result.m3u","config.ini"),links.map { it.title }.toSet())
+        assertEquals("subscription",links.first { it.title=="config.ini" }.kind)
+    }
+    @Test fun collectorWithoutAnM3uFallsBackToTxt() {
+        val tree=RepositoryCrawler.catalogue("https://github.com/owner/collector")!!
+        val links=RepositoryCrawler.links(tree,collectorTree("config/config.ini","output/result.txt","config/demo.txt"))
+        assertTrue(links.any { it.url.endsWith("output/result.txt") });assertFalse(links.any { it.url.endsWith("demo.txt") })
+    }
+    @Test fun currentCollectorDoesNotInventRemovedOutputFiles() {
+        val tree=RepositoryCrawler.catalogue("https://github.com/Guovin/iptv-api")!!
+        val links=RepositoryCrawler.links(tree,collectorTree("config/config.ini","config/subscribe.txt","config/user_subscribe.txt","config/alias.txt","config/demo.txt"))
+        assertEquals(3,links.size);assertTrue(links.all { it.kind=="subscription" })
+    }
+    @Test fun ordinaryPlaylistReposRetainTheirOtherTxtFiles() {
+        val tree=RepositoryCrawler.catalogue("https://github.com/owner/live")!!
+        val links=RepositoryCrawler.links(tree,collectorTree("live/a.txt","live/b.m3u","README.md"))
+        assertEquals(2,links.size)
+    }
 }

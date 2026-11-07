@@ -56,14 +56,21 @@ object RepositoryCrawler {
         val array=if(github) JSONObject(text).getJSONArray("tree") else JSONArray(text)
         val ref=if(github) p.last() else q["ref"] ?: "HEAD"
         val project=if(github) p[1]+"/"+p[2] else p[3]
+        // Collector repos contain channel templates, RTP maps and blacklists as TXT too.
+        // Follow subscription inputs and a single preferred published result instead.
+        val paths=(0 until minOf(array.length(),3000)).mapNotNull { array.optJSONObject(it)?.optString("path") }.toSet()
+        val collector="config/config.ini" in paths && paths.any { it in setOf("config/subscribe.txt","output/result.m3u","output/result.txt") }
+        val preferredResult=when { "output/result.m3u" in paths -> "output/result.m3u"; "output/result.txt" in paths -> "output/result.txt"; else -> "result.txt" }
+        val inputs=setOf("config/config.ini","config/user_config.ini","config/subscribe.txt","config/user_subscribe.txt")
         val candidates=mutableListOf<CrawlLink>()
         for(i in 0 until minOf(array.length(),3000)) {
             val item=array.optJSONObject(i) ?: continue;val path=item.optString("path")
             if(!filePath(path)) continue
-            if(item.optString("type")=="blob" && playlist(path)) {
+            if(collector && path !in inputs && path!=preferredResult) continue
+            if(item.optString("type")=="blob" && (playlist(path) || path in inputs)) {
                 val raw=if(github) "https://raw.githubusercontent.com/$project/${enc(ref)}/" else "https://${u.host}/$project/-/raw/${enc(ref)}/"
                 val address=raw+path.split('/').joinToString("/",transform=::enc)
-                candidates.add(CrawlLink(address,path.substringAfterLast('/'),"playlist"))
+                candidates.add(CrawlLink(address,path.substringAfterLast('/'),if(path in inputs) "subscription" else "playlist"))
             } else if(!github && item.optString("type")=="tree") {
                 val address=url.substringBefore('?')+"?ref=${enc(ref)}&per_page=100&page=1&path=${enc(path)}"
                 candidates.add(CrawlLink(address,path,"catalog"))

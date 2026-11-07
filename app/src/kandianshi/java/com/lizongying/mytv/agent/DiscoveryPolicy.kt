@@ -22,9 +22,11 @@ object DiscoveryPolicy {
     fun canonical(value: String): String? = runCatching {
         val u = URI(value.trim())
         require(u.userInfo == null && u.host != null)
+        // Empty path segments can be significant (e.g. /https://origin in proxy URLs).
+        // URI.normalize() collapses those slashes and can invalidate subscriptions/signatures.
         val clean = URI(u.scheme.lowercase(Locale.ROOT) + "://" + u.host.lowercase(Locale.ROOT) +
             (if (u.port == -1) "" else ":" + u.port) + u.rawPath.ifEmpty { "/" } +
-            (u.rawQuery?.let { "?" + it } ?: "")).normalize().toASCIIString()
+            (u.rawQuery?.let { "?" + it } ?: "")).toASCIIString()
         NetworkPolicy.publicUrl(clean, false).toString()
     }.getOrNull()
 
@@ -70,7 +72,7 @@ object DiscoveryPolicy {
     private fun priority(url: String, meta: JSONObject?): Int {
         val path=URI(url).path.lowercase(Locale.ROOT);val kind=meta?.optJSONObject(url)?.optString("kind")
         return when {
-            kind in setOf("media","playlist") || path.endsWith(".m3u") || path.endsWith(".m3u8") || path.endsWith(".txt") -> 0
+            kind in setOf("media","playlist","subscription") || path.endsWith(".m3u") || path.endsWith(".m3u8") || path.endsWith(".txt") -> 0
             kind=="catalog" -> 1
             kind=="script" -> 3
             else -> 2

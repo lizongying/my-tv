@@ -130,4 +130,14 @@ class DiscoveryTest {
         assertEquals(20,channels.single().urls.size)
         assertEquals(channels,SourceTools.parse(SourceTools.encode(channels)))
     }
+    @Test fun discoveryKeepsSignificantDoubleSlashesInPaths() {
+        val url="https://proxy.example/https://origin.example/live.txt?token=a%2Fb"
+        assertEquals(url,DiscoveryPolicy.canonical(url))
+        val plan=JSONObject();DiscoveryPolicy.add(plan,listOf(url),100_000_000L)
+        assertEquals(url,DiscoveryPolicy.next(plan))
+    }
+    @Test fun differentSlashPathsCannotBeMergedIntoOneCandidate() {
+        val a="https://a.example/path//channel";val b="https://a.example/path/channel"
+        assertNotEquals(DiscoveryPolicy.canonical(a),DiscoveryPolicy.canonical(b))
+    }
 }

@@ -157,7 +157,7 @@ object AgentRepository {
     suspend fun maintain(c: Context, force: Boolean = false, idleOnly: Boolean = false, continuous: Boolean = false) = withContext(Dispatchers.IO) {
         val config = AgentConfigStore(c).load(); val state = prefs(c)
         if (!config.enabled && !force) return@withContext
-        if (!force && state.getInt("crawlerVersion",0)>=10800 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
+        if (!force && state.getInt("crawlerVersion",0)>=11200 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
         if (!runLock.tryLock()) throw ScanDeferred("其他维护正在执行，空闲后续查")
         val deadline = SystemClock.elapsedRealtime() + 270000
         fun withinBudget() = SystemClock.elapsedRealtime() < deadline
@@ -175,7 +175,7 @@ object AgentRepository {
         state.edit().putLong("runningAt", System.currentTimeMillis()).apply()
         try {
             allowed()
-            log(c, "空闲维护：电视台网站自主爬取、更新订阅并检查线路")
+            log(c, "自动维护：采集订阅入口、电视台网页与节目单，逐条检查线路")
             val memory=prepareMemory(c); val adIds=memory.adIds()
             val beforeRoutes=TVList.load(c,64,true).flatMap { it.urls }.toSet()
             if(!state.getBoolean("candidateMigration11100",false)) {
@@ -190,13 +190,13 @@ object AgentRepository {
             val payload=runCatching { JSONObject(read(c,"agent-sources.json") ?: "{}") }.getOrDefault(JSONObject())
             val cache=payload.optJSONObject("sources") ?: payload
             val oldRoots=payload.optJSONObject("roots") ?: JSONObject()
-            val entries=StationCrawler.entries+RepositoryCrawler.entries
+            val entries=StationCrawler.entries+RepositoryCrawler.entries+SubscriptionDiscovery.entries
             val sourceUrls=(entries.map { it.url }+config.sources+selected).mapNotNull(DiscoveryPolicy::canonical).distinct().take(70)
             val meta=plan.optJSONObject("meta") ?: JSONObject().also { plan.put("meta",it) }
             // New roots enter a persisted frontier. Unfinished child pages survive process death.
             sourceUrls.forEach { root ->
                 if(DiscoveryPolicy.add(plan,listOf(root),System.currentTimeMillis(),force)>0)
-                    meta.put(root,JSONObject().put("root",root).put("depth",0).put("kind","page")
+                    meta.put(root,JSONObject().put("root",root).put("depth",0).put("kind",entries.firstOrNull { DiscoveryPolicy.canonical(it.url)==root }?.kind ?: "page")
                         .put("title",entries.firstOrNull { DiscoveryPolicy.canonical(it.url)==root }?.title.orEmpty()))
             }
             checkpoint()
@@ -242,14 +242,15 @@ object AgentRepository {
                     try {
                         state.edit().putString("discoveryStatus","后台读取页面 "+fetched+"："+NetworkPolicy.displayUrl(url).take(100)).apply()
                         // Any discovered public repo/raw link can reveal more playlists through its catalogue.
-                        RepositoryCrawler.catalogue(url)?.let { catalog ->
+                        RepositoryCrawler.catalogue(url)?.takeUnless { SubscriptionDiscovery.isConfiguration(url) }?.let { catalog ->
                             StationCrawler.enqueue(plan,CrawlLink(catalog,"公开节目单目录","catalog"),root,info.optInt("depth",0),url,System.currentTimeMillis())
                         }
                         val address=RepositoryCrawler.fetchAddress(DiscoveryPolicy.fetchAddress(url))
                         val reply=HttpFetch.get(address,512*1024,sample=info.optString("kind")=="media")
                         val text=reply.bytes.toString(Charsets.UTF_8)
                         allowed(); coroutineContext.ensureActive()
-                        val parsed=SourceTools.parse(text,names)
+                        val subscriptionIndex=SubscriptionDiscovery.handles(address,text)
+                        val parsed=if(subscriptionIndex) emptyList() else SourceTools.parse(text,names)
                         val direct=if(SourceTools.isHls(text) || info.optString("kind")=="media")
                             StationCrawler.channelTitle(info.optString("title"),names.values) ?: StationCrawler.channelTitle(URI(url).path,names.values) else null
                         var livePassed=false
@@ -286,8 +287,13 @@ object AgentRepository {
                             }
                         } else if(!SourceTools.isHls(text) && info.optString("kind")!="media") {
                             val title=SourceTools.pageTitle(text).ifBlank { info.optString("title") }
-                            val links=(RepositoryCrawler.links(url,text)+StationCrawler.links(reply.url,text,title)+StationCrawler.jsonStreams(reply.url,text,title)+
-                                SourceTools.pageLinks(address,text).map { CrawlLink(it,title) }).toMutableList()
+                            val links=when {
+                                subscriptionIndex -> SubscriptionDiscovery.links(address,text)
+                                RepositoryCrawler.isCatalogue(url) -> RepositoryCrawler.links(url,text)
+                                else -> StationCrawler.links(reply.url,text,title)+StationCrawler.jsonStreams(reply.url,text,title)+
+                                    SourceTools.pageLinks(address,text).map { CrawlLink(it,title) }
+                            }.toMutableList()
+                            if(subscriptionIndex) log(c,"读取订阅索引："+links.size+" 个有效入口；节目单仍须逐条直播验证")
                             val depth=info.optInt("depth",0)
                             val html=text.trimStart().startsWith("<")
                             if(!DecoderGate.foregroundWanted() && html && info.optString("kind")!="script" && rendered<3 && withinBudget() &&
@@ -300,7 +306,7 @@ object AgentRepository {
                                     log(c,"本机网页组件未完成解析，保留静态发现结果"); emptyList()
                                 })
                             }
-                            if(links.isEmpty()) memory.sourceFailed(url) else memory.sourceSucceeded(url)
+                            if(links.isEmpty() && !subscriptionIndex) memory.sourceFailed(url) else memory.sourceSucceeded(url)
                             links.distinctBy { it.url }.take(32).forEach { child ->
                                 val continuation=RepositoryCrawler.continuation(url,child.url)
                                 if(child.kind in setOf("media","playlist") || continuation || depth<StationCrawler.MAX_DEPTH)
@@ -360,7 +366,7 @@ object AgentRepository {
             val summary="本轮自主读取 "+fetched+" 页，动态播放器 "+rendered+" 个，直接直播验证 "+directChecks+" 条；订阅更新 "+accepted+"，新增订阅 "+newSubscriptions+"，重复节目单 "+duplicates+"；净增线路 "+addedRoutes+"；线路轮换检查 "+passed+"/"+checks.size+"。画面及广告另行巡检。"
             state.edit().putLong("lastRun",System.currentTimeMillis()).putInt("cursor",cursor+sample.size)
                 .putString("summary",summary).putString("discoveryStatus",if(discoveryPending(c)) "进度已保存，稍后继续剩余页面" else "本轮已完成，等待下一轮轻量同步")
-                .putInt("crawlerVersion",10800).putLong("revision",System.currentTimeMillis()).apply()
+                .putInt("crawlerVersion",11200).putLong("revision",System.currentTimeMillis()).apply()
             log(c,summary)
         } finally {
             state.edit().putLong("runningAt",0).apply()
