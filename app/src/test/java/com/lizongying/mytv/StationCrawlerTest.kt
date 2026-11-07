@@ -158,4 +158,14 @@ class StationCrawlerTest {
         assertFalse(result.passed);assertFalse(result.conclusive)
     }
 
+    @Test fun programmeCatalogueIsNotAPlayableChannel() = runBlocking {
+        val result=LiveStreamVerifier.check(base,reply("#EXTM3U\n#EXTINF:-1,CCTV1\nhttps://a.example/1.m3u8\n"),{}, { error("do not probe a catalogue as video") }, {})
+        assertFalse(result.passed);assertTrue(result.conclusive)
+    }
+    @Test fun cappedHlsSampleCannotProveASourceIsInvalid() {
+        val text="#EXTM3U\n#EXT-X-TARGETDURATION:2\n".padEnd(128*1024,' ')
+        try { HttpFetch.probe(base) { reply(text) };fail("truncated manifest must remain unverified") }
+        catch(_: HttpFetch.UnverifiedMediaException) {}
+    }
+
 }

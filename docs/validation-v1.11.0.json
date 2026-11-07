@@ -1,14 +1,14 @@
 {
   "version": "1.11.0",
   "unit_tests": {
-    "tests": 277,
+    "tests": 279,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "lint_errors": 0,
   "lint_warnings": 134,
-  "sha256": "3bfc9331ebc11a64396e14c77fdd226ae7ee8cb6a38e4bdb3ac9f0b4f79aef51",
+  "sha256": "185c42e254fe5661378863c833188c30b807fa73692a659e13b175b6c54ff8e5",
   "apk_bytes": 10740229,
   "signature_preserved": true,
   "zipalign_16kb_passed": true,
@@ -24,5 +24,7 @@
   "light_health_batch_size": 6,
   "decoder_evidence_prioritized": true,
   "buffering_defers_network_work": true,
-  "duplicate_title_selection_regression_passed": true
+  "duplicate_title_selection_regression_passed": true,
+  "programme_list_is_not_media_test_passed": true,
+  "capped_hls_is_unverified_test_passed": true
 }

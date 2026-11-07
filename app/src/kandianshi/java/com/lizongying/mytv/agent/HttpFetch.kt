@@ -69,6 +69,7 @@ object HttpFetch {
             if (bytes.size < 32) throw UnverifiedMediaException()
             val text = bytes.toString(Charsets.UTF_8).removePrefix("\uFEFF").trimStart()
             if (text.startsWith("#EXTM3U")) {
+                if(bytes.size>=128*1024) throw UnverifiedMediaException()
                 if (encryptedPlaylist(text)) throw UnverifiedMediaException()
                 val lines = text.lineSequence().map(String::trim).filter { it.isNotEmpty() }.toList()
                 val child = lines.firstOrNull { !it.startsWith("#") } ?: error("清单没有媒体地址")

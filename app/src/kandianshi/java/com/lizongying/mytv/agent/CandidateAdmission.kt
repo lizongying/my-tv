@@ -32,10 +32,13 @@ object CandidateAdmission {
                 }
                 fun fetch(address: String): HttpFetch.Reply {
                     allowed();requests++
-                    return HttpFetch.get(address,32*1024,sample=true).also { bytes+=it.bytes.size }
+                    return HttpFetch.get(address,32*1024,sample=true).also { bytes+=it.bytes.size; if(it.bytes.size==32*1024 && SourceTools.isHls(it.bytes.toString(Charsets.UTF_8))) throw HttpFetch.UnverifiedMediaException() }
                 }
                 val passed=try {
-                    val result=LiveStreamVerifier.check(url,fetch(url),::allowed,::fetch)
+                    val initial=fetch(url)
+                    val text=initial.bytes.toString(Charsets.UTF_8)
+                    if(!SourceTools.isHls(text)) SourceTools.parse(text).takeIf { it.isNotEmpty() }?.let { offer(c,it) }
+                    val result=LiveStreamVerifier.check(url,initial,::allowed,::fetch)
                     if(result.passed && result.hls) hls.add(url)
                     result.passed
                 } catch(e: CancellationException) { throw e }
@@ -88,7 +91,7 @@ object CandidateAdmission {
             val url=selection.first[i];if(url==PlaybackRoute.url) continue
             var count=0
             try {
-                fun fetch(u: String): HttpFetch.Reply { if(PlaybackRoute.buffering) throw ScanDeferred("观看缓冲优先");if(++count>6) throw HttpFetch.UnverifiedMediaException();return HttpFetch.get(u,32*1024,sample=true) }
+                fun fetch(u: String): HttpFetch.Reply { if(PlaybackRoute.buffering) throw ScanDeferred("观看缓冲优先");if(++count>6) throw HttpFetch.UnverifiedMediaException();return HttpFetch.get(u,32*1024,sample=true).also { if(it.bytes.size==32*1024 && SourceTools.isHls(it.bytes.toString(Charsets.UTF_8))) throw HttpFetch.UnverifiedMediaException() } }
                 val result=LiveStreamVerifier.check(url,fetch(url),{ if(url==PlaybackRoute.url) throw ScanDeferred("当前播放线路") },::fetch)
                 if(result.passed) results.add(HttpFetch.Check(url,true,true,0))
                 else if(result.conclusive) results.add(HttpFetch.Check(url,false,true,0))

@@ -19,6 +19,7 @@ object LiveStreamVerifier {
             allowed(); coroutineContext.ensureActive()
             val snapshot=HlsInspection.parse(reply.url,reply.bytes.toString(Charsets.UTF_8))
             if(snapshot==null) {
+                if(reply.bytes.toString(Charsets.UTF_8).trimStart().startsWith("#EXTM3U")) return Result(false,false,"节目单不是直播媒体流",true)
                 val media=probe(current,fetch)
                 return Result(media.passed,false,if(media.passed) "媒体数据有效，画面待巡检" else "媒体未验证",media.conclusive)
             }
