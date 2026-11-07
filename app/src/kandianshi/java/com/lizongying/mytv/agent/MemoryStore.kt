@@ -65,6 +65,12 @@ class MemoryStore(private val context: Context) {
         if (kind == "removed") write(ADS,ads)
         saveRecent(book)
     }
+    fun coolingIds(): Set<String> = synchronized(lock) {
+        val book=read(RECENT);val now=System.currentTimeMillis();val limits=settings()
+        book.keys().asSequence().filter { it.startsWith("s:") }.filter {
+            val item=book.getJSONObject(it);MemoryPolicy.fresh(item,now,limits) && item.optLong("until")>now
+        }.map { it.removePrefix("s:") }.toSet()
+    }
     fun cooling(url: String): Boolean = synchronized(lock) {
         MemoryPolicy.cooling(read(RECENT),url,System.currentTimeMillis(),settings())
     }

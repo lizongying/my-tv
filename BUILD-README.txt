@@ -1,4 +1,4 @@
-KanDianshi / 看电视 1.10.0
+KanDianshi / 看电视 1.11.0
 ============================
 
 Upstream: https://github.com/lizongying/my-tv
@@ -238,3 +238,5 @@ Temporary test tools and emulator data were removed after verification; see the 
 - 所有内置 PNG 实际联网下载并校验，安装包内图片与源码一致。模拟器处于离线状态，新增远程图片下载流程未在真实 Android16 或电视上联网实测，本轮付费模型请求为零。
 
 1.10.0 (2026-11-06): foreground maintenance, ten-minute write coalescing, critical decisions remain durable, TV dark focus design. See README.md and docs/validation-v1.10.0.json for tested limits.
+
+1.11.0 (2026-11-07): per-route admission, live-playlist and segment verification, concurrent lightweight maintenance while viewing, buffering yield, decoder-evidence ranking and bounded retry queues. No extra video decoder is used while watching. Runtime coverage is recorded in docs/validation-v1.11.0.json.

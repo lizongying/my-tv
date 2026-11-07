@@ -136,4 +136,26 @@ class StationCrawlerTest {
         val result=LiveStreamVerifier.check(base,master,{}, { url -> if(url.endsWith("index.m3u8")) reply(playlist(++reads),url) else video(url) }, {})
         assertTrue(result.passed);assertEquals(2,reads)
     }
+    @Test fun cancelledSegmentCheckDoesNotBecomeABadSource() = runBlocking {
+        try {
+            LiveStreamVerifier.check(base,reply(playlist()),{}, { throw kotlinx.coroutines.CancellationException("stop") }, {})
+            fail("cancellation must propagate")
+        } catch(_: kotlinx.coroutines.CancellationException) {}
+    }
+    @Test fun budgetDeferralDoesNotBecomeABadSource() = runBlocking {
+        try {
+            LiveStreamVerifier.check(base,reply(playlist()),{}, { throw ScanDeferred("budget") }, {})
+            fail("budget must propagate")
+        } catch(_: ScanDeferred) {}
+    }
+
+    @Test fun missingMediaSegmentIsAConclusiveFailure() = runBlocking {
+        val result=LiveStreamVerifier.check(base,reply(playlist()),{}, { error("HTTP 404") }, {})
+        assertFalse(result.passed);assertTrue(result.conclusive)
+    }
+    @Test fun unrecognizedMediaIsNotEvidenceForDeletion() = runBlocking {
+        val result=LiveStreamVerifier.check(base,reply(playlist()),{}, { HttpFetch.Reply(it,ByteArray(400),"application/octet-stream") }, {})
+        assertFalse(result.passed);assertFalse(result.conclusive)
+    }
+
 }

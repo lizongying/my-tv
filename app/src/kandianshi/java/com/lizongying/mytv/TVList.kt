@@ -48,26 +48,24 @@ object TVList {
             .map { it.copy(urls = it.urls.take(maxUrls.coerceIn(1, 64))) }
     }
 
-    suspend fun refresh(context: Context, force: Boolean = false): RefreshResult = withContext(Dispatchers.IO) {
+    suspend fun refresh(context: Context, force: Boolean = false, light: Boolean = false): RefreshResult = withContext(Dispatchers.IO) {
+        if(com.lizongying.mytv.agent.PlaybackRoute.buffering) return@withContext RefreshResult(load(context),0)
         val prefs = context.getSharedPreferences("playlist", Context.MODE_PRIVATE)
-        if (!force && System.currentTimeMillis() - prefs.getLong("updated", 0) < INTERVAL) {
-            return@withContext RefreshResult(load(context), 0)
-        }
+        val now=System.currentTimeMillis()
+        val due=sources.filter { force || now-prefs.getLong("updated-"+it.asset,0)>=INTERVAL && now-prefs.getLong("retry-"+it.asset,0)>=900_000 }
+        if(due.isEmpty()) return@withContext RefreshResult(load(context),0)
         if (!mutex.tryLock()) return@withContext RefreshResult(load(context), 0)
         try {
             val map = channelNames(context)
             var updated = 0
-            for (source in sources) {
+            for (source in if(light) due.take(1) else due) {
+                prefs.edit().putLong("retry-"+source.asset,now).apply()
                 for (url in source.urls) {
                     try {
                         val text = download(url)
                         require(PlaylistParser.parse(text, map).size >= 5) { "Empty or invalid playlist" }
-                        val file = AtomicFile(File(context.filesDir, source.asset))
-                        val output = file.startWrite()
-                        try {
-                            output.write(text.toByteArray(Charsets.UTF_8))
-                            file.finishWrite(output)
-                        } catch (error: Exception) { file.failWrite(output); throw error }
+                        com.lizongying.mytv.agent.CandidateAdmission.offer(context,PlaylistParser.parse(text,map))
+                        prefs.edit().putLong("updated-"+source.asset,now).apply()
                         updated++
                         break
                     } catch (error: Exception) { Log.w("TVList", "Source refresh failed: " + url, error) }

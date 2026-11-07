@@ -113,10 +113,11 @@ object HealthRanking {
             .sortedWith(compareBy<String> { url ->
                 val h = health[url]
                 when {
-                    h == null || now - h.checkedAt > 24 * 60 * 60 * 1000L -> 1
-                    h.passed -> 0
-                    h.failures < 2 -> 2
-                    else -> 3
+                    h == null || now - h.checkedAt > 24 * 60 * 60 * 1000L -> 2
+                    h.passed && h.lastPlaybackSuccess>0 && now-h.lastPlaybackSuccess in 0 until HealthPolicy.RECENT_PLAYBACK_MS -> 0
+                    h.passed -> 1
+                    h.failures < 2 -> 3
+                    else -> 4
                 }
             }.thenBy { health[it]?.takeIf { h -> h.passed }?.latencyMs ?: Long.MAX_VALUE })
 }

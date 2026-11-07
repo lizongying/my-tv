@@ -33,7 +33,7 @@ object AgentRepository {
         BufferedState.write(c,name,value,name=="agent-discovery.json")
     }
 
-    fun extraChannels(c: Context): List<PlaylistChannel> = read(c, "agent-playlist.m3u")?.let { SourceTools.parse(it) }.orEmpty()
+    fun extraChannels(c: Context): List<PlaylistChannel> = read(c, "agent-validated.m3u")?.let { SourceTools.parse(it) }.orEmpty()
 
     fun mediaItem(c: Context, url: String, id: String = url): androidx.media3.common.MediaItem {
         val routes=runCatching { AgentConfigStore.strings(JSONArray(prefs(c).getString("hlsRoutes","[]"))) }.getOrDefault(emptyList())
@@ -162,6 +162,7 @@ object AgentRepository {
         val deadline = SystemClock.elapsedRealtime() + 270000
         fun withinBudget() = SystemClock.elapsedRealtime() < deadline
         fun allowed() {
+            if(PlaybackRoute.buffering) throw ScanDeferred("直播正在缓冲，轻量同步暂缓")
             if (idleOnly && DecoderGate.foregroundWanted()) throw ScanDeferred("正在看电视，后台找源已让出，退出播放后继续")
             if (!force && !AgentConfigStore(c).load().enabled) throw ScanDeferred("自动维护已关闭")
         }
@@ -177,7 +178,12 @@ object AgentRepository {
             log(c, "空闲维护：电视台网站自主爬取、更新订阅并检查线路")
             val memory=prepareMemory(c); val adIds=memory.adIds()
             val beforeRoutes=TVList.load(c,64,true).flatMap { it.urls }.toSet()
-            TVList.refresh(c, force)
+            if(!state.getBoolean("candidateMigration11100",false)) {
+                CandidateAdmission.offer(c,SourceTools.parse(read(c,"agent-playlist.m3u").orEmpty()))
+                state.edit().putBoolean("candidateMigration11100",true).apply()
+            }
+            CandidateAdmission.drain(c)
+            TVList.refresh(c, force, DecoderGate.foregroundWanted())
             val names=TVList.channelNames(c)
             val discovered=runCatching { AgentConfigStore.strings(JSONArray(state.getString("discovered","[]"))) }.getOrDefault(emptyList())
             var selected=discovered
@@ -218,13 +224,13 @@ object AgentRepository {
                 val extra=PlaylistParser.merge(next.keys().asSequence().map { SourceTools.parse(next.getString(it),names) }.toList(),64)
                 write(c,"agent-sources.json",result.toString())
                 write(c,"agent-playlist.m3u",SourceTools.encode(extra))
-                val active=extra.flatMap { it.urls }.filter { it in hlsRoutes }.distinct().take(1000).toMutableList()
+                val active=extraChannels(c).flatMap { it.urls }.filter { it in hlsRoutes }.distinct().take(1000).toMutableList()
                 while(JSONArray(active).toString().toByteArray(Charsets.UTF_8).size>256*1024) active.removeAt(active.lastIndex)
                 state.edit().putString("hlsRoutes",JSONArray(active).toString()).apply()
                 bumpRevision(c)
             }
             try {
-                while(fetched<20 && withinBudget()) {
+                while(fetched<(if(DecoderGate.foregroundWanted()) 2 else 12) && withinBudget()) {
                     coroutineContext.ensureActive(); allowed()
                     val url=DiscoveryPolicy.next(plan) ?: break
                     val info=meta.optJSONObject(url) ?: JSONObject().put("root",url)
@@ -265,13 +271,8 @@ object AgentRepository {
                             if(same!=null && same!=cacheKey) {
                                 duplicates++; memory.sourceSucceeded(url)
                             } else {
-                                val trusted=url in config.sources
-                                val samplePassed=livePassed || trusted || channels.take(3).any { channel -> channel.urls.take(1).any { route ->
-                                    allowed()
-                                    val probe=runCatching { HttpFetch.probe(route) }
-                                    if(probe.isSuccess) recordProbe(c,route,true,probe.getOrThrow())
-                                    probe.isSuccess
-                                } }
+                                CandidateAdmission.offer(c,channels)
+                                val samplePassed=true // Candidate storage only; visibility is gated per route.
                                 if(samplePassed) {
                                     val existed=next.has(cacheKey)
                                     if(existed) fingerprints.remove(DiscoveryPolicy.contentId(SourceTools.parse(next.getString(cacheKey),names)))
@@ -280,7 +281,7 @@ object AgentRepository {
                                     next.put(cacheKey,SourceTools.encode(merged).take(512*1024)); nextRoots.put(cacheKey,root); fingerprints[id]=cacheKey
                                     accepted++; if(!existed) newSubscriptions++
                                     memory.sourceSucceeded(url)
-                                    log(c,(if(existed) "更新已有订阅：" else "接收新订阅：")+NetworkPolicy.displayUrl(url).take(100)+"，"+channels.size+" 个频道（媒体抽检通过，实播待巡检）")
+                                    log(c,(if(existed) "更新已有订阅：" else "接收新订阅：")+NetworkPolicy.displayUrl(url).take(100)+"，"+channels.size+" 个频道（仅存入候选队列，逐条直播验证后显示）")
                                 } else memory.sourceFailed(url)
                             }
                         } else if(!SourceTools.isHls(text) && info.optString("kind")!="media") {
@@ -289,12 +290,12 @@ object AgentRepository {
                                 SourceTools.pageLinks(address,text).map { CrawlLink(it,title) }).toMutableList()
                             val depth=info.optInt("depth",0)
                             val html=text.trimStart().startsWith("<")
-                            if(html && info.optString("kind")!="script" && rendered<3 && withinBudget() &&
+                            if(!DecoderGate.foregroundWanted() && html && info.optString("kind")!="script" && rendered<3 && withinBudget() &&
                                 (StationCrawler.isPlayerPage(url,text) || links.isEmpty() && text.contains("<script",true))) {
                                 allowed(); rendered++
                                 state.edit().putString("discoveryStatus","自主解析播放器 "+rendered+"："+NetworkPolicy.displayUrl(url)).apply()
                                 links.addAll(runCatching { WebPageResolver(c).resolve(reply.url,text,
-                                    StationCrawler.channelTitle(info.optString("title"),names.values) ?: title,::allowed) }.getOrElse { e ->
+                                    StationCrawler.channelTitle(info.optString("title"),names.values) ?: title,{ allowed(); if(DecoderGate.foregroundWanted()) throw ScanDeferred("观看时暂停动态网页解析") }) }.getOrElse { e ->
                                     if(e is ScanDeferred || e is kotlinx.coroutines.CancellationException) throw e
                                     log(c,"本机网页组件未完成解析，保留静态发现结果"); emptyList()
                                 })
@@ -347,18 +348,18 @@ object AgentRepository {
             }
             val urls=TVList.load(c,64,true).flatMap { it.urls }.distinct().sorted()
             val cursor=state.getInt("cursor",0).let { if(urls.isEmpty()) 0 else it%urls.size }
-            val sample=if(urls.isEmpty()) emptyList() else (0 until minOf(12,urls.size)).map { urls[(cursor+it)%urls.size] }
-            val semaphore=Semaphore(3)
+            val sample=if(urls.isEmpty()) emptyList() else (0 until minOf(if(DecoderGate.foregroundWanted()) 2 else 12,urls.size)).map { urls[(cursor+it)%urls.size] }
+            val semaphore=Semaphore(if(DecoderGate.foregroundWanted()) 1 else 3)
             val checks=coroutineScope { sample.map { url -> async {
-                semaphore.withPermit { ensureActive(); allowed(); if(!withinBudget()) null else HttpFetch.check(url) }
+                semaphore.withPermit { ensureActive(); allowed(); if(!withinBudget() || url==PlaybackRoute.url) null else HttpFetch.check(url) }
             } }.awaitAll().filterNotNull() }
             val passed=checks.count { it.passed }
             val allowFailures=checks.none { it.failed } || HealthScanner.canRecordFailures(c,checks.any { it.passed && System.currentTimeMillis()-it.checkedAt<20_000 })
             checks.forEach { if(it.passed || it.failed && allowFailures) recordProbe(c,it.url,it.passed,it.latency) }
             val addedRoutes=(TVList.load(c,64,true).flatMap { it.urls }.toSet()-beforeRoutes).size
-            val summary="本轮自主读取 "+fetched+" 页，动态播放器 "+rendered+" 个，直接直播验证 "+directChecks+" 条；订阅更新 "+accepted+"，新增订阅 "+newSubscriptions+"，重复节目单 "+duplicates+"；净增线路 "+addedRoutes+"；媒体抽检 "+passed+"/"+checks.size+"。画面及广告另行巡检。"
+            val summary="本轮自主读取 "+fetched+" 页，动态播放器 "+rendered+" 个，直接直播验证 "+directChecks+" 条；订阅更新 "+accepted+"，新增订阅 "+newSubscriptions+"，重复节目单 "+duplicates+"；净增线路 "+addedRoutes+"；线路轮换检查 "+passed+"/"+checks.size+"。画面及广告另行巡检。"
             state.edit().putLong("lastRun",System.currentTimeMillis()).putInt("cursor",cursor+sample.size)
-                .putString("summary",summary).putString("discoveryStatus",if(discoveryPending(c)) "进度已保存，空闲时继续剩余页面" else "本轮已完成，等待退出播放或定时补查")
+                .putString("summary",summary).putString("discoveryStatus",if(discoveryPending(c)) "进度已保存，稍后继续剩余页面" else "本轮已完成，等待下一轮轻量同步")
                 .putInt("crawlerVersion",10800).putLong("revision",System.currentTimeMillis()).apply()
             log(c,summary)
         } finally {

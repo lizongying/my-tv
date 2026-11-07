@@ -51,6 +51,8 @@ class PlayerFragment : Fragment() {
     }
     fun currentStreamUrl(): String = attempt.url
     fun clearPlayback() {
+        com.lizongying.mytv.agent.PlaybackRoute.buffering=false
+        com.lizongying.mytv.agent.PlaybackRoute.url=""
         prepareJob?.cancel()
         cancelTimers()
         current = null
@@ -95,6 +97,7 @@ class PlayerFragment : Fragment() {
         })
         player?.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
+                com.lizongying.mytv.agent.PlaybackRoute.buffering=visible && state==Player.STATE_BUFFERING
                 handler.removeCallbacks(stalled)
                 if (state == Player.STATE_BUFFERING && attempt.hasFirstFrame) handler.postDelayed(stalled, 15000)
                 if (state == Player.STATE_ENDED && current != null) {
@@ -127,6 +130,7 @@ class PlayerFragment : Fragment() {
         prepareJob=viewLifecycleOwner.lifecycleScope.launch {
             DecoderGate.acquireForeground(decoderOwner)
             if(!visible || current !== tvViewModel || tvViewModel.getVideoUrlCurrent()!=url) return@launch
+            com.lizongying.mytv.agent.PlaybackRoute.url=url
             val id = attempt.start(url)
             player?.setMediaItem(AgentRepository.mediaItem(requireContext(),url,id))
             player?.prepare()
@@ -141,6 +145,7 @@ class PlayerFragment : Fragment() {
         val failedUrl = attempt.url
         context?.applicationContext?.let { app -> lifecycleScope.launch { AgentRepository.recordPlayback(app, failedUrl, false, reason) } }
         failedUrls.add(failedUrl)
+        com.lizongying.mytv.agent.PlaybackRoute.url=""
         player?.stop()
         val urls = model.videoUrl.value.orEmpty()
         val next = urls.indices.firstOrNull { urls[it] !in failedUrls }
@@ -159,6 +164,8 @@ class PlayerFragment : Fragment() {
         current?.let { failedUrls.clear(); play(it) }
     }
     override fun onStop() {
+        com.lizongying.mytv.agent.PlaybackRoute.url=""
+        com.lizongying.mytv.agent.PlaybackRoute.buffering=false
         visible=false; prepareJob?.cancel(); cancelTimers()
         player?.stop()
         DecoderGate.releaseForeground(decoderOwner)

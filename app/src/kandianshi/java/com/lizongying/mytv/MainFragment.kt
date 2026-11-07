@@ -126,7 +126,7 @@ class MainFragment : BrowseSupportFragment() {
                 if (result.updated > 0) {
                     loadRows(result.channels)
                     observeChannels()
-                    tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                    if((activity as? MainActivity)?.currentStreamUrl().isNullOrBlank()) tvListViewModel.getTVViewModel(itemPosition)?.changed()
                 }
                 if (manual) Toast.makeText(context,
                     if (result.updated > 0) "直播源已更新，共 " + result.channels.size + " 个频道"
@@ -141,10 +141,13 @@ class MainFragment : BrowseSupportFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val channels = withContext(Dispatchers.IO) { TVList.load(requireContext().applicationContext) }
+                val active=(activity as? MainActivity)?.currentStreamUrl().orEmpty()
+                val available=channels.flatMap { it.urls }
                 loadRows(channels)
                 if (channels.isNotEmpty()) {
                     observeChannels()
-                    tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                    if(active.isBlank() || active !in available) tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                    else tvListViewModel.getTVViewModel(itemPosition)?.let { (activity as? MainActivity)?.play(it) }
                 } else {
                     (activity as? MainActivity)?.clearPlayback()
                     Toast.makeText(context, "当前没有可用频道，请在手机配置页检查屏蔽列表与来源", Toast.LENGTH_LONG).show()
@@ -173,7 +176,7 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun loadRows(channels: List<PlaylistChannel>) {
-        val selectedUrl = (activity as? MainActivity)?.currentStreamUrl().orEmpty()
+        val selectedUrl = com.lizongying.mytv.agent.PlaybackRoute.url
         val selectedTitle = tvListViewModel.getTVViewModel(itemPosition)?.getTV()?.title ?: SP.channelTitle
         tvListViewModel.tvListViewModel.value?.forEach { it.change.removeObservers(viewLifecycleOwner) }
         tvListViewModel = TVListViewModel()
@@ -199,9 +202,9 @@ class MainFragment : BrowseSupportFragment() {
 
         adapter = rowsAdapter
 
-        itemPosition = tvListViewModel.tvListViewModel.value?.indexOfFirst {
-            it.getTV().title == selectedTitle
-        }?.takeIf { it >= 0 } ?: SP.itemPosition.coerceAtLeast(0)
+        itemPosition = com.lizongying.mytv.agent.ChannelSelection.choose(
+            tvListViewModel.tvListViewModel.value.orEmpty().map { it.getTV().title to it.videoUrl.value.orEmpty() },
+            selectedUrl,selectedTitle,SP.itemPosition)
         if (itemPosition >= tvListViewModel.size()) {
             itemPosition = 0
         }
@@ -262,7 +265,7 @@ class MainFragment : BrowseSupportFragment() {
                 if (itemPosition != item.getTV().id) {
                     itemPosition = item.getTV().id
                     tvListViewModel.setItemPosition(itemPosition)
-                    tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                    if((activity as? MainActivity)?.currentStreamUrl().isNullOrBlank()) tvListViewModel.getTVViewModel(itemPosition)?.changed()
                 }
                 (activity as? MainActivity)?.switchMainFragment()
             }

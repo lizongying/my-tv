@@ -17,8 +17,7 @@ import kotlinx.coroutines.CancellationException
 
 class AgentWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result = try {
-        if (DecoderGate.foregroundWanted()) throw ScanDeferred("正在看电视，退出播放后继续找源")
-        AgentRepository.maintain(applicationContext, inputData.getBoolean("force", false), true)
+        AgentRepository.maintain(applicationContext, inputData.getBoolean("force", false), false)
         AutoVisionScheduler.nudge(applicationContext)
         if(AgentRepository.discoveryPending(applicationContext)) AgentScheduler.continueIdle(applicationContext)
         Result.success()
