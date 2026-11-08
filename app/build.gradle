@@ -13,8 +13,8 @@ android {
         minSdk 21
         targetSdk 33
         testInstrumentationRunner "com.lizongying.mytv.BackgroundHandoffInstrumentation"
-        versionCode 11200
-        versionName "1.12.0"
+        versionCode 11300
+        versionName "1.13.0"
     }
     sourceSets { main.java.srcDirs = ['src/kandianshi/java'] }
     buildTypes { release { minifyEnabled false } }

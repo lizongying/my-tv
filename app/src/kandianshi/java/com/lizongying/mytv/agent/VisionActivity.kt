@@ -80,8 +80,7 @@ class VisionActivity : FragmentActivity() {
         right.addView(video, LinearLayout.LayoutParams(-1,0,1f))
         right.addView(label("静音预览 · 只采集节目画面\n截图不保存到相册，不采集设置页面或密钥。\n离开时已发送的请求可能仍产生一次费用。",11))
         setContentView(root)
-        val http = DefaultHttpDataSource.Factory().setUserAgent("Mozilla/5.0 (Linux; Android) KanDianshi/1.4")
-            .setConnectTimeoutMs(8000).setReadTimeoutMs(8000).setAllowCrossProtocolRedirects(true)
+        val http = ChannelHttpFactory.create()
         player = ExoPlayer.Builder(this).setMediaSourceFactory(DefaultMediaSourceFactory(DefaultDataSource.Factory(this,http))).build()
         player.volume = 0f
         player.setVideoTextureView(texture)

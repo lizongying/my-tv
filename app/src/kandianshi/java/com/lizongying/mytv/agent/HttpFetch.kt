@@ -18,7 +18,7 @@ object HttpFetch {
     }
     data class Reply(val url: String, val bytes: ByteArray, val type: String, val headers: Map<String,String> = emptyMap())
     fun get(url: String, maxBytes: Int = 512 * 1024, sample: Boolean = false, headers: Map<String,String> = emptyMap()): Reply {
-        var address = url
+        var address = CwjdResolver.resolve(url)
         val deadline = System.nanoTime() + 10_000_000_000L
         repeat(4) {
             require(System.nanoTime() < deadline) { "请求超时" }

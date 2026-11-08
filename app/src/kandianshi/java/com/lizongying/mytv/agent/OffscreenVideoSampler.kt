@@ -41,8 +41,7 @@ class OffscreenVideoSampler(private val context: Context) {
                 val output=OffscreenSurface(handler)
                 var player: ExoPlayer?=null
                 try {
-                    val http=DefaultHttpDataSource.Factory().setUserAgent("Mozilla/5.0 (Linux; Android) KanDianshi/1.5")
-                        .setConnectTimeoutMs(8000).setReadTimeoutMs(8000).setAllowCrossProtocolRedirects(true)
+                    val http = ChannelHttpFactory.create()
                     player=ExoPlayer.Builder(context).setLooper(Looper.myLooper()!!)
                         .setMediaSourceFactory(DefaultMediaSourceFactory(DefaultDataSource.Factory(context,http))).build()
                     val p=player

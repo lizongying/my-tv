@@ -1,4 +1,4 @@
-KanDianshi / 看电视 1.12.0
+KanDianshi / 看电视 1.13.0
 ============================
 
 Upstream: https://github.com/lizongying/my-tv
@@ -243,3 +243,5 @@ Temporary test tools and emulator data were removed after verification; see the 
 
 Version 1.12.0 adds native collector subscription index compatibility.
 See docs/collector-integration.md for supported formats and runtime limits.
+
+1.13.0 adds native fixed-channel dynamic URL resolution. See docs/cwjd-integration.md.

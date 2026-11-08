@@ -38,6 +38,7 @@ class PlayerFragment : Fragment() {
     private val decoderOwner=Any()
     private var visible=false
     private var prepareJob: Job?=null
+    private val refreshedDynamic = mutableSetOf<String>()
     private val failedUrls = mutableSetOf<String>()
     private val attempt = PlaybackAttempt()
     private val handler = Handler(Looper.getMainLooper())
@@ -72,10 +73,7 @@ class PlayerFragment : Fragment() {
         val view = PlayerBinding.inflate(inflater, container, false)
         binding = view
         view.surfaceView.visibility = View.GONE
-        val http = DefaultHttpDataSource.Factory()
-            .setUserAgent("Mozilla/5.0 (Linux; Android) KanDianshi/1.2")
-            .setConnectTimeoutMs(8000).setReadTimeoutMs(8000)
-            .setAllowCrossProtocolRedirects(true)
+        val http = com.lizongying.mytv.agent.ChannelHttpFactory.create()
         player = ExoPlayer.Builder(requireContext())
             .setMediaSourceFactory(DefaultMediaSourceFactory(DefaultDataSource.Factory(requireContext(), http)))
             .build()
@@ -119,7 +117,7 @@ class PlayerFragment : Fragment() {
     }
     fun play(tvViewModel: TVViewModel) {
         val url = tvViewModel.getVideoUrlCurrent()
-        if (current?.getTV()?.title != tvViewModel.getTV().title) failedUrls.clear()
+        if (current?.getTV()?.title != tvViewModel.getTV().title) { failedUrls.clear(); refreshedDynamic.clear() }
         current = tvViewModel
         if(!visible) return
         // Keep a healthy video playing when the catalogue is refreshed by cleanup.
@@ -143,6 +141,10 @@ class PlayerFragment : Fragment() {
         if (!attempt.fail(attempt.id)) return
         cancelTimers()
         val failedUrl = attempt.url
+        if(com.lizongying.mytv.agent.CwjdProtocol.matches(failedUrl) && refreshedDynamic.add(failedUrl)) {
+            com.lizongying.mytv.agent.CwjdResolver.invalidate()
+            player?.stop(); play(model); return
+        }
         context?.applicationContext?.let { app -> lifecycleScope.launch { AgentRepository.recordPlayback(app, failedUrl, false, reason) } }
         failedUrls.add(failedUrl)
         com.lizongying.mytv.agent.PlaybackRoute.url=""
@@ -161,7 +163,7 @@ class PlayerFragment : Fragment() {
         super.onStart()
         visible=true; DecoderGate.requestForeground(decoderOwner)
         AgentScheduler.playbackStarted(requireContext().applicationContext)
-        current?.let { failedUrls.clear(); play(it) }
+        current?.let { failedUrls.clear(); refreshedDynamic.clear(); play(it) }
     }
     override fun onStop() {
         com.lizongying.mytv.agent.PlaybackRoute.url=""
