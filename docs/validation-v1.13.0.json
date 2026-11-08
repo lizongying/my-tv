@@ -42,5 +42,6 @@
       "timestamp": "20220620150400"
     },
     "play_url_received": true
-  }
+  },
+  "credential_scan_passed": true
 }
