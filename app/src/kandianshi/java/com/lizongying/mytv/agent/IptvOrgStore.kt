@@ -45,7 +45,7 @@ object IptvOrgStore {
             val state=c.getSharedPreferences("iptv_org",Context.MODE_PRIVATE);val now=System.currentTimeMillis()
             val due=selected(c).filter { force || now-state.getLong("updated-$it",0)>=21_600_000L && now-state.getLong("attempt-$it",0)>=900_000L }
             var updated=0;var attempted=false
-            for(code in if(light) due.take(1) else due) {
+            for(code in if(light) due.sortedBy { state.getLong("attempt-$it",0) }.take(1) else due) {
                 currentCoroutineContext().ensureActive()
                 if(PlaybackRoute.buffering || !force && !AgentConfigStore(c).load().enabled) break
                 attempted=true;state.edit().putLong("attempt-$code",now).apply()

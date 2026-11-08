@@ -55,14 +55,14 @@ object TVList {
         val prefs = context.getSharedPreferences("playlist", Context.MODE_PRIVATE)
         val now=System.currentTimeMillis()
         val official=com.lizongying.mytv.agent.IptvOrgStore.refresh(context,force,light)
-        if(light && official.attempted) return@withContext RefreshResult(load(context),official.updated)
+        if(com.lizongying.mytv.agent.PlaybackRoute.buffering || light && official.updated>0) return@withContext RefreshResult(load(context),official.updated)
         val due=sources.filter { it.asset!="iptv-org-cn.m3u" }.filter { force || now-prefs.getLong("updated-"+it.asset,0)>=INTERVAL && now-prefs.getLong("retry-"+it.asset,0)>=900_000 }
         if(due.isEmpty()) return@withContext RefreshResult(load(context),official.updated)
         if (!mutex.tryLock()) return@withContext RefreshResult(load(context), 0)
         try {
             val map = channelNames(context)
             var updated = official.updated
-            for (source in if(light) due.take(1) else due) {
+            for (source in if(light) due.sortedBy { prefs.getLong("retry-"+it.asset,0) }.take(1) else due) {
                 prefs.edit().putLong("retry-"+source.asset,now).apply()
                 for (url in source.urls) {
                     try {

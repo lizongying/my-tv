@@ -8,7 +8,7 @@
   },
   "lint_errors": 0,
   "lint_warnings": 134,
-  "sha256": "ff25d4c4e4270d6cb7eb90b3961171857f69e0fbde35691b39206107c15ff400",
+  "sha256": "7b0779c55d207709bd5e662790faa1a94628bd222b50f70f510abcb366ad666b",
   "apk_bytes": 10756689,
   "signature_preserved": true,
   "zipalign_16kb_passed": true,
