@@ -193,6 +193,7 @@ class MainActivity : FragmentActivity() {
     }
 
     fun refreshSources() { mainFragment.refreshSources(true) }
+    fun resetPlaybackFailures() = playerFragment.resetFailures()
     fun currentStreamUrl(): String = playerFragment.currentStreamUrl()
     fun clearPlayback() = playerFragment.clearPlayback()
 

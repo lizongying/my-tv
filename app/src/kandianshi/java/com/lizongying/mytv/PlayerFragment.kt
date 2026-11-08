@@ -50,12 +50,17 @@ class PlayerFragment : Fragment() {
             context?.applicationContext?.let { app -> lifecycleScope.launch { AgentRepository.recordPlayback(app, url, true) } }
         }
     }
+    fun resetFailures() { failedUrls.clear(); refreshedDynamic.clear() }
+    private fun status(text: String = "") {
+        binding?.playbackStatus?.apply { this.text=text; visibility=if(text.isEmpty()) View.GONE else View.VISIBLE }
+    }
     fun currentStreamUrl(): String = attempt.url
     fun clearPlayback() {
         com.lizongying.mytv.agent.PlaybackRoute.buffering=false
         com.lizongying.mytv.agent.PlaybackRoute.url=""
         prepareJob?.cancel()
         cancelTimers()
+        status()
         current = null
         failedUrls.clear()
         attempt.clear()
@@ -82,6 +87,8 @@ class PlayerFragment : Fragment() {
         player?.addAnalyticsListener(object : AnalyticsListener {
             override fun onRenderedFirstFrame(eventTime: AnalyticsListener.EventTime, output: Any, renderTimeMs: Long) {
                 if (attempt.frame(requestId(eventTime))) {
+                    status()
+                    android.util.Log.i("TVPlayback", "FIRST_FRAME request="+attempt.id)
                     handler.removeCallbacks(noFrame)
                     if (player?.isPlaying == true) {
                         handler.postDelayed(playingFeedback, 3000)
@@ -90,7 +97,10 @@ class PlayerFragment : Fragment() {
                 }
             }
             override fun onPlayerError(eventTime: AnalyticsListener.EventTime, error: PlaybackException) {
-                if (requestId(eventTime) == attempt.id) tryNextSource("播放器解码 / 请求报错")
+                if (requestId(eventTime) == attempt.id) {
+                    android.util.Log.w("TVPlayback", "PLAYBACK_ERROR "+error.errorCodeName+" request="+attempt.id)
+                    tryNextSource("播放失败："+error.errorCodeName)
+                }
             }
         })
         player?.addListener(object : Player.Listener {
@@ -125,11 +135,13 @@ class PlayerFragment : Fragment() {
         cancelTimers()
         if (url.isBlank()) { clearPlayback(); return }
         prepareJob?.cancel()
+        status("正在加载频道…")
         prepareJob=viewLifecycleOwner.lifecycleScope.launch {
             DecoderGate.acquireForeground(decoderOwner)
             if(!visible || current !== tvViewModel || tvViewModel.getVideoUrlCurrent()!=url) return@launch
             com.lizongying.mytv.agent.PlaybackRoute.url=url
             val id = attempt.start(url)
+            android.util.Log.i("TVPlayback", "PREPARE request="+id)
             player?.setMediaItem(AgentRepository.mediaItem(requireContext(),url,id))
             player?.prepare()
             player?.playWhenReady = true
@@ -146,6 +158,7 @@ class PlayerFragment : Fragment() {
             player?.stop(); play(model); return
         }
         context?.applicationContext?.let { app -> lifecycleScope.launch { AgentRepository.recordPlayback(app, failedUrl, false, reason) } }
+        android.util.Log.w("TVPlayback", "ROUTE_FAILED request="+attempt.id+" "+reason)
         failedUrls.add(failedUrl)
         com.lizongying.mytv.agent.PlaybackRoute.url=""
         player?.stop()
@@ -153,11 +166,15 @@ class PlayerFragment : Fragment() {
         val next = urls.indices.firstOrNull { urls[it] !in failedUrls }
         if (next == null) {
             player?.stop()
+            status("此频道的线路暂时均无法播放\n可切换其他频道，或点击此频道重试\n"+reason)
             Toast.makeText(context, "此频道暂无可用线路；可到设置检测并移除无效线路", Toast.LENGTH_LONG).show()
             return
         }
         model.setVideoIndex(next)
         model.changed()
+        // Catalogue refresh may have detached the old LiveData observer.
+        // Failover must not depend on the browser still observing this model.
+        play(model)
     }
     override fun onStart() {
         super.onStart()

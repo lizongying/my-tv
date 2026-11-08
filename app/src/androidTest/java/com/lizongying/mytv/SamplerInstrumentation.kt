@@ -104,7 +104,7 @@ class SamplerInstrumentation: Instrumentation() {
             settings.setEnabled(true)
         }
     }
-    private fun fixture(file: File) {
+    internal fun fixture(file: File) {
         val width=320; val height=192; val fps=15
         val codec=MediaCodec.createEncoderByType("video/avc")
         val formats=codec.codecInfo.getCapabilitiesForType("video/avc").colorFormats

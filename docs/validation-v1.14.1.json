@@ -1,0 +1,112 @@
+{
+  "version": "1.14.1",
+  "unit_tests": {
+    "tests": 330,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 134,
+  "sha256": "71b5ba9c1c408fb82a3b96511e9d457c4b66a73ddfe6b6e3f9468333870624b3",
+  "apk_bytes": 10756689,
+  "signature_preserved": true,
+  "zipalign_16kb_passed": true,
+  "new_paid_model_requests": 0,
+  "real_android16_tested": false,
+  "android_runtime_tested": true,
+  "emulator_runtime_tested": true,
+  "playback_regression_pending": false,
+  "failed_network_sample": {
+    "default_catalog_channels": 442,
+    "http_video_first_frame": true,
+    "click_switches_while_address_nonempty": true,
+    "click_recovers_from_failed_channel": true,
+    "failed_route_automatically_uses_backup": true,
+    "failover_without_catalogue_observer": true,
+    "same_channel_explicit_retry": true,
+    "success": false,
+    "error": "java.lang.IllegalStateException: 等待播放状态超时",
+    "attempt_id": "11",
+    "has_frame": false,
+    "failed": true,
+    "player_state": 1,
+    "play_when_ready": true,
+    "foreground_wanted": true,
+    "attempt_host": "74.91.26.218",
+    "attempt_path": "/live/cctv1hd.m3u8",
+    "live_sample": "CCTV1",
+    "note": "Manifest and segment probe is insufficient: actual Android playback did not render a frame within 20 seconds."
+  },
+  "baseline_comparison": {
+    "android_api": 25,
+    "actual_release_apk": true,
+    "results": [
+      {
+        "default_catalog_channels": 442,
+        "http_video_first_frame": true,
+        "visible_http_video_pixels": true,
+        "success": false,
+        "error": "java.lang.IllegalStateException: 等待播放状态超时",
+        "attempt_id": "3",
+        "has_frame": true,
+        "failed": false,
+        "player_state": 3,
+        "play_when_ready": true,
+        "foreground_wanted": true,
+        "attempt_host": "127.0.0.1",
+        "attempt_path": "/a.mp4"
+      }
+    ]
+  },
+  "android_api": 25,
+  "actual_release_apk_playback_tested": true,
+  "runtime_playback": {
+    "android_api": 25,
+    "actual_release_apk": true,
+    "results": [
+      {
+        "default_catalog_channels": 442,
+        "http_video_first_frame": true,
+        "visible_http_video_pixels": true,
+        "click_switches_while_address_nonempty": true,
+        "click_recovers_from_failed_channel": true,
+        "failed_route_automatically_uses_backup": true,
+        "failover_without_catalogue_observer": true,
+        "same_channel_explicit_retry": true,
+        "real_live_hls_first_frame": true,
+        "real_live_still_playing": true,
+        "success": true,
+        "live_sample": "Zhejiang TV"
+      },
+      {
+        "default_catalog_channels": 442,
+        "http_video_first_frame": true,
+        "visible_http_video_pixels": true,
+        "click_switches_while_address_nonempty": true,
+        "click_recovers_from_failed_channel": true,
+        "failed_route_automatically_uses_backup": true,
+        "failover_without_catalogue_observer": true,
+        "same_channel_explicit_retry": true,
+        "real_live_hls_first_frame": true,
+        "real_live_still_playing": true,
+        "success": true,
+        "live_sample": "CCTV13"
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/playback-local-v1.14.1.png",
+      "sha256": "7c2687c6f1535630e99caaada61c578a05b0f42cec653be079cf484094a135e5"
+    },
+    {
+      "path": "screenshots/playback-zhejiang-v1.14.1.png",
+      "sha256": "638af992e9e53f7002e13f985bf7ecc614d65a6abb609f7881f519a38d7f44a9"
+    },
+    {
+      "path": "screenshots/playback-cctv13-v1.14.1.png",
+      "sha256": "1b5846ec07afd811b8f58e66636fbbb0ac328de71b9f5305f55315a69a486cc9"
+    }
+  ]
+}

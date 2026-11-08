@@ -22,4 +22,15 @@
         android:layout_gravity="center"
         app:resize_mode="fill"
         app:use_controller="false" />
+    <TextView
+        android:id="@+id/playback_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:background="#CC101820"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone" />
 </FrameLayout>

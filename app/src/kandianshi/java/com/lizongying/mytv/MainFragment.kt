@@ -126,7 +126,9 @@ class MainFragment : BrowseSupportFragment() {
                 if (result.updated > 0) {
                     loadRows(result.channels)
                     observeChannels()
-                    if((activity as? MainActivity)?.currentStreamUrl().isNullOrBlank()) tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                    // Rebind the newly built model even while its route is active.
+                    // PlayerFragment keeps healthy playback without preparing again.
+                    tvListViewModel.getTVViewModel(itemPosition)?.let { (activity as? MainActivity)?.play(it) }
                 }
                 if (manual) Toast.makeText(context,
                     if (result.updated > 0) "直播源已更新，共 " + result.channels.size + " 个频道"
@@ -262,11 +264,12 @@ class MainFragment : BrowseSupportFragment() {
             row: Row
         ) {
             if (item is TVViewModel) {
-                if (itemPosition != item.getTV().id) {
-                    itemPosition = item.getTV().id
-                    tvListViewModel.setItemPosition(itemPosition)
-                    if((activity as? MainActivity)?.currentStreamUrl().isNullOrBlank()) tvListViewModel.getTVViewModel(itemPosition)?.changed()
-                }
+                // Explicit selection must work even when the previous route is black.
+                // PlayerFragment itself preserves an already healthy selected route.
+                itemPosition = item.getTV().id
+                tvListViewModel.setItemPosition(itemPosition)
+                (activity as? MainActivity)?.resetPlaybackFailures()
+                item.changed()
                 (activity as? MainActivity)?.switchMainFragment()
             }
         }
