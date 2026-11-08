@@ -82,6 +82,7 @@ object HttpFetch {
             val mp4 = bytes.size > 12 && bytes.copyOfRange(4, 8).toString(Charsets.US_ASCII) in setOf("ftyp", "styp", "moof", "moov", "sidx")
             val flv = bytes.take(3).toByteArray().toString(Charsets.US_ASCII) == "FLV"
             if (!(ts || mp4 || flv)) throw UnverifiedMediaException()
+            require(!ts || TransportTracks.evidence(bytes)!=TransportTracks.Evidence.AUDIO_ONLY) { "只有音频轨道，没有视频" }
             return (System.nanoTime() - start) / 1_000_000
         }
         throw UnverifiedMediaException()

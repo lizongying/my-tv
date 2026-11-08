@@ -1,4 +1,4 @@
-KanDianshi / 看电视 1.14.1
+KanDianshi / 看电视 1.14.2
 ============================
 
 Upstream: https://github.com/lizongying/my-tv

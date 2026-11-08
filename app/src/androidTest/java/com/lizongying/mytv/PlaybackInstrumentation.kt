@@ -37,6 +37,7 @@ class PlaybackInstrumentation : Instrumentation() {
             server=object: NanoHTTPD("127.0.0.1",0) {
                 override fun serve(session: IHTTPSession): Response {
                     if(session.uri=="/bad.m3u8") SystemClock.sleep(700)
+                    if(session.uri=="/stall.m3u8") SystemClock.sleep(30000)
                     return if(session.uri.endsWith(".mp4")) newFixedLengthResponse(Response.Status.OK,"video/mp4",file.inputStream(),file.length())
                     else newFixedLengthResponse(Response.Status.NOT_FOUND,"text/plain","Not a stream")
                 }
@@ -61,7 +62,8 @@ class PlaybackInstrumentation : Instrumentation() {
                 PlaylistChannel("CCTV1","央视","",listOf(base+"/a.mp4")),
                 PlaylistChannel("CCTV2","央视","",listOf(base+"/b.mp4")),
                 PlaylistChannel("CCTV3","央视","",listOf(base+"/offline.m3u8")),
-                PlaylistChannel("CCTV4","央视","",listOf(base+"/bad.m3u8",base+"/fallback.mp4"))
+                PlaylistChannel("CCTV4","央视","",listOf(base+"/bad.m3u8",base+"/fallback.mp4")),
+                PlaylistChannel("CCTV5","央视","",listOf(base+"/stall.m3u8"))
             )
             runOnMainSync {
                 // Freeze catalogue polling only in this instrumentation fixture. Otherwise
@@ -105,6 +107,15 @@ class PlaybackInstrumentation : Instrumentation() {
             val failedId=attempt().id
             click(2);await(10000) { attempt().id!=failedId }
             output.put("same_channel_explicit_retry",true)
+            click(4)
+            await(18000) { var failed=false;runOnMainSync { failed=attempt().url==base+"/stall.m3u8" && attempt().failed };failed }
+            val terminalId=attempt().id
+            repeat(3) {
+                runOnMainSync { v.play(com.lizongying.mytv.models.TVViewModel(m.tvListViewModel.getTVViewModel(4)!!.getTV().copy())) }
+                SystemClock.sleep(300)
+                check(attempt().id==terminalId && attempt().failed) { "节目单刷新重新开启了已失败的加载" }
+            }
+            output.put("bounded_loading_timeout",true).put("catalogue_refresh_cannot_restart_failed_load",true)
             val live=args.getString("liveUrl").orEmpty()
             if(live.isNotBlank()) {
                 runOnMainSync {
