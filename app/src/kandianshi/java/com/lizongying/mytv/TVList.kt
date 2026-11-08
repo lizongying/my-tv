@@ -41,10 +41,12 @@ object TVList {
     }
     fun load(context: Context, maxUrls: Int = 8, includeRemoved: Boolean = false): List<PlaylistChannel> {
         val map = channelNames(context)
+        val selected=com.lizongying.mytv.agent.IptvOrgStore.selected(context).toSet()
         val merged = PlaylistParser.merge(sources.map { read(context, it, map) } + listOf(com.lizongying.mytv.agent.AgentRepository.extraChannels(context)), 64)
         val verified = JSONArray(context.assets.open("verified_urls.json").bufferedReader().use { it.readText() })
         val urls = (0 until verified.length()).map { verified.getString(it) }.toSet()
         return com.lizongying.mytv.agent.AgentRepository.rank(context, merged.map { it.copy(urls = it.urls.sortedBy { url -> url !in urls }) }, includeRemoved)
+            .filter { com.lizongying.mytv.agent.IptvOrgPolicy.visible(it,selected,com.lizongying.mytv.agent.PlaybackRoute.url) }
             .map { it.copy(urls = it.urls.take(maxUrls.coerceIn(1, 64))) }
     }
 
@@ -52,12 +54,14 @@ object TVList {
         if(com.lizongying.mytv.agent.PlaybackRoute.buffering) return@withContext RefreshResult(load(context),0)
         val prefs = context.getSharedPreferences("playlist", Context.MODE_PRIVATE)
         val now=System.currentTimeMillis()
-        val due=sources.filter { force || now-prefs.getLong("updated-"+it.asset,0)>=INTERVAL && now-prefs.getLong("retry-"+it.asset,0)>=900_000 }
-        if(due.isEmpty()) return@withContext RefreshResult(load(context),0)
+        val official=com.lizongying.mytv.agent.IptvOrgStore.refresh(context,force,light)
+        if(light && official.attempted) return@withContext RefreshResult(load(context),official.updated)
+        val due=sources.filter { it.asset!="iptv-org-cn.m3u" }.filter { force || now-prefs.getLong("updated-"+it.asset,0)>=INTERVAL && now-prefs.getLong("retry-"+it.asset,0)>=900_000 }
+        if(due.isEmpty()) return@withContext RefreshResult(load(context),official.updated)
         if (!mutex.tryLock()) return@withContext RefreshResult(load(context), 0)
         try {
             val map = channelNames(context)
-            var updated = 0
+            var updated = official.updated
             for (source in if(light) due.take(1) else due) {
                 prefs.edit().putLong("retry-"+source.asset,now).apply()
                 for (url in source.urls) {

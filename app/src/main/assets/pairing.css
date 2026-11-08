@@ -2,3 +2,5 @@
 
 /* KanDianshi media-dark design tokens */
 :root{color-scheme:dark;color:#f5f7fa;background:#101214}section{background:#1a1e23;border-color:#35404b}h1,h2{color:#f5f7fa}.intro,.hint{color:#a9b3bf}.eyebrow{color:#53e0a0}.mark,button{background:#53e0a0;color:#10251a}button.secondary{background:#244537;color:#f5f7fa}input:not([type=checkbox]),select,textarea{background:#101214;color:#f5f7fa;border-color:#536171}.check input{accent-color:#53e0a0}#status{background:#244537;color:#e4ffef}input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #53e0a0}
+
+select[multiple] { min-height: 14rem; }

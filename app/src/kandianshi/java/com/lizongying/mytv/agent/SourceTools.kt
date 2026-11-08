@@ -23,7 +23,7 @@ object SourceTools {
                     (chinese.containsMatchIn(line.substringAfterLast(',')) || line.substringAfterLast(',').startsWith("CCTV", true))) {
                     if (line.contains("group-title=")) {
                         val existing = Regex("""group-title="([^"]*)"""" ).find(line)?.groupValues?.get(1).orEmpty()
-                        if (existing.contains("央视") || existing.contains("卫视") || existing.contains("地方") || existing in setOf("Religious", "Shop")) line
+                        if (IptvOrgPolicy.country(existing)!=null || existing.contains("央视") || existing.contains("卫视") || existing.contains("地方") || existing in setOf("Religious", "Shop")) line
                         else line.replace(Regex("""group-title="[^"]*""""), "group-title=\"地方台\"")
                     }
                     else {

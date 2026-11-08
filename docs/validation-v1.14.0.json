@@ -1,0 +1,32 @@
+{
+  "version": "1.14.0",
+  "unit_tests": {
+    "tests": 330,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 134,
+  "sha256": "ff25d4c4e4270d6cb7eb90b3961171857f69e0fbde35691b39206107c15ff400",
+  "apk_bytes": 10756689,
+  "signature_preserved": true,
+  "zipalign_16kb_passed": true,
+  "new_paid_model_requests": 0,
+  "real_android16_tested": false,
+  "official_cn_import_check": {
+    "official_cn_extinf_records": 156,
+    "stream_playback_tested": false,
+    "domestic_candidate_channels": 141,
+    "group_names": [
+      "央视",
+      "卫视",
+      "地方台"
+    ],
+    "gb_alias_uses_uk": true
+  },
+  "android_runtime_tested": false,
+  "emulator_runtime_tested": false,
+  "iptv_country_catalogue_entries": 250,
+  "phone_script_syntax_checked": true
+}

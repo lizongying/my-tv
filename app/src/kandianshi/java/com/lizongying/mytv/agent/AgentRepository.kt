@@ -145,7 +145,7 @@ object AgentRepository {
             "\n已检测线路 " + h.size + "，24 小时内成功 " + h.values.count { it.passed && System.currentTimeMillis() - it.checkedAt < 24 * 60 * 60 * 1000L } +
             "\n已移除无效线路 " + h.values.count { it.removedAt > 0 } + "（可恢复）；连续 3 次失败才自动移除" +
             "\n后台找源：" + state.getString("discoveryStatus", "退出播放后自动安排；所有功能均已内置") +
-            "\n" + AutoVisionSettings(c).summary() +
+            "\n" + IptvOrgStore.summary(c) + "\n" + AutoVisionSettings(c).summary() +
             "\n" + RealLogoStore.summary(c) +
             "\n" + state.getString("scanStatus", "可点“检测并移除无效线路”检查全列表") +
             "\n" + state.getString("summary", "自主爬取电视台网站、解析动态播放器及 M3U/TXT；不需要搜索引擎或 AI Key。") +
@@ -157,7 +157,7 @@ object AgentRepository {
     suspend fun maintain(c: Context, force: Boolean = false, idleOnly: Boolean = false, continuous: Boolean = false) = withContext(Dispatchers.IO) {
         val config = AgentConfigStore(c).load(); val state = prefs(c)
         if (!config.enabled && !force) return@withContext
-        if (!force && state.getInt("crawlerVersion",0)>=11300 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
+        if (!force && state.getInt("crawlerVersion",0)>=11400 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
         if (!runLock.tryLock()) throw ScanDeferred("其他维护正在执行，空闲后续查")
         val deadline = SystemClock.elapsedRealtime() + 270000
         fun withinBudget() = SystemClock.elapsedRealtime() < deadline
@@ -367,7 +367,7 @@ object AgentRepository {
             val summary="本轮自主读取 "+fetched+" 页，动态播放器 "+rendered+" 个，直接直播验证 "+directChecks+" 条；订阅更新 "+accepted+"，新增订阅 "+newSubscriptions+"，重复节目单 "+duplicates+"；净增线路 "+addedRoutes+"；线路轮换检查 "+passed+"/"+checks.size+"。画面及广告另行巡检。"
             state.edit().putLong("lastRun",System.currentTimeMillis()).putInt("cursor",cursor+sample.size)
                 .putString("summary",summary).putString("discoveryStatus",if(discoveryPending(c)) "进度已保存，稍后继续剩余页面" else "本轮已完成，等待下一轮轻量同步")
-                .putInt("crawlerVersion",11300).putLong("revision",System.currentTimeMillis()).apply()
+                .putInt("crawlerVersion",11400).putLong("revision",System.currentTimeMillis()).apply()
             log(c,summary)
         } finally {
             state.edit().putLong("runningAt",0).apply()

@@ -12,7 +12,7 @@ object PlaylistParser {
     private val cctv = Regex("""(?i)^CCTV[-\s]?(\d+)(\+|Plus)?""")
     private val decorations = Regex("""(?i)\s*(?:\(\d+(?:p|i)\)|\[(?:Geo-blocked|Not 24/7)\]|\bHD\b|\bSD\b)""")
 
-    fun parse(text: String, names: Map<String, String> = emptyMap(), maxUrls: Int = 8): List<PlaylistChannel> {
+    fun parse(text: String, names: Map<String, String> = emptyMap(), maxUrls: Int = 8, internationalCountry: String? = null): List<PlaylistChannel> {
         val out = mutableListOf<PlaylistChannel>()
         var attrs = emptyMap<String, String>()
         var title = ""
@@ -20,21 +20,23 @@ object PlaylistParser {
             val line = raw.trim()
             if (line.startsWith("#EXTINF:")) {
                 attrs = attribute.findAll(line).associate { it.groupValues[1] to it.groupValues[2] }
-                title = line.substringAfterLast(",").trim()
+                title = titleOf(line)
             } else if (line.isNotEmpty() && !line.startsWith("#") && title.isNotEmpty()) {
                 val id = attrs["tvg-id"].orEmpty().substringBefore("@")
                 val category = attrs["group-title"].orEmpty()
                 val url = line.substringBefore("|").substringBefore("$").replace("&amp;", "&").trim()
                 val cnId = id.endsWith(".cn")
+                val scope=internationalCountry?.takeIf { it.matches(Regex("[A-Z]{2}")) }?.let(com.lizongying.mytv.agent.IptvOrgPolicy::code) ?: com.lizongying.mytv.agent.IptvOrgPolicy.country(category)
+                val international=scope!=null
                 val domesticGroup = category.contains("央视") || category.contains("卫视") || category.contains("地方")
                 val named = names[id] ?: if (domesticGroup && id.any { it in '\u4e00'..'\u9fff' }) id else title
-                val skip = category in setOf("Religious", "Shop") ||
+                val skip = category.split(';').any { it.trim().lowercase(Locale.ROOT) in setOf("religious","shop","xxx","adult","nsfw") } ||
                     named.contains("支持作者") || named.contains("更新时间") ||
                     named.contains("购物") || named.contains("测试") ||
-                    (id.contains(".") && !cnId)
-                if (!skip && (domesticGroup || cnId) && validUrl(url)) {
-                    val canonical = normalize(named)
-                    val group = when {
+                    (id.contains(".") && !cnId && !international)
+                if (!skip && (domesticGroup || cnId || international) && validUrl(url)) {
+                    val canonical = normalize(named).let { if(international && !it.endsWith(" [$scope]")) "$it [$scope]" else it }
+                    val group = if(scope!=null) com.lizongying.mytv.agent.IptvOrgPolicy.group(scope) else when {
                         canonical.startsWith("CCTV", true) || canonical.startsWith("CGTN", true) -> "央视"
                         canonical.contains("卫视") || category.contains("卫视") -> "卫视"
                         else -> "地方台"
@@ -46,6 +48,12 @@ object PlaylistParser {
             }
         }
         return merge(listOf(out),maxUrls)
+    }
+
+    private fun titleOf(line: String): String {
+        var quoted=false
+        for(i in line.indices) { if(line[i]=='"') quoted=!quoted else if(line[i]==',' && !quoted) return line.substring(i+1).trim() }
+        return ""
     }
 
     fun validUrl(url: String): Boolean = try {

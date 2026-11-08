@@ -24,6 +24,10 @@ object CandidateAdmission {
                 currentCoroutineContext().ensureActive()
                 val item=synchronized(lock) { read(c).optJSONObject(id) } ?: continue
                 val url=item.getString("url")
+                val region=IptvOrgPolicy.country(item.optString("group"))
+                if(region!=null && region !in IptvOrgStore.selected(c) && url!=PlaybackRoute.url) {
+                    synchronized(lock) {val b=read(c);b.remove(id);save(c,b)};continue
+                }
                 if(url==PlaybackRoute.url || !AgentConfigStore(c).load().enabled) break
                 if(MemoryPolicy.id(url) in MemoryStore(c).adIds()) { synchronized(lock) { val b=read(c);b.remove(id);save(c,b) };continue }
                 fun allowed() {

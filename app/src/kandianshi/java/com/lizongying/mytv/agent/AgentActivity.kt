@@ -60,6 +60,24 @@ class AgentActivity : FragmentActivity() {
         }
     }
 
+    private fun chooseIptvCountries() {
+        val countries=IptvOrgStore.countries(this)
+        val chosen=IptvOrgStore.selected(this).toMutableSet()
+        val flags=countries.map { it.code in chosen }.toBooleanArray()
+        AlertDialog.Builder(this).setTitle("IPTV 地区订阅（最多 5 项）")
+            .setMultiChoiceItems(countries.map { it.name+"（"+it.code+"）" }.toTypedArray(),flags) { dialog,index,on ->
+                val code=countries[index].code
+                if(on && chosen.size>=5) {
+                    flags[index]=false
+                    (dialog as AlertDialog).listView.setItemChecked(index,false)
+                    Toast.makeText(this,"最多同时订阅 5 个地区，避免列表与验证任务过大",Toast.LENGTH_LONG).show()
+                } else if(on) chosen.add(code) else chosen.remove(code)
+            }.setPositiveButton("保存并同步") { _,_ ->
+                IptvOrgStore.set(applicationContext,chosen.toList())
+                Toast.makeText(this,"已保存；新增地址验证后才显示",Toast.LENGTH_LONG).show()
+            }.setNegativeButton("取消",null).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -79,6 +97,8 @@ class AgentActivity : FragmentActivity() {
         left.addView(action("系统后台 / 通知权限设置") {
             startActivity(android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,android.net.Uri.parse("package:"+packageName)))
         })
+        left.addView(action("IPTV 官方订阅 · 选择国家／地区") { chooseIptvCountries() })
+        left.addView(action("立即同步 IPTV（验证后合并）") { AgentScheduler.runNow(applicationContext);Toast.makeText(this,"IPTV 同步已排队，候选逐条验证后显示",Toast.LENGTH_LONG).show() })
         open = action("手机扫码配置 API / Key / 来源") { openPairing() }; left.addView(open)
         left.addView(action("立即自主找源与更新（空闲执行）") {
             AgentScheduler.runNow(applicationContext)

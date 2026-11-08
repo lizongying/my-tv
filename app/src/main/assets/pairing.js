@@ -6,7 +6,7 @@
   const form = el('config');
   const status = (message, failed = false) => { el('status').textContent = message; el('status').classList.toggle('error', failed); };
   const lines = id => el(id).value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  const data = () => ({enabled:el('enabled').checked,aiEnabled:el('aiEnabled').checked,logoLookupEnabled:el('logoLookupEnabled').checked,logoImageMb:Number(el('logoImageMb').value),endpoint:el('endpoint').value.trim(),model:el('model').value.trim(),key:el('key').value.trim(),clearKey:el('clearKey').checked,intervalHours:Number(el('intervalHours').value),sources:lines('sources'),blocked:lines('blocked')});
+  const data = () => ({enabled:el('enabled').checked,aiEnabled:el('aiEnabled').checked,logoLookupEnabled:el('logoLookupEnabled').checked,logoImageMb:Number(el('logoImageMb').value),endpoint:el('endpoint').value.trim(),model:el('model').value.trim(),key:el('key').value.trim(),clearKey:el('clearKey').checked,intervalHours:Number(el('intervalHours').value),iptvCountries:Array.from(el('iptvCountries').selectedOptions).map(o => o.value),sources:lines('sources'),blocked:lines('blocked')});
   const busy = value => { el('save').disabled = value; el('test').disabled = value; };
   const request = async (path, body) => {
     const controller = new AbortController();
@@ -29,6 +29,7 @@
     event.preventDefault(); const body = data();
     if (body.aiEnabled && (!body.endpoint || !body.model)) { status('请填写 API 地址和模型名称。', true); return; }
     if (body.sources.length > 20 || body.blocked.length > 100) { status('来源最多 20 个，屏蔽列表最多 100 项。', true); return; }
+    if (body.iptvCountries.length > 5) { status('IPTV 最多同时选择 5 个地区。', true); return; }
     busy(true); status('正在保存到电视…');
     try { status(await request('/api/config', body)); el('key').value = ''; token = ''; form.hidden = true; }
     catch (error) { status(error.name === 'AbortError' ? '保存状态未知，请到电视上查看；需要时重新配对。' : error.message, true); busy(false); }
@@ -40,6 +41,8 @@
       const current = JSON.parse(await request('/api/config'));
       ['enabled','aiEnabled','logoLookupEnabled'].forEach(id => { el(id).checked = !!current[id]; });
       ['endpoint','model','intervalHours','logoImageMb'].forEach(id => { el(id).value = current[id]; });
+      const selectedCountries = new Set(current.iptvCountries || ['CN']);
+      (current.iptvOptions || []).forEach(item => { const option = document.createElement('option'); option.value = item.code; option.textContent = item.name + '（' + item.code + '）'; option.selected = selectedCountries.has(item.code); el('iptvCountries').appendChild(option); });
       el('sources').value = (current.sources || []).join('\n'); el('blocked').value = (current.blocked || []).join('\n');
       el('key').placeholder = current.hasKey ? '已保存；留空保留原密钥' : '输入密钥';
       el('keyState').textContent = current.hasKey ? '电视已保存 Key，不会回显。留空即可保留。' : '密钥加密存储在电视中，不会回显。';

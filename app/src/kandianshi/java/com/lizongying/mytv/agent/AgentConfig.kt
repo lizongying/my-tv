@@ -54,6 +54,7 @@ class AgentConfigStore(private val context: Context) {
         return JSONObject().put("enabled", c.enabled).put("aiEnabled", c.aiEnabled)
             .put("endpoint", c.endpoint).put("model", c.model).put("intervalHours", c.intervalHours)
             .put("sources", JSONArray(c.sources)).put("blocked", JSONArray(c.blocked.toList()))
+            .put("iptvCountries",JSONArray(IptvOrgStore.selected(context))).put("iptvOptions",IptvOrgStore.options(context))
             .put("hasKey", apiKey().isNotBlank()).put("logoAiEnabled", c.logoAiEnabled).put("logoCacheKb", c.logoCacheKb)
             .put("logoLookupEnabled",c.logoLookupEnabled).put("logoImageMb",c.logoImageMb)
     }
@@ -79,10 +80,12 @@ class AgentConfigStore(private val context: Context) {
         val key = if (clear) "" else supplied.ifBlank { apiKey() }
         val aiEnabled = o.optBoolean("aiEnabled", false)
         require(!aiEnabled || endpoint.isNotBlank() && model.isNotBlank() && key.isNotBlank()) { "启用 AI 前请填写 API 地址、模型和密钥" }
+        val oldCountries=IptvOrgStore.selected(context)
+        val countries=if(o.has("iptvCountries")) IptvOrgStore.validate(context,strings(o.getJSONArray("iptvCountries"))) else oldCountries
         val config = JSONObject().put("enabled", o.optBoolean("enabled", true)).put("aiEnabled", aiEnabled)
             .put("endpoint", endpoint).put("model", model)
             .put("intervalHours", o.optInt("intervalHours", 6).takeIf { it in setOf(6, 12, 24) } ?: 6)
-            .put("sources", JSONArray(sourceList)).put("blocked", JSONArray(blocked))
+            .put("iptvCountries",JSONArray(countries)).put("sources", JSONArray(sourceList)).put("blocked", JSONArray(blocked))
             .put("logoAiEnabled", o.optBoolean("logoAiEnabled", load().logoAiEnabled))
             .put("logoCacheKb", o.optInt("logoCacheKb", load().logoCacheKb).takeIf { it in setOf(64,128,256) } ?: 128)
             .put("logoLookupEnabled",o.optBoolean("logoLookupEnabled",load().logoLookupEnabled))
@@ -90,6 +93,7 @@ class AgentConfigStore(private val context: Context) {
         // Encrypt before committing anything: a Keystore failure leaves the previous configuration intact.
         val encrypted = if (key.isEmpty()) "" else SecretBox.encrypt(context, key)
         check(prefs.edit().putString("config", config.toString()).putString("key", encrypted).commit()) { "配置保存失败" }
+        IptvOrgStore.changed(context,oldCountries,countries)
     }
 
     companion object {

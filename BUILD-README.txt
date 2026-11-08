@@ -1,4 +1,4 @@
-KanDianshi / 看电视 1.13.0
+KanDianshi / 看电视 1.14.0
 ============================
 
 Upstream: https://github.com/lizongying/my-tv
@@ -245,3 +245,5 @@ Version 1.12.0 adds native collector subscription index compatibility.
 See docs/collector-integration.md for supported formats and runtime limits.
 
 1.13.0 adds native fixed-channel dynamic URL resolution. See docs/cwjd-integration.md.
+
+1.14.0 adds selectable iptv-org country subscriptions; see docs/iptv-org-integration.md.
