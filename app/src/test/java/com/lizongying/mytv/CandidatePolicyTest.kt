@@ -77,4 +77,18 @@ class CandidatePolicyTest {
   assertTrue(b.has(MemoryPolicy.id("https://new.example/live.m3u8")));assertTrue(b.length()<=CandidatePolicy.LIMIT)
  }
 
+ @Test fun laterMirrorsRemainDiscoverableWhenTheFirstEightAreDead() {
+  val b=JSONObject();val urls=(0 until 20).map { "https://deep.example/$it.m3u8" }
+  CandidatePolicy.add(b,listOf(ch("CCTV6",*urls.toTypedArray())),1)
+  CandidatePolicy.due(b,2,"").take(8).forEach { CandidatePolicy.failed(b,it,2) }
+  assertEquals(urls[8],b.getJSONObject(CandidatePolicy.due(b,3,"").first()).getString("url"))
+  assertTrue(b.has(MemoryPolicy.id(urls[19])))
+ }
+ @Test fun aFullOrdinaryQueueCannotBlockRepairOfTheMissingChannel() {
+  val b=JSONObject();CandidatePolicy.add(b,(0 until CandidatePolicy.LIMIT).map { ch("other$it","https://busy.example/$it") },1)
+  CandidatePolicy.add(b,listOf(ch("CCTV6","https://repair.example/1")),2,setOf("CCTV6"))
+  assertEquals("https://repair.example/1",b.getJSONObject(CandidatePolicy.due(b,3,"",setOf("CCTV6")).first()).getString("url"))
+  assertEquals(CandidatePolicy.LIMIT,b.length())
+ }
+
 }

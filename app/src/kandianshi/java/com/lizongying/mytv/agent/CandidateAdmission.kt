@@ -13,12 +13,13 @@ object CandidateAdmission {
     fun offer(c: Context,channels: List<PlaylistChannel>)=synchronized(lock) {
         val known=SourceTools.parse(AgentRepository.read(c,"agent-validated.m3u").orEmpty()).flatMap { it.urls }.toSet()
         val book=read(c);val blocked=MemoryStore(c).let { it.adIds()+it.coolingIds() }
-        CandidatePolicy.add(book,channels.map { ch -> ch.copy(urls=ch.urls.filterNot { it in known || MemoryPolicy.id(it) in blocked }) },System.currentTimeMillis()); save(c,book)
+        CandidatePolicy.add(book,channels.map { ch -> ch.copy(urls=ch.urls.filterNot { it in known || MemoryPolicy.id(it) in blocked }) },System.currentTimeMillis(),RecoveryRequests.shared.pending(System.currentTimeMillis())); save(c,book)
     }
     suspend fun drain(c: Context) {
         val watching=DecoderGate.foregroundWanted();val end=SystemClock.elapsedRealtime()+if(watching) 75_000 else 180_000
         var requests=0;var bytes=0;var exhausted=false;val good=mutableListOf<PlaylistChannel>();val hls=mutableSetOf<String>()
-        val ids=synchronized(lock) { CandidatePolicy.due(read(c),System.currentTimeMillis(),PlaybackRoute.url).take(if(watching) 2 else 8) }
+        val waitingForRepair=PlaybackRoute.url.isBlank() && RecoveryRequests.shared.pending(System.currentTimeMillis()).isNotEmpty()
+        val ids=synchronized(lock) { CandidatePolicy.due(read(c),System.currentTimeMillis(),PlaybackRoute.url,RecoveryRequests.shared.pending(System.currentTimeMillis())).take(if(watching && !waitingForRepair) 2 else 8) }
         try {
             for(id in ids) {
                 currentCoroutineContext().ensureActive()

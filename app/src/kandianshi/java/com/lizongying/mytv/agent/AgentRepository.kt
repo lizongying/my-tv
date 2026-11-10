@@ -157,7 +157,8 @@ object AgentRepository {
     suspend fun maintain(c: Context, force: Boolean = false, idleOnly: Boolean = false, continuous: Boolean = false) = withContext(Dispatchers.IO) {
         val config = AgentConfigStore(c).load(); val state = prefs(c)
         if (!config.enabled && !force) return@withContext
-        if (!force && state.getInt("crawlerVersion",0)>=11400 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
+        val recoveryDue=RecoveryRequests.shared.refreshDue(System.currentTimeMillis())
+        if (!force && !recoveryDue && state.getInt("crawlerVersion",0)>=11400 && !discoveryPending(c) && System.currentTimeMillis() - state.getLong("lastRun", 0) < (if(continuous) 900_000L else config.intervalHours * 3_600_000L)) return@withContext
         if (!runLock.tryLock()) throw ScanDeferred("其他维护正在执行，空闲后续查")
         val deadline = SystemClock.elapsedRealtime() + 270000
         fun withinBudget() = SystemClock.elapsedRealtime() < deadline
@@ -184,7 +185,12 @@ object AgentRepository {
             }
             CwjdResolver.offer(c)
             CandidateAdmission.drain(c)
-            TVList.refresh(c, force, DecoderGate.foregroundWanted())
+            if(recoveryDue) RecoveryRequests.shared.refreshed(System.currentTimeMillis())
+            TVList.refresh(c, force || recoveryDue, DecoderGate.foregroundWanted())
+            if(RecoveryRequests.shared.pending(System.currentTimeMillis()).isNotEmpty()) {
+                CandidateAdmission.drain(c)
+                if(withinBudget() && PlaybackRoute.url.isBlank()) CandidateAdmission.drain(c)
+            }
             val names=TVList.channelNames(c)
             val discovered=runCatching { AgentConfigStore.strings(JSONArray(state.getString("discovered","[]"))) }.getOrDefault(emptyList())
             var selected=discovered

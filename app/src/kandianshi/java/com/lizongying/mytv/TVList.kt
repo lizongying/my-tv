@@ -17,7 +17,9 @@ object TVList {
     private data class Source(val asset: String, val urls: List<String>)
     private val sources = listOf(
         Source("cctv-priority.m3u",listOf(
+            "https://raw.githubusercontent.com/testtff/TV/master/output/result.m3u",
             "https://raw.githubusercontent.com/best-fan/iptv-sources/main/cn_cctv_status.m3u8",
+            "https://gh.bravetimes.cn/https://raw.githubusercontent.com/best-fan/iptv-sources/main/cn_cctv_status.m3u8",
             "https://raw.githubusercontent.com/jiandantv/IPTV2026/main/live_lite.m3u"
         )),
         Source("iptv-org-cn.m3u", listOf("https://iptv-org.github.io/iptv/countries/cn.m3u")),
@@ -59,24 +61,32 @@ object TVList {
         if(com.lizongying.mytv.agent.PlaybackRoute.buffering) return@withContext RefreshResult(load(context),0)
         val prefs = context.getSharedPreferences("playlist", Context.MODE_PRIVATE)
         val now=System.currentTimeMillis()
+        val recovering=com.lizongying.mytv.agent.RecoveryRequests.shared.pending(now)
         val official=com.lizongying.mytv.agent.IptvOrgStore.refresh(context,force,light)
-        if(com.lizongying.mytv.agent.PlaybackRoute.buffering || light && official.updated>0) return@withContext RefreshResult(load(context),official.updated)
+        if(com.lizongying.mytv.agent.PlaybackRoute.buffering || light && official.updated>0 && recovering.isEmpty()) return@withContext RefreshResult(load(context),official.updated)
         val due=sources.filter { it.urls.isNotEmpty() && it.asset!="iptv-org-cn.m3u" }.filter { force || now-prefs.getLong("updated-"+it.asset,0)>=INTERVAL && now-prefs.getLong("retry-"+it.asset,0)>=900_000 }
         if(due.isEmpty()) return@withContext RefreshResult(load(context),official.updated)
         if (!mutex.tryLock()) return@withContext RefreshResult(load(context), 0)
         try {
             val map = channelNames(context)
             var updated = official.updated
-            for (source in if(light) due.sortedBy { prefs.getLong("retry-"+it.asset,0) }.take(1) else due) {
+            for (source in if(light) due.sortedBy { if(it.asset=="cctv-priority.m3u" && recovering.any { title -> title.startsWith("CCTV") }) Long.MIN_VALUE else prefs.getLong("retry-"+it.asset,0) }.take(1) else due) {
                 prefs.edit().putLong("retry-"+source.asset,now).apply()
+                val downloaded=mutableSetOf<String>()
                 for (url in source.urls) {
+                    val feed=url.substringAfter("https://raw.githubusercontent.com/")
+                    if(feed in downloaded) continue
                     try {
                         val text = download(url)
-                        require(PlaylistParser.parse(text, map).size >= 5) { "Empty or invalid playlist" }
-                        com.lizongying.mytv.agent.CandidateAdmission.offer(context,PlaylistParser.parse(text,map))
+                        val parsed=PlaylistParser.parse(text,map,64)
+                        require(parsed.size >= 5) { "Empty or invalid playlist" }
+                        com.lizongying.mytv.agent.CandidateAdmission.offer(context,if(recovering.isEmpty()) parsed else parsed.filter { it.title in recovering })
                         prefs.edit().putLong("updated-"+source.asset,now).apply()
                         updated++
-                        break
+                        downloaded.add(feed)
+                        // A downloaded playlist can contain no usable replacement. During repair,
+                        // try independent feeds too, while skipping mirrors of successful downloads.
+                        if(recovering.isEmpty()) break
                     } catch (error: Exception) { Log.w("TVList", "Source refresh failed: " + url, error) }
                 }
             }

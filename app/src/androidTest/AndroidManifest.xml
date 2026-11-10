@@ -2,4 +2,5 @@
     <instrumentation android:name="com.lizongying.mytv.MaintenanceInstrumentation" android:targetPackage="com.kandianshi.tv" />
     <instrumentation android:name="com.lizongying.mytv.PlaybackInstrumentation" android:targetPackage="com.kandianshi.tv" />
     <instrumentation android:name="com.lizongying.mytv.CctvPlaybackInstrumentation" android:targetPackage="com.kandianshi.tv" />
+ <instrumentation android:name="com.lizongying.mytv.SourceRecoveryInstrumentation" android:targetPackage="com.kandianshi.tv" />
 </manifest>

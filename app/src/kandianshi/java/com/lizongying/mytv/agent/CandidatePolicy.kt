@@ -6,16 +6,17 @@ import org.json.JSONObject
 object CandidatePolicy {
     const val LIMIT=1024
     const val MAX_BYTES=1024*1024
-    fun add(book: JSONObject,channels: List<PlaylistChannel>,now: Long) {
+    fun add(book: JSONObject,channels: List<PlaylistChannel>,now: Long,urgent: Set<String> = emptySet()) {
         var used=book.toString().toByteArray(Charsets.UTF_8).size
         // One route per channel per round, rather than exhausting a single channel's mirrors.
-        for(i in 0 until 8) for(ch in channels) {
+        for(i in 0 until 64) for(ch in channels.sortedBy { it.title !in urgent }) {
             val url=ch.urls.getOrNull(i) ?: continue
             if(DiscoveryPolicy.canonical(url)==null) continue
             val id=MemoryPolicy.id(url)
             if(book.has(id)) continue
             if(book.length()>=LIMIT) {
-                val evict=book.keys().asSequence().firstOrNull { book.getJSONObject(it).optLong("next")>now } ?: return
+                val evict=(if(ch.title in urgent) book.keys().asSequence().firstOrNull { book.getJSONObject(it).optString("title") !in urgent } else null)
+                    ?: book.keys().asSequence().firstOrNull { book.getJSONObject(it).optLong("next")>now } ?: return
                 book.remove(evict);used=book.toString().toByteArray(Charsets.UTF_8).size
             }
             val entry=JSONObject().put("url",url).put("title",ch.title).put("group",ch.group).put("logo",ch.logo).put("at",now).put("next",0).put("order",book.length())
@@ -24,9 +25,9 @@ object CandidatePolicy {
             book.put(id,entry);used+=extra
         }
     }
-    fun due(book: JSONObject,now: Long,excluded: String): List<String> = book.keys().asSequence()
+    fun due(book: JSONObject,now: Long,excluded: String,urgent: Set<String> = emptySet()): List<String> = book.keys().asSequence()
         .filter { book.getJSONObject(it).optLong("next")<=now && book.getJSONObject(it).optString("url")!=excluded }
-        .sortedWith(compareBy<String> { book.getJSONObject(it).optLong("at") }.thenBy { book.getJSONObject(it).optInt("order") }).toList()
+        .sortedWith(compareBy<String> { book.getJSONObject(it).optString("title") !in urgent }.thenBy { book.getJSONObject(it).optLong("at") }.thenBy { book.getJSONObject(it).optInt("order") }).toList()
     fun failed(book: JSONObject,id: String,now: Long) {
         val entry=book.optJSONObject(id) ?: return
         val attempts=entry.optInt("attempts")+1

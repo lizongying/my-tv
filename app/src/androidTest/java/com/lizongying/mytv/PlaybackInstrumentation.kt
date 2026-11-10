@@ -29,7 +29,7 @@ class PlaybackInstrumentation : Instrumentation() {
         var activity: MainActivity?=null
         var server: NanoHTTPD?=null
         val file=File(c.cacheDir,"playback-original-test.mp4")
-        val result=Bundle()
+        var resultCode=Activity.RESULT_CANCELED;val result=Bundle()
         try {
             prefs.edit().putString("config",JSONObject().put("enabled",false).put("aiEnabled",false).toString()).commit()
             AgentScheduler.schedule(c)
@@ -107,8 +107,14 @@ class PlaybackInstrumentation : Instrumentation() {
             val failedId=attempt().id
             click(2);await(10000) { attempt().id!=failedId }
             output.put("same_channel_explicit_retry",true)
+            prefs.edit().putString("config",JSONObject().put("enabled",true).put("aiEnabled",false).toString()).commit()
             click(4)
             await(18000) { var failed=false;runOnMainSync { failed=attempt().url==base+"/stall.m3u8" && attempt().failed };failed }
+            val repairWork=androidx.work.WorkManager.getInstance(c).getWorkInfosForUniqueWork("source-agent-once").get(15,java.util.concurrent.TimeUnit.SECONDS)
+            check(repairWork.any { !it.state.isFinished }) { "频道失效未调度自动回源任务" }
+            output.put("failed_channel_schedules_repair",true)
+            prefs.edit().putString("config",JSONObject().put("enabled",false).put("aiEnabled",false).toString()).commit()
+            AgentScheduler.schedule(c)
             val terminalId=attempt().id
             repeat(3) {
                 runOnMainSync { v.play(com.lizongying.mytv.models.TVViewModel(m.tvListViewModel.getTVViewModel(4)!!.getTV().copy())) }
@@ -116,6 +122,15 @@ class PlaybackInstrumentation : Instrumentation() {
                 check(attempt().id==terminalId && attempt().failed) { "节目单刷新重新开启了已失败的加载" }
             }
             output.put("bounded_loading_timeout",true).put("catalogue_refresh_cannot_restart_failed_load",true)
+            RecoveryRequests.shared.request("CCTV5",System.currentTimeMillis())
+            AgentRepository::class.java.declaredMethods.first { it.name.startsWith("recordProbe$") }.apply { isAccessible=true }.invoke(AgentRepository,c,base+"/recovered.mp4",true,0L)
+            runOnMainSync {
+                val old=m.tvListViewModel.getTVViewModel(4)!!.getTV()
+                v.play(com.lizongying.mytv.models.TVViewModel(old.copy(videoUrl=old.videoUrl+listOf(base+"/recovered.mp4"))))
+            }
+            framed(base+"/recovered.mp4",15000)
+            await(8000) { "CCTV5" !in RecoveryRequests.shared.pending(System.currentTimeMillis()) }
+            output.put("verified_replacement_auto_resumes",true)
             val live=args.getString("liveUrl").orEmpty()
             if(live.isNotBlank()) {
                 runOnMainSync {
@@ -139,7 +154,7 @@ class PlaybackInstrumentation : Instrumentation() {
             }
             output.put("success",true)
             result.putString("playback",output.toString())
-            finish(Activity.RESULT_OK,result)
+            resultCode=Activity.RESULT_OK
         } catch(e: Throwable) {
             output.put("success",false).put("error",e.toString())
             activity?.let { a -> runOnMainSync {
@@ -155,13 +170,14 @@ class PlaybackInstrumentation : Instrumentation() {
                         .put("attempt_host",android.net.Uri.parse(state.url).host).put("attempt_path",android.net.Uri.parse(state.url).path)
                 }
             } }
-            result.putString("playback",output.toString());finish(Activity.RESULT_CANCELED,result)
+            result.putString("playback",output.toString());resultCode=Activity.RESULT_CANCELED
         } finally {
             activity?.let { a -> runOnMainSync { a.finish() } }
             server?.stop();file.delete()
             prefs.edit().putString("config",previous).commit()
             File(c.filesDir,"playback-validation.json").writeText(output.toString(2))
         }
+        finish(resultCode,result)
     }
     private fun await(timeout: Long,condition: ()->Boolean) {
         val deadline=SystemClock.elapsedRealtime()+timeout

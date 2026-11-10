@@ -46,15 +46,30 @@ class PlayerFragment : Fragment() {
     private val attempt = PlaybackAttempt()
     private val budget = com.lizongying.mytv.agent.PlaybackBudget()
     private val handler = Handler(Looper.getMainLooper())
+    private val frameProgress=com.lizongying.mytv.agent.FrameProgress()
+    private var firstFrameCount=0
+    private fun renderedFrames(): Int { player?.videoDecoderCounters?.ensureUpdated();return player?.videoDecoderCounters?.renderedOutputBufferCount ?: 0 }
+    private val frameWatch=object : Runnable {
+        override fun run() {
+            if(!visible || attempt.failed || !attempt.hasFirstFrame) return
+            if(frameProgress.stalled(renderedFrames(),android.os.SystemClock.elapsedRealtime())) tryNextSource("视频画面已停止更新 15 秒")
+            else handler.postDelayed(this,2000)
+        }
+    }
     private val stalled = Runnable { tryNextSource("视频缓冲超过 15 秒") }
     private val noFrame = Runnable { tryNextSource("15 秒未显示视频首帧") }
     private val playingFeedback = Runnable {
-        if (player?.isPlaying == true && attempt.success(attempt.id)) {
+        if (player?.isPlaying == true && renderedFrames()-firstFrameCount>=12 && attempt.success(attempt.id)) {
             val url = attempt.url
+            com.lizongying.mytv.agent.RecoveryRequests.shared.complete(current?.getTV()?.title.orEmpty())
             context?.applicationContext?.let { app -> lifecycleScope.launch { AgentRepository.recordPlayback(app, url, true) } }
         }
     }
     fun resetFailures() {
+        if(attempt.failed && budget.exhausted) current?.let { model ->
+            val urls=model.videoUrl.value.orEmpty()
+            com.lizongying.mytv.agent.PlaybackRoutes.after(urls,attempt.url,emptySet())?.let(model::setVideoIndex)
+        }
         failedUrls.clear(); refreshedDynamic.clear()
         budget.select(current?.getTV()?.title.orEmpty(),android.os.SystemClock.elapsedRealtime(),true)
     }
@@ -75,7 +90,7 @@ class PlayerFragment : Fragment() {
         player?.clearMediaItems()
     }
     private fun cancelTimers() {
-        handler.removeCallbacks(stalled); handler.removeCallbacks(noFrame); handler.removeCallbacks(playingFeedback)
+        handler.removeCallbacks(stalled); handler.removeCallbacks(noFrame); handler.removeCallbacks(playingFeedback); handler.removeCallbacks(frameWatch);frameProgress.clear()
     }
     private fun requestId(eventTime: AnalyticsListener.EventTime): String = runCatching {
         eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem.mediaId
@@ -96,6 +111,9 @@ class PlayerFragment : Fragment() {
             override fun onRenderedFirstFrame(eventTime: AnalyticsListener.EventTime, output: Any, renderTimeMs: Long) {
                 if (attempt.frame(requestId(eventTime))) {
                     status()
+                    firstFrameCount=renderedFrames()
+                    frameProgress.start(firstFrameCount,android.os.SystemClock.elapsedRealtime())
+                    handler.removeCallbacks(frameWatch);handler.postDelayed(frameWatch,2000)
                     android.util.Log.i("TVPlayback", "FIRST_FRAME request="+attempt.id)
                     handler.removeCallbacks(noFrame)
                     if (player?.isPlaying == true) {
@@ -115,7 +133,7 @@ class PlayerFragment : Fragment() {
             override fun onPlaybackStateChanged(state: Int) {
                 com.lizongying.mytv.agent.PlaybackRoute.buffering=visible && state==Player.STATE_BUFFERING
                 handler.removeCallbacks(stalled)
-                if (state == Player.STATE_BUFFERING && attempt.hasFirstFrame) handler.postDelayed(stalled, 15000)
+                if (state == Player.STATE_BUFFERING && attempt.hasFirstFrame) { status("正在缓冲，超时将自动切换备用线路…");handler.postDelayed(stalled, 15000) }
                 if (state == Player.STATE_ENDED && current != null) {
                     val endedId = attempt.id
                     handler.post { if (attempt.id == endedId) tryNextSource("直播提前结束") }
@@ -124,6 +142,7 @@ class PlayerFragment : Fragment() {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 handler.removeCallbacks(playingFeedback)
                 if (isPlaying && attempt.hasFirstFrame) {
+                    status()
                     handler.postDelayed(playingFeedback, 3000)
                     handler.removeCallbacks(stalled)
                     (activity as? MainActivity)?.isPlaying()
@@ -133,7 +152,15 @@ class PlayerFragment : Fragment() {
         (activity as MainActivity).fragmentReady("PlayerFragment")
         return view.root
     }
+    private fun requestRecovery(model: TVViewModel) {
+        val app=requireContext().applicationContext
+        if(com.lizongying.mytv.agent.AgentConfigStore(app).load().enabled && com.lizongying.mytv.agent.RecoveryRequests.shared.request(model.getTV().title,System.currentTimeMillis())) AgentScheduler.runNow(app,false)
+    }
     fun play(tvViewModel: TVViewModel) {
+        if(budget.exhausted && current?.getTV()?.title==tvViewModel.getTV().title && tvViewModel.getTV().title in com.lizongying.mytv.agent.RecoveryRequests.shared.pending(System.currentTimeMillis())) {
+            val next=com.lizongying.mytv.agent.PlaybackRoutes.replacement(tvViewModel.videoUrl.value.orEmpty(),failedUrls,AgentRepository.health(requireContext()))
+            if(next!=null) { tvViewModel.setVideoIndex(next);budget.recover(android.os.SystemClock.elapsedRealtime()) }
+        }
         val url = tvViewModel.getVideoUrlCurrent()
         if (current?.getTV()?.title != tvViewModel.getTV().title) { failedUrls.clear(); refreshedDynamic.clear() }
         budget.select(tvViewModel.getTV().title,android.os.SystemClock.elapsedRealtime())
@@ -143,7 +170,7 @@ class PlayerFragment : Fragment() {
         if (attempt.url == url && !attempt.failed && player?.playbackState in listOf(Player.STATE_READY, Player.STATE_BUFFERING)) return
         if(budget.exhausted) return
         if(budget.remaining(android.os.SystemClock.elapsedRealtime())==0L) {
-            budget.finish();prepareJob?.cancel();cancelTimers();player?.stop()
+            budget.finish();prepareJob?.cancel();cancelTimers();player?.stop();requestRecovery(tvViewModel)
             com.lizongying.mytv.agent.PlaybackRoute.url=""
             status("加载超时，已停止重试\n可切换其他频道，或点击此频道重试")
             return
@@ -188,11 +215,12 @@ class PlayerFragment : Fragment() {
         com.lizongying.mytv.agent.PlaybackRoute.url=""
         player?.stop()
         val urls = model.videoUrl.value.orEmpty()
-        val next = urls.indices.firstOrNull { urls[it] !in failedUrls }
+        val next = com.lizongying.mytv.agent.PlaybackRoutes.after(urls,failedUrl,failedUrls)
         if (next == null || budget.remaining(android.os.SystemClock.elapsedRealtime())==0L) {
             budget.finish();prepareJob?.cancel()
+            requestRecovery(model)
             player?.stop()
-            status("此频道的线路暂时均无法播放\n可切换其他频道，或点击此频道重试\n"+reason)
+            status((if(next==null) "本轮线路均未能播放" else "本轮加载已达到 45 秒上限")+"\n可切换频道，或点击此频道继续尝试\n"+reason)
             Toast.makeText(context, "此频道暂无可用线路；可到设置检测并移除无效线路", Toast.LENGTH_LONG).show()
             return
         }
