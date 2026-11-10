@@ -1,0 +1,58 @@
+看电视 1.0.0
+================
+
+基于 lizongying/my-tv 定制，保留 Android TV 遥控器操作界面。
+安装后内置央视、卫视、地方台频道列表，无需手动输入订阅地址。
+适用于 Android 5.0 及以上电视、盒子和安卓设备。包名 com.kandianshi.tv。
+
+操作
+----
+上/下：换台。
+确认键：打开/关闭频道列表。
+右键或菜单键：打开设置。
+数字键：支持 1–999 频道编号。
+设置中的“更新直播源”：手动更新频道。
+手机：单击打开频道，双击打开设置，上下滑动换台。
+
+更新
+----
+启动时检查源更新（自动检查间隔 6 小时）。
+应用前台持续运行期间，每 6 小时再次检查。
+在线列表无效或下载失败时，保留上次有效缓存或内置列表。
+内置列表只提供频道地址，播放仍需联网。
+播放报错或缓冲超时后自动尝试其他线路，尝试完毕后提示换台或更新。
+每个频道最多保留 8 个不重复线路。
+
+上游项目（2026-10-09 查询）
+----
+APP: https://github.com/lizongying/my-tv
+      约 32,000 Star；源码基准 d65ac508eb56d454d565d7a53df35fa4d5403720。
+主源: https://github.com/iptv-org/iptv
+      140,352 Star；仓库最近更新 2026-10-08。
+      https://iptv-org.github.io/iptv/countries/cn.m3u
+补充: https://github.com/vbskycn/iptv
+      9,335 Star；仓库说明每 6 小时更新，实际源文件最近提交 2026-09-25。
+      https://live.zbds.top/tv/iptv4.m3u
+      https://raw.githubusercontent.com/vbskycn/iptv/master/tv/iptv4.m3u
+地方台补充: https://github.com/YueChan/Live
+      1,515 Star；GNTV.m3u 最近更新 2026-10-02。
+      https://raw.githubusercontent.com/YueChan/Live/main/GNTV.m3u
+中文频道名: https://github.com/iptv-org/database
+
+验证范围
+----
+候选源检测：473 个 URL 中 262 个在电脑网络环境下可返回 HLS 清单和媒体分片。
+另外禁用电脑 HTTP 代理进行直连复核：8 路央视/卫视/地方台样本及 2 个订阅地址均通过。
+详细结果见 stream-checks.json 和 direct-checks.json。
+源可能按地区、运营商和时间变化；当前 CCTV4、CCTV5、CCTV5+、CCTV15 等线路未通过此次网络检测。
+不代表所有频道均可用，也不等同于在你的电视上完成实机播放验证。
+
+开源来源
+----
+原始 my-tv 项目的作者声明保留在源码包中的 UPSTREAM-README.md。
+直播源为上游公开列表，相关来源及许可文件保留在源码包的 notices 目录。
+
+存储
+----
+源码、依赖、缓存及交付文件物理存储在 D:\CodexWork\kan-dianshi。
+Codex 输出目录使用目录联接展示交付文件，未在 C 盘复制产物。

@@ -1,0 +1,106 @@
+{
+  "version": "1.14.2",
+  "unit_tests": {
+    "tests": 348,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 134,
+  "sha256": "69eea14ee3380d190731ab4316213860392c693ad6cdfcfb451f818743bd374a",
+  "apk_bytes": 10851352,
+  "signature_preserved": true,
+  "zipalign_16kb_passed": true,
+  "new_paid_model_requests": 0,
+  "real_android16_tested": false,
+  "android_runtime_tested": true,
+  "emulator_runtime_tested": true,
+  "playback_regression_pending": false,
+  "mp2_direct_pcm_check": {
+    "passed": true,
+    "output": "CCTV1-frames.bin frames=40 rate=48000 channels=2 nonzero=92030 peak=6266\nCCTV6-frames.bin frames=40 rate=48000 channels=2 nonzero=91194 peak=367\n",
+    "new_paid_model_requests": 0
+  },
+  "actual_release_apk_playback_tested": true,
+  "android_api": 25,
+  "runtime_playback": {
+    "version": "1.14.2",
+    "android_api": 25,
+    "actual_release_apk": true,
+    "proxy": "null",
+    "sha256": "69eea14ee3380d190731ab4316213860392c693ad6cdfcfb451f818743bd374a",
+    "new_paid_model_requests": 0,
+    "actual_catalogue": {
+      "channels": [
+        {
+          "title": "CCTV1",
+          "first_frame_ms": 2386,
+          "video_width": 720,
+          "video_height": 576,
+          "audio_mime": "audio/mpeg-L2",
+          "rendered_frames_in_12s": 277,
+          "decoded_audio_buffers": 541,
+          "url_host": "119.129.172.221",
+          "url_path": "/tsfile/live/0001_1.m3u8",
+          "screenshot": "cctv-playback-0.png",
+          "passed": true
+        },
+        {
+          "title": "CCTV6",
+          "first_frame_ms": 891,
+          "video_width": 720,
+          "video_height": 576,
+          "audio_mime": "audio/mpeg-L2",
+          "rendered_frames_in_12s": 288,
+          "decoded_audio_buffers": 512,
+          "url_host": "119.129.172.221",
+          "url_path": "/tsfile/live/0006_1.m3u8",
+          "screenshot": "cctv-playback-1.png",
+          "passed": true
+        },
+        {
+          "title": "CCTV1",
+          "first_frame_ms": 640,
+          "video_width": 720,
+          "video_height": 576,
+          "audio_mime": "audio/mpeg-L2",
+          "rendered_frames_in_12s": 286,
+          "decoded_audio_buffers": 511,
+          "url_host": "119.129.172.221",
+          "url_path": "/tsfile/live/0001_1.m3u8",
+          "screenshot": "cctv-playback-2.png",
+          "passed": true
+        }
+      ],
+      "success": true
+    },
+    "regression": {
+      "default_catalog_channels": 442,
+      "http_video_first_frame": true,
+      "visible_http_video_pixels": true,
+      "click_switches_while_address_nonempty": true,
+      "click_recovers_from_failed_channel": true,
+      "failed_route_automatically_uses_backup": true,
+      "failover_without_catalogue_observer": true,
+      "same_channel_explicit_retry": true,
+      "bounded_loading_timeout": true,
+      "catalogue_refresh_cannot_restart_failed_load": true,
+      "success": true
+    }
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/cctv-catalogue-0-v1.14.2.png",
+      "sha256": "2c7581caad5bce32638ff1520a735901d9a31c1d6d2012de2aebf7aa1b5beb1e"
+    },
+    {
+      "path": "screenshots/cctv-catalogue-1-v1.14.2.png",
+      "sha256": "94c0496f8ed533e349c4c5c4779808cc9f0c48c333141ba92179377bdeb960de"
+    },
+    {
+      "path": "screenshots/cctv-catalogue-2-v1.14.2.png",
+      "sha256": "371cbc081a20eb50b477af72a1b0c22e09ad3d2e54baead7e948ecfbeb9441e0"
+    }
+  ]
+}

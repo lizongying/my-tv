@@ -1,0 +1,30 @@
+{
+  "version": "1.11.0",
+  "unit_tests": {
+    "tests": 279,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 134,
+  "sha256": "185c42e254fe5661378863c833188c30b807fa73692a659e13b175b6c54ff8e5",
+  "apk_bytes": 10740229,
+  "signature_preserved": true,
+  "zipalign_16kb_passed": true,
+  "new_paid_model_requests": 0,
+  "real_android16_tested": false,
+  "android_runtime_tested": false,
+  "emulator_runtime_tested": false,
+  "watching_sync_implemented": true,
+  "per_route_admission": true,
+  "playlist_sample_bypass_removed": true,
+  "candidate_limit": 1024,
+  "watching_candidate_batch_size": 2,
+  "light_health_batch_size": 6,
+  "decoder_evidence_prioritized": true,
+  "buffering_defers_network_work": true,
+  "duplicate_title_selection_regression_passed": true,
+  "programme_list_is_not_media_test_passed": true,
+  "capped_hls_is_unverified_test_passed": true
+}

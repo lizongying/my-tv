@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- Glide 4.11 includes NotificationTarget. This app uses only ImageView targets
+         for channel logos and never creates notifications. The project-level
+         permission report from that unused library class is a false positive. -->
+    <issue id="NotificationPermission">
+        <ignore path="src/main/AndroidManifest.xml" />
+    </issue>
+</lint>

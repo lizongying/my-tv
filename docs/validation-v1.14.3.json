@@ -1,0 +1,884 @@
+{
+  "version": "1.14.3",
+  "unit_tests": {
+    "tests": 372,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 134,
+  "sha256": "ba547869d1897d2ec3025bf8973ed59149baa6431b88b7ee88372ceabea5eb8d",
+  "apk_bytes": 10855448,
+  "signature_preserved": true,
+  "zipalign_16kb_passed": true,
+  "new_paid_model_requests": 0,
+  "real_android16_tested": false,
+  "android_runtime_tested": true,
+  "emulator_runtime_tested": true,
+  "playback_regression_pending": false,
+  "mp2_direct_pcm_check": {
+    "passed": true,
+    "output": "CCTV1-frames.bin frames=40 rate=48000 channels=2 nonzero=92030 peak=6266\nCCTV6-frames.bin frames=40 rate=48000 channels=2 nonzero=91194 peak=367\n",
+    "new_paid_model_requests": 0
+  },
+  "actual_release_apk_playback_tested": true,
+  "android_api": 25,
+  "runtime_playback": {
+    "version": "1.14.3",
+    "android_api": 25,
+    "actual_release_apk": true,
+    "proxy": "null",
+    "sha256": "ba547869d1897d2ec3025bf8973ed59149baa6431b88b7ee88372ceabea5eb8d",
+    "new_paid_model_requests": 0,
+    "clean_app_data_before_viewing": true,
+    "scenario_cleanup_before_finish": true,
+    "actual_catalogue": {
+      "channels": [
+        {
+          "title": "CCTV1",
+          "first_frame_ms": 2786,
+          "url_host": "124.228.160.40",
+          "video_width": 720,
+          "video_height": 576,
+          "audio_mime": "audio/mpeg-L2",
+          "watch_samples": [
+            {
+              "second": 1,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 9
+            },
+            {
+              "second": 2,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 14
+            },
+            {
+              "second": 3,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 33
+            },
+            {
+              "second": 4,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 54
+            },
+            {
+              "second": 5,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 65
+            },
+            {
+              "second": 6,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 88
+            },
+            {
+              "second": 7,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 110
+            },
+            {
+              "second": 8,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 124
+            },
+            {
+              "second": 9,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 136
+            },
+            {
+              "second": 10,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 144
+            },
+            {
+              "second": 11,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 152
+            },
+            {
+              "second": 12,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 172
+            },
+            {
+              "second": 13,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 197
+            },
+            {
+              "second": 14,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 218
+            },
+            {
+              "second": 15,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 235
+            },
+            {
+              "second": 16,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 243
+            },
+            {
+              "second": 17,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 266
+            },
+            {
+              "second": 18,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 292
+            },
+            {
+              "second": 19,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 309
+            },
+            {
+              "second": 20,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 334
+            },
+            {
+              "second": 21,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 359
+            },
+            {
+              "second": 22,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 385
+            },
+            {
+              "second": 23,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 406
+            },
+            {
+              "second": 24,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 429
+            },
+            {
+              "second": 25,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 453
+            },
+            {
+              "second": 26,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 478
+            },
+            {
+              "second": 27,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 504
+            },
+            {
+              "second": 28,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 519
+            },
+            {
+              "second": 29,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 534
+            },
+            {
+              "second": 30,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 559
+            }
+          ],
+          "playing_seconds": 30,
+          "longest_interruption_seconds": 0,
+          "route_switches": 0,
+          "initial_url_host": "124.228.160.40",
+          "rendered_frames_in_30s": 556,
+          "watch_ms": 30000,
+          "decoded_audio_buffers": 1266,
+          "url_path": "/tsfile/live/0017_1.m3u8",
+          "screenshot": "cctv-playback-0.png",
+          "passed": true
+        },
+        {
+          "title": "CCTV6",
+          "first_frame_ms": 1360,
+          "url_host": "124.90.45.52",
+          "video_width": 720,
+          "video_height": 576,
+          "audio_mime": "audio/mpeg-L2",
+          "watch_samples": [
+            {
+              "second": 1,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 13
+            },
+            {
+              "second": 2,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 22
+            },
+            {
+              "second": 3,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 38
+            },
+            {
+              "second": 4,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 59
+            },
+            {
+              "second": 5,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 77
+            },
+            {
+              "second": 6,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 89
+            },
+            {
+              "second": 7,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 96
+            },
+            {
+              "second": 8,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 104
+            },
+            {
+              "second": 9,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 118
+            },
+            {
+              "second": 10,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 143
+            },
+            {
+              "second": 11,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 164
+            },
+            {
+              "second": 12,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 174
+            },
+            {
+              "second": 13,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 186
+            },
+            {
+              "second": 14,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 207
+            },
+            {
+              "second": 15,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 233
+            },
+            {
+              "second": 16,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 256
+            },
+            {
+              "second": 17,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 273
+            },
+            {
+              "second": 18,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 288
+            },
+            {
+              "second": 19,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 313
+            },
+            {
+              "second": 20,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 337
+            },
+            {
+              "second": 21,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 356
+            },
+            {
+              "second": 22,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 381
+            },
+            {
+              "second": 23,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 407
+            },
+            {
+              "second": 24,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 421
+            },
+            {
+              "second": 25,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 426
+            },
+            {
+              "second": 26,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 437
+            },
+            {
+              "second": 27,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 460
+            },
+            {
+              "second": 28,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 485
+            },
+            {
+              "second": 29,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 509
+            },
+            {
+              "second": 30,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 533
+            }
+          ],
+          "playing_seconds": 30,
+          "longest_interruption_seconds": 0,
+          "route_switches": 0,
+          "initial_url_host": "124.90.45.52",
+          "rendered_frames_in_30s": 532,
+          "watch_ms": 30000,
+          "decoded_audio_buffers": 1238,
+          "url_path": "/tsfile/live/1017_1.m3u8",
+          "screenshot": "cctv-playback-1.png",
+          "passed": true
+        },
+        {
+          "title": "CCTV1",
+          "first_frame_ms": 3709,
+          "url_host": "124.228.160.40",
+          "video_width": 720,
+          "video_height": 576,
+          "audio_mime": "audio/mpeg-L2",
+          "watch_samples": [
+            {
+              "second": 1,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 10
+            },
+            {
+              "second": 2,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 15
+            },
+            {
+              "second": 3,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 19
+            },
+            {
+              "second": 4,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 23
+            },
+            {
+              "second": 5,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 26
+            },
+            {
+              "second": 6,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 30
+            },
+            {
+              "second": 7,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 31
+            },
+            {
+              "second": 8,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 35
+            },
+            {
+              "second": 9,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 37
+            },
+            {
+              "second": 10,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 41
+            },
+            {
+              "second": 11,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 46
+            },
+            {
+              "second": 12,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 52
+            },
+            {
+              "second": 13,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 55
+            },
+            {
+              "second": 14,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 60
+            },
+            {
+              "second": 15,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 64
+            },
+            {
+              "second": 16,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 69
+            },
+            {
+              "second": 17,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 74
+            },
+            {
+              "second": 18,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 79
+            },
+            {
+              "second": 19,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 83
+            },
+            {
+              "second": 20,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 92
+            },
+            {
+              "second": 21,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 116
+            },
+            {
+              "second": 22,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 127
+            },
+            {
+              "second": 23,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 147
+            },
+            {
+              "second": 24,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 172
+            },
+            {
+              "second": 25,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 192
+            },
+            {
+              "second": 26,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 215
+            },
+            {
+              "second": 27,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 234
+            },
+            {
+              "second": 28,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 239
+            },
+            {
+              "second": 29,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 249
+            },
+            {
+              "second": 30,
+              "playing": true,
+              "state": 3,
+              "when_ready": true,
+              "route_changed": false,
+              "frames": 267
+            }
+          ],
+          "playing_seconds": 30,
+          "longest_interruption_seconds": 0,
+          "route_switches": 0,
+          "initial_url_host": "124.228.160.40",
+          "rendered_frames_in_30s": 266,
+          "watch_ms": 30000,
+          "decoded_audio_buffers": 1165,
+          "url_path": "/tsfile/live/0017_1.m3u8",
+          "screenshot": "cctv-playback-2.png",
+          "passed": true
+        }
+      ],
+      "watching_subscription_sync": true,
+      "subscription_sync_updates": 1,
+      "subscription_sync_ms": 6027,
+      "rapid_switch_last_choice_wins": true,
+      "catalogue_refresh_keeps_video": true,
+      "desktop_stops_playback_and_return_resumes": true,
+      "success": true
+    },
+    "source_recovery": {
+      "baseline_catalogue": "bundled CCTV routes from 1.14.2",
+      "replacement_may_also_be_bundled_in_current_release": true,
+      "feed_attempts": [
+        {
+          "feed": "https://raw.githubusercontent.com/best-fan/iptv-sources/main/cn_cctv_status.m3u8",
+          "downloaded_chars": 18104,
+          "different_endpoints": 6
+        }
+      ],
+      "public_feed_fetched": "https://raw.githubusercontent.com/best-fan/iptv-sources/main/cn_cctv_status.m3u8",
+      "new_candidates": 6,
+      "candidate_admitted": 1,
+      "actual_frames": 74,
+      "playing": true,
+      "state": 3,
+      "audio_buffers": 397,
+      "video_width": 720,
+      "route_host": "124.228.160.40",
+      "replacement_frames_in_12s": 74,
+      "replacement_host": "124.228.160.40",
+      "replacement_path": "/tsfile/live/0017_1.m3u8",
+      "success": true
+    },
+    "regression": {
+      "default_catalog_channels": 442,
+      "http_video_first_frame": true,
+      "visible_http_video_pixels": true,
+      "click_switches_while_address_nonempty": true,
+      "click_recovers_from_failed_channel": true,
+      "failed_route_automatically_uses_backup": true,
+      "failover_without_catalogue_observer": true,
+      "same_channel_explicit_retry": true,
+      "failed_channel_schedules_repair": true,
+      "bounded_loading_timeout": true,
+      "catalogue_refresh_cannot_restart_failed_load": true,
+      "verified_replacement_auto_resumes": true,
+      "success": true
+    }
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/cctv-catalogue-0-v1.14.3.png",
+      "sha256": "94fe4e1be6c89e480e4bcdb64554dbe4ee126eb83a49fdcec7289de88128536a"
+    },
+    {
+      "path": "screenshots/cctv-catalogue-1-v1.14.3.png",
+      "sha256": "fc215496ba56cb22c8da2944bb32a961253c3ae6c927fdc7329a8cf62e16f193"
+    },
+    {
+      "path": "screenshots/cctv-catalogue-2-v1.14.3.png",
+      "sha256": "0849229ea03a6d9e6d4edebaebce385ae3575404c85ab39a1d60b184a4e41b09"
+    },
+    {
+      "path": "screenshots/source-recovery-v1.14.3.png"
+    }
+  ]
+}

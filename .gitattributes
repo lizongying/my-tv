@@ -1,0 +1,4 @@
+# Retain verbatim third-party playlist and license formatting.
+app/src/main/assets/*.m3u whitespace=-blank-at-eol
+app/src/main/assets/licenses/* whitespace=-blank-at-eof
+notices/*LICENSE* whitespace=-blank-at-eof

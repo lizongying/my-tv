@@ -1,0 +1,47 @@
+{
+  "version": "1.13.0",
+  "unit_tests": {
+    "tests": 313,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint_errors": 0,
+  "lint_warnings": 134,
+  "sha256": "c38a40beef1ae0e2966465ebb03bc09e23256ec5d12dce4ce82460cc950b8cfd",
+  "apk_bytes": 10748421,
+  "signature_preserved": true,
+  "zipalign_16kb_passed": true,
+  "new_paid_model_requests": 0,
+  "real_android16_tested": false,
+  "live_media_check": {
+    "encrypted": false,
+    "android_runtime_tested": false,
+    "latest_segment_passed": true,
+    "ended": false,
+    "manifest_progressed": true,
+    "hls_manifest": true,
+    "segments": 2,
+    "latency_ms": 109
+  },
+  "android_runtime_tested": false,
+  "emulator_runtime_tested": false,
+  "live_api_check": {
+    "channel_id": "30167",
+    "tls_verification_enabled": true,
+    "playback_tested": false,
+    "first_response": {
+      "code": "0",
+      "msg": "SUCCESS_CODE",
+      "tip": "OK"
+    },
+    "first_url_received": true,
+    "second_response": {
+      "code": 0,
+      "message": "ok",
+      "timestamp": "20220620150400"
+    },
+    "play_url_received": true
+  },
+  "credential_scan_passed": true
+}
